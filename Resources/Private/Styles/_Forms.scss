@@ -103,8 +103,6 @@ input[type="number"],
 
 	select {
 		@include appearance(none);
-		-o-appearance: window;
-		-moz-appearance: window;
 		background-color: transparent;
 		line-height: 18px;
 		padding: 3px 14px;

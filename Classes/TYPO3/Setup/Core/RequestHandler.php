@@ -237,6 +237,7 @@ class RequestHandler extends FlowRequestHandler {
 	 * So we must check existence of this file with system tools.
 	 * 
 	 * @param string $phpBinaryPathAndFilename
+	 * @return boolean
 	 */
 	protected function phpBinaryExistsAndIsExecutableFile($phpBinaryPathAndFilename) {
         	if (DIRECTORY_SEPARATOR === '/') { 

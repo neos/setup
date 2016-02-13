@@ -243,7 +243,7 @@ class RequestHandler extends FlowRequestHandler {
         	if (DIRECTORY_SEPARATOR === '/') { 
         	        $command = sprintf('test -f "%s" && test -f "%s" && test -x "%s"', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
         	} else { 
-                	$command = sprintf('IF EXISTS "%s" && IF NOT EXISTS "%s\NUL" (return 0) ELSE (return 1)', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
+                	$command = sprintf('IF EXIST "%s" (IF NOT EXIST "%s"\* (EXIT 0) ELSE (EXIT 1)) ELSE (EXIT 1)', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
         	}
 
 		exec($command, $outputLines, $exitCode);

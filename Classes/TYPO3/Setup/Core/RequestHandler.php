@@ -161,7 +161,7 @@ class RequestHandler extends FlowRequestHandler {
 	 */
 	protected function checkPhpBinary($phpBinaryPathAndFilename) {
 		$phpVersion = NULL;
-		if (file_exists($phpBinaryPathAndFilename) && is_file($phpBinaryPathAndFilename)) {
+		if ($this->phpBinaryExistsAndIsExecutableFile($phpBinaryPathAndFilename)) {
 			if (DIRECTORY_SEPARATOR === '/') {
 				$phpCommand = '"' . escapeshellcmd(Files::getUnixStylePath($phpBinaryPathAndFilename)) . '"';
 			} else {
@@ -228,4 +228,30 @@ class RequestHandler extends FlowRequestHandler {
 		}
 		return array(NULL, $lastCheckMessage);
 	}
+
+	/**
+	 * Checks if PHP binary file exists bypassing open_basedir violation.
+	 * 
+	 * If PHP binary is not within open_basedir path, 
+	 * it is impossible to access this binary in any other way then exec() or system().
+	 * So we must check existence of this file with system tools.
+	 * 
+	 * @param string $phpBinaryPathAndFilename
+	 * @return boolean
+	 */
+	protected function phpBinaryExistsAndIsExecutableFile($phpBinaryPathAndFilename) {
+        	if (DIRECTORY_SEPARATOR === '/') { 
+        	        $command = sprintf('test -f "%s" && test -f "%s" && test -x "%s"', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
+        	} else { 
+                	$command = sprintf('IF EXIST "%s" (IF NOT EXIST "%s"\* (EXIT 0) ELSE (EXIT 1)) ELSE (EXIT 1)', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
+        	}
+
+		exec($command, $outputLines, $exitCode);
+		if ($exitCode === 0) {
+			return true;
+		}		
+
+		return false;
+	}
+
 }

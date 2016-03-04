@@ -240,10 +240,11 @@ class RequestHandler extends FlowRequestHandler {
 	 * @return boolean
 	 */
 	protected function phpBinaryExistsAndIsExecutableFile($phpBinaryPathAndFilename) {
+		$phpBinaryPathAndFilename = escapeshellarg(Files::getUnixStylePath($phpBinaryPathAndFilename));
 		if (DIRECTORY_SEPARATOR === '/') {
-			$command = sprintf('test -f "%s" && test -f "%s" && test -x "%s"', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
+			$command = sprintf('test -f %s && test -x %s', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
 		} else {
-			$command = sprintf('IF EXIST "%s" (IF NOT EXIST "%s"\* (EXIT 0) ELSE (EXIT 1)) ELSE (EXIT 1)', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
+			$command = sprintf('IF EXIST %s (IF NOT EXIST %s\* (EXIT 0) ELSE (EXIT 1)) ELSE (EXIT 1)', $phpBinaryPathAndFilename, $phpBinaryPathAndFilename);
 		}
 
 		exec($command, $outputLines, $exitCode);

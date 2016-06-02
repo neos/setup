@@ -184,7 +184,7 @@ class RequestHandler extends FlowRequestHandler {
 			}
 		}
 		if ($phpVersion === NULL) {
-			return new Error('The specified path to your PHP binary (see Configuration/Settings.yaml) is incorrect.', 1341839376, array(), 'Environment requirements not fulfilled');
+			return new Error('The specified path to your PHP binary (see Configuration/Settings.yaml) is incorrect: not found at "%s"', 1341839376, array($phpBinaryPathAndFilename), 'Environment requirements not fulfilled');
 		} else {
 			$phpMinorVersionMatch = array_slice(explode('.', $phpVersion), 0, 2) === array_slice(explode('.', PHP_VERSION), 0, 2);
 			if ($phpMinorVersionMatch) {

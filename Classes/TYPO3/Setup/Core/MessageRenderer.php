@@ -63,6 +63,7 @@ class MessageRenderer {
 		}
 		if ($packageManager->isPackageAvailable('TYPO3.Setup')) {
 			$css .= file_get_contents($packageManager->getPackage('TYPO3.Setup')->getResourcesPath() . 'Public/Styles/Setup.css');
+			$css = str_replace('url(\'../', 'url(\'/_Resources/Static/Packages/TYPO3.Setup/', $css);
 		}
 
 		echo '<html>';

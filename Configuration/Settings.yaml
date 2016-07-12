@@ -93,3 +93,6 @@ TYPO3:
           'TYPO3.Form:SingleSelectDropdown':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
+          'TYPO3.Form:StaticText':
+            renderingOptions:
+              templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'

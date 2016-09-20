@@ -255,4 +255,25 @@ class RequestHandler extends FlowRequestHandler {
 		return false;
 	}
 
+	/**
+	 * Note: We override this method because the base class now uses the ComponentChain to retrieve the request
+	 *
+	 * @return Request
+	 */
+	public function getHttpRequest()
+	{
+		return $this->request;
+	}
+
+	/**
+	 * Note: We override this method because the base class now uses the ComponentChain to retrieve the response
+	 *
+	 * @return Response
+	 */
+	public function getHttpResponse()
+	{
+		return $this->response;
+	}
+
+
 }

@@ -56,6 +56,7 @@ TYPO3:
           'TYPO3.Form:Base':
             renderingOptions:
               layoutPathPattern: 'resource://TYPO3.Setup/Private/Form/Layouts/{@type}.html'
+              translationPackage: 'TYPO3.Flow'
           'TYPO3.Form:Form':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
@@ -90,5 +91,8 @@ TYPO3:
             properties:
               elementClassAttribute: 'form-control'
           'TYPO3.Form:SingleSelectDropdown':
+            renderingOptions:
+              templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
+          'TYPO3.Form:StaticText':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'

@@ -125,10 +125,6 @@ class MessageRenderer {
 			}
 
 			$messageBody = $message->render();
-			if ($message->getSeverity() !== Message::SEVERITY_OK && $message->getCode() !== NULL) {
-				$messageBody .= ' (<a href="http://typo3.org/go/exception/' . $message->getCode() . '">More information</a>)';
-			}
-
 			$content .= sprintf('
 			<div class="alert alert-%s">
 				%s

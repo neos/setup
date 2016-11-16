@@ -16,7 +16,7 @@ use TYPO3\Flow\Configuration\ConfigurationManager;
 use TYPO3\Flow\Http\Component\ComponentContext;
 use TYPO3\Flow\Http\Component\ComponentInterface;
 use TYPO3\Flow\Mvc\Routing\Router;
-use TYPO3\Flow\Object\ObjectManagerInterface;
+use TYPO3\Flow\ObjectManagement\ObjectManagerInterface;
 use TYPO3\Flow\Package\PackageManagerInterface;
 
 /**

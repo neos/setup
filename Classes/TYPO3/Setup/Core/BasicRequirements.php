@@ -21,146 +21,151 @@ use TYPO3\Flow\Error\Error;
  * @Flow\Proxy(false)
  * @Flow\Scope("singleton")
  */
-class BasicRequirements {
+class BasicRequirements
+{
+    /**
+     * List of required PHP extensions and their error key if the extension was not found
+     *
+     * @var array
+     */
+    protected $requiredExtensions = [
+        'Reflection' => 1329403179,
+        'tokenizer' => 1329403180,
+        'json' => 1329403181,
+        'session' => 1329403182,
+        'ctype' => 1329403183,
+        'dom' => 1329403184,
+        'date' => 1329403185,
+        'libxml' => 1329403186,
+        'xmlreader' => 1329403187,
+        'xmlwriter' => 1329403188,
+        'SimpleXML' => 1329403189,
+        'openssl' => 1329403190,
+        'pcre' => 1329403191,
+        'zlib' => 1329403192,
+        'filter' => 1329403193,
+        'SPL' => 1329403194,
+        'iconv' => 1329403195,
+        'PDO' => 1329403196,
+        'hash' => 1329403198
+    ];
 
-	/**
-	 * List of required PHP extensions and their error key if the extension was not found
-	 *
-	 * @var array
-	 */
-	protected $requiredExtensions = array(
-		'Reflection' => 1329403179,
-		'tokenizer' => 1329403180,
-		'json' => 1329403181,
-		'session' => 1329403182,
-		'ctype' => 1329403183,
-		'dom' => 1329403184,
-		'date' => 1329403185,
-		'libxml' => 1329403186,
-		'xmlreader' => 1329403187,
-		'xmlwriter' => 1329403188,
-		'SimpleXML' => 1329403189,
-		'openssl' => 1329403190,
-		'pcre' => 1329403191,
-		'zlib' => 1329403192,
-		'filter' => 1329403193,
-		'SPL' => 1329403194,
-		'iconv' => 1329403195,
-		'PDO' => 1329403196,
-		'hash' => 1329403198
-	);
+    /**
+     * List of required PHP functions and their error key if the function was not found
+     *
+     * @var array
+     */
+    protected $requiredFunctions = [
+        'system' => 1330707108,
+        'shell_exec' => 1330707133,
+        'escapeshellcmd' => 1330707156,
+        'escapeshellarg' => 1330707177
+    ];
 
-	/**
-	 * List of required PHP functions and their error key if the function was not found
-	 *
-	 * @var array
-	 */
-	protected $requiredFunctions = array(
-		'system' => 1330707108,
-		'shell_exec' => 1330707133,
-		'escapeshellcmd' => 1330707156,
-		'escapeshellarg' => 1330707177
-	);
+    /**
+     * List of folders which need to be writable
+     *
+     * @var array
+     */
+    protected $requiredWritableFolders = ['Configuration', 'Data', 'Packages', 'Web/_Resources'];
 
-	/**
-	 * List of folders which need to be writable
-	 *
-	 * @var array
-	 */
-	protected $requiredWritableFolders = array('Configuration', 'Data', 'Packages', 'Web/_Resources');
+    /**
+     * Ensure that the environment and file permission requirements are fulfilled.
+     *
+     * @return \TYPO3\Flow\Error\Error if requirements are fulfilled, NULL is returned. else, an Error object is returned.
+     */
+    public function findError()
+    {
+        $requiredEnvironmentError = $this->ensureRequiredEnvironment();
+        if ($requiredEnvironmentError !== null) {
+            return $this->setErrorTitle($requiredEnvironmentError, 'Environment requirements not fulfilled');
+        }
 
-	/**
-	 * Ensure that the environment and file permission requirements are fulfilled.
-	 *
-	 * @return \TYPO3\Flow\Error\Error if requirements are fulfilled, NULL is returned. else, an Error object is returned.
-	 */
-	public function findError() {
-		$requiredEnvironmentError = $this->ensureRequiredEnvironment();
-		if ($requiredEnvironmentError !== NULL) {
-			return $this->setErrorTitle($requiredEnvironmentError, 'Environment requirements not fulfilled');
-		}
+        $filePermissionsError = $this->checkFilePermissions();
+        if ($filePermissionsError !== null) {
+            return $this->setErrorTitle($filePermissionsError, 'Error with file system permissions');
+        }
 
-		$filePermissionsError = $this->checkFilePermissions();
-		if ($filePermissionsError !== NULL) {
-			return $this->setErrorTitle($filePermissionsError, 'Error with file system permissions');
-		}
+        return null;
+    }
 
-		return NULL;
-	}
+    /**
+     * return a new error object which has all options like $error except the $title overridden.
+     *
+     * @param \TYPO3\Flow\Error\Error $error
+     * @param string $title
+     * @return \TYPO3\Flow\Error\Error
+     */
+    protected function setErrorTitle(Error $error, $title)
+    {
+        return new Error($error->getMessage(), $error->getCode(), $error->getArguments(), $title);
+    }
 
-	/**
-	 * return a new error object which has all options like $error except the $title overridden.
-	 *
-	 * @param \TYPO3\Flow\Error\Error $error
-	 * @param string $title
-	 * @return \TYPO3\Flow\Error\Error
-	 */
-	protected function setErrorTitle(Error $error, $title) {
-		return new Error($error->getMessage(), $error->getCode(), $error->getArguments(), $title);
-	}
+    /**
+     * Checks PHP version and other parameters of the environment
+     *
+     * @return mixed
+     */
+    protected function ensureRequiredEnvironment()
+    {
+        if (version_compare(phpversion(), \TYPO3\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, '<')) {
+            return new Error('Flow requires PHP version %s or higher but your installed version is currently %s.', 1172215790, [\TYPO3\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, phpversion()]);
+        }
+        if (!extension_loaded('mbstring')) {
+            return new Error('Flow requires the PHP extension "mbstring" to be available', 1207148809);
+        }
+        if (DIRECTORY_SEPARATOR !== '/' && PHP_WINDOWS_VERSION_MAJOR < 6) {
+            return new Error('Flow does not support Windows versions older than Windows Vista or Windows Server 2008, because they lack proper support for symbolic links.', 1312463704);
+        }
+        foreach ($this->requiredExtensions as $extension => $errorKey) {
+            if (!extension_loaded($extension)) {
+                return new Error('Flow requires the PHP extension "%s" to be available.', $errorKey, [$extension]);
+            }
+        }
+        foreach ($this->requiredFunctions as $function => $errorKey) {
+            if (!function_exists($function)) {
+                return new Error('Flow requires the PHP function "%s" to be available.', $errorKey, [$function]);
+            }
+        }
 
-	/**
-	 * Checks PHP version and other parameters of the environment
-	 *
-	 * @return mixed
-	 */
-	protected function ensureRequiredEnvironment() {
-		if (version_compare(phpversion(), \TYPO3\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, '<')) {
-			return new Error('Flow requires PHP version %s or higher but your installed version is currently %s.', 1172215790, array(\TYPO3\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, phpversion()));
-		}
-		if (!extension_loaded('mbstring')) {
-			return new Error('Flow requires the PHP extension "mbstring" to be available', 1207148809);
-		}
-		if (DIRECTORY_SEPARATOR !== '/' && PHP_WINDOWS_VERSION_MAJOR < 6) {
-			return new Error('Flow does not support Windows versions older than Windows Vista or Windows Server 2008, because they lack proper support for symbolic links.', 1312463704);
-		}
-		foreach ($this->requiredExtensions as $extension => $errorKey) {
-			if (!extension_loaded($extension)) {
-				return new Error('Flow requires the PHP extension "%s" to be available.', $errorKey, array($extension));
-			}
-		}
-		foreach ($this->requiredFunctions as $function => $errorKey) {
-			if (!function_exists($function)) {
-				return new Error('Flow requires the PHP function "%s" to be available.', $errorKey, array($function));
-			}
-		}
+        // TODO: Check for database drivers? PDO::getAvailableDrivers()
 
-		// TODO: Check for database drivers? PDO::getAvailableDrivers()
+        $method = new \ReflectionMethod(__CLASS__, __FUNCTION__);
+        $docComment = $method->getDocComment();
+        if ($docComment === false || $docComment === '') {
+            return new Error('Reflection of doc comments is not supported by your PHP setup. Please check if you have installed an accelerator which removes doc comments.', 1329405326);
+        }
 
-		$method = new \ReflectionMethod(__CLASS__, __FUNCTION__);
-		$docComment = $method->getDocComment();
-		if ($docComment === FALSE || $docComment === '') {
-			return new Error('Reflection of doc comments is not supported by your PHP setup. Please check if you have installed an accelerator which removes doc comments.', 1329405326);
-		}
+        set_time_limit(0);
 
-		set_time_limit(0);
+        if (ini_get('session.auto_start')) {
+            return new Error('Flow requires the PHP setting "session.auto_start" set to off.', 1224003190);
+        }
 
-		if (ini_get('session.auto_start')) {
-			return new Error('Flow requires the PHP setting "session.auto_start" set to off.', 1224003190);
-		}
+        return null;
+    }
 
-		return NULL;
-	}
+    /**
+     * Check write permissions for folders used for writing files
+     *
+     * @return mixed
+     */
+    protected function checkFilePermissions()
+    {
+        foreach ($this->requiredWritableFolders as $folder) {
+            $folderPath = FLOW_PATH_ROOT . $folder;
+            if (!is_dir($folderPath) && !\TYPO3\Flow\Utility\Files::is_link($folderPath)) {
+                try {
+                    \TYPO3\Flow\Utility\Files::createDirectoryRecursively($folderPath);
+                } catch (\TYPO3\Flow\Utility\Exception $exception) {
+                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
+                }
+            }
+            if (!is_writable($folderPath)) {
+                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, [$folderPath]);
+            }
+        }
 
-	/**
-	 * Check write permissions for folders used for writing files
-	 *
-	 * @return mixed
-	 */
-	protected function checkFilePermissions() {
-		foreach ($this->requiredWritableFolders as $folder) {
-			$folderPath = FLOW_PATH_ROOT . $folder;
-			if (!is_dir($folderPath) && !\TYPO3\Flow\Utility\Files::is_link($folderPath)) {
-				try {
-					\TYPO3\Flow\Utility\Files::createDirectoryRecursively($folderPath);
-				} catch (\TYPO3\Flow\Utility\Exception $exception) {
-					return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, array($folderPath));
-				}
-			}
-			if (!is_writable($folderPath)) {
-				return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, array($folderPath));
-			}
-		}
-		return NULL;
-	}
+        return null;
+    }
 }

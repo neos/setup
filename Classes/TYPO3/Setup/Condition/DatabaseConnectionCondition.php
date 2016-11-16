@@ -16,21 +16,22 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * Condition that checks whether connection to the configured database can be established
  */
-class DatabaseConnectionCondition extends AbstractCondition {
+class DatabaseConnectionCondition extends AbstractCondition
+{
+    /**
+     * Returns TRUE if the condition is satisfied, otherwise FALSE
+     *
+     * @return boolean
+     */
+    public function isMet()
+    {
+        $settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Flow');
+        try {
+            \Doctrine\DBAL\DriverManager::getConnection($settings['persistence']['backendOptions'])->connect();
+        } catch (\PDOException $exception) {
+            return false;
+        }
 
-	/**
-	 * Returns TRUE if the condition is satisfied, otherwise FALSE
-	 *
-	 * @return boolean
-	 */
-	public function isMet() {
-		$settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Flow');
-		try {
-			\Doctrine\DBAL\DriverManager::getConnection($settings['persistence']['backendOptions'])->connect();
-		} catch (\PDOException $exception) {
-			return FALSE;
-		}
-		return TRUE;
-	}
-
+        return true;
+    }
 }

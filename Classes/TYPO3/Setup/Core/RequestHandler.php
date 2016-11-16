@@ -13,7 +13,9 @@ namespace TYPO3\Setup\Core;
 
 use TYPO3\Flow\Annotations as Flow;
 use TYPO3\Flow\Configuration\ConfigurationManager;
+use TYPO3\Flow\Configuration\Source\YamlSource;
 use TYPO3\Flow\Error\Error;
+use TYPO3\Flow\Http\Component\ComponentChainFactory;
 use TYPO3\Flow\Http\Component\ComponentContext;
 use TYPO3\Flow\Http\Request;
 use TYPO3\Flow\Http\RequestHandler as FlowRequestHandler;
@@ -115,8 +117,8 @@ class RequestHandler extends FlowRequestHandler {
 	 */
 	protected function resolveDependencies() {
 		$objectManager = $this->bootstrap->getObjectManager();
-		$componentChainFactory = $objectManager->get('TYPO3\Flow\Http\Component\ComponentChainFactory');
-		$configurationManager = $objectManager->get('TYPO3\Flow\Configuration\ConfigurationManager');
+		$componentChainFactory = $objectManager->get(ComponentChainFactory::class);
+		$configurationManager = $objectManager->get(ConfigurationManager::class);
 		$this->settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Flow');
 		$setupSettings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Setup');
 		$httpChainSettings = Arrays::arrayMergeRecursiveOverrule($this->settings['http']['chain'], $setupSettings['http']['chain']);
@@ -134,7 +136,7 @@ class RequestHandler extends FlowRequestHandler {
 	 * @return Message An error or warning message or NULL if PHP was detected successfully
 	 */
 	protected function checkAndSetPhpBinaryIfNeeded() {
-		$configurationSource = new \TYPO3\Flow\Configuration\Source\YamlSource();
+		$configurationSource = new YamlSource();
 		$distributionSettings = $configurationSource->load(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS);
 		if (isset($distributionSettings['TYPO3']['Flow']['core']['phpBinaryPathAndFilename'])) {
 			return $this->checkPhpBinary($distributionSettings['TYPO3']['Flow']['core']['phpBinaryPathAndFilename']);

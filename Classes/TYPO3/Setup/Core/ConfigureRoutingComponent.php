@@ -68,9 +68,9 @@ class ConfigureRoutingComponent implements ComponentInterface {
 	 * @return void
 	 */
 	public function handle(ComponentContext $componentContext) {
-		$configurationSource = $this->objectManager->get('TYPO3\Flow\Configuration\Source\YamlSource');
+		$configurationSource = $this->objectManager->get(\TYPO3\Flow\Configuration\Source\YamlSource::class);
 		$routesConfiguration = $configurationSource->load($this->packageManager->getPackage('TYPO3.Setup')->getConfigurationPath() . ConfigurationManager::CONFIGURATION_TYPE_ROUTES);
 		$this->router->setRoutesConfiguration($routesConfiguration);
-		$componentContext->setParameter('TYPO3\Flow\Mvc\Routing\RoutingComponent', 'skipRouterInitialization', TRUE);
+		$componentContext->setParameter(\TYPO3\Flow\Mvc\Routing\RoutingComponent::class, 'skipRouterInitialization', TRUE);
 	}
 }

@@ -54,7 +54,7 @@ class MessageRenderer {
 		}
 
 		/** @var \TYPO3\Flow\Package\PackageManagerInterface $packageManager */
-		$packageManager = $this->bootstrap->getEarlyInstance('TYPO3\Flow\Package\PackageManagerInterface');
+		$packageManager = $this->bootstrap->getEarlyInstance(\TYPO3\Flow\Package\PackageManagerInterface::class);
 
 		$css = '';
 		if ($packageManager->isPackageAvailable('TYPO3.Twitter.Bootstrap')) {

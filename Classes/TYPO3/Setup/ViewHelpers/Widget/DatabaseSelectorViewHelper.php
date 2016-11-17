@@ -16,7 +16,7 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * Simple widget that checks given database credentials and returns a list of available database names via AJAX
  */
-class DatabaseSelectorViewHelper extends \Neos\FluidAdaptor\Core\Widget\AbstractWidgetViewHelper {
+class DatabaseSelectorViewHelper extends \TYPO3\Fluid\Core\Widget\AbstractWidgetViewHelper {
 
 	/**
 	 * @var boolean

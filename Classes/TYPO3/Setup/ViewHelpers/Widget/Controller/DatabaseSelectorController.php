@@ -19,7 +19,7 @@ use TYPO3\Flow\Configuration\ConfigurationManager;
 /**
  * Controller for the DatabaseSelector Fluid Widget
  */
-class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\AbstractWidgetController {
+class DatabaseSelectorController extends \TYPO3\Fluid\Core\Widget\AbstractWidgetController {
 
 	/**
 	 * @Flow\Inject

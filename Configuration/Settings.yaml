@@ -19,7 +19,10 @@ TYPO3:
               keyName: 'SetupKey'
               authenticateRoles: ['TYPO3.Setup:SetupUser']
             requestPatterns:
-              controllerObjectName: 'TYPO3\Setup\Controller\.*|TYPO3\Setup\ViewHelpers\Widget\Controller\.*'
+              'TYPO3.Setup:controllerObjectName':
+                pattern: 'ControllerObjectName'
+                patternOptions:
+                  controllerObjectNamePattern: 'TYPO3\Setup\Controller\.*|TYPO3\Setup\ViewHelpers\Widget\Controller\.*'
             entryPoint: 'WebRedirect'
             entryPointOptions:
               uri: 'setup/login'
@@ -56,7 +59,7 @@ TYPO3:
           'TYPO3.Form:Base':
             renderingOptions:
               layoutPathPattern: 'resource://TYPO3.Setup/Private/Form/Layouts/{@type}.html'
-              translationPackage: 'TYPO3.Flow'
+              validationErrorTranslationPackage: 'TYPO3.Flow'
           'TYPO3.Form:Form':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'

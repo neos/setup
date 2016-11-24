@@ -9,28 +9,6 @@
 #                                                                        #
 
 TYPO3:
-  Setup:
-    initialPasswordFile: '%FLOW_PATH_DATA%SetupPassword.txt'
-    stepOrder:
-      - database
-      - final
-    steps:
-      database:
-        className: Neos\Setup\Step\DatabaseStep
-        requiredConditions:
-          -
-            className: Neos\Setup\Condition\PdoDriverCondition
-      final:
-        className: Neos\Setup\Step\FinalStep
-    view:
-      title: Setup
-    http:
-      chain:
-        preprocess:
-          chain:
-            configureRouting:
-              position: start
-              component: Neos\Setup\Core\ConfigureRoutingComponent
   Form:
     presets:
       typo3.setup:
@@ -83,6 +61,29 @@ TYPO3:
             renderingOptions:
               templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
 Neos:
+  Setup:
+    initialPasswordFile: '%FLOW_PATH_DATA%SetupPassword.txt'
+    stepOrder:
+      - database
+      - final
+    steps:
+      database:
+        className: Neos\Setup\Step\DatabaseStep
+        requiredConditions:
+          -
+            className: Neos\Setup\Condition\PdoDriverCondition
+      final:
+        className: Neos\Setup\Step\FinalStep
+    view:
+      title: Setup
+    http:
+      chain:
+        preprocess:
+          chain:
+            configureRouting:
+              position: start
+              component: Neos\Setup\Core\ConfigureRoutingComponent
+
   Flow:
     security:
       authentication:

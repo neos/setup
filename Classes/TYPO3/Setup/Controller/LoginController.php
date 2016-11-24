@@ -11,14 +11,14 @@ namespace TYPO3\Setup\Controller;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Error\Message;
-use TYPO3\Flow\Utility\Files;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Error\Message;
+use Neos\Flow\Utility\Files;
 
 /**
  * @Flow\Scope("singleton")
  */
-class LoginController extends \TYPO3\Flow\Mvc\Controller\ActionController
+class LoginController extends \Neos\Flow\Mvc\Controller\ActionController
 {
     /**
      * @var string
@@ -28,20 +28,20 @@ class LoginController extends \TYPO3\Flow\Mvc\Controller\ActionController
     /**
      * The authentication manager
      *
-     * @var \TYPO3\Flow\Security\Authentication\AuthenticationManagerInterface
+     * @var \Neos\Flow\Security\Authentication\AuthenticationManagerInterface
      * @Flow\Inject
      */
     protected $authenticationManager;
 
     /**
-     * @var \TYPO3\Flow\Security\Cryptography\FileBasedSimpleKeyService
+     * @var \Neos\Flow\Security\Cryptography\FileBasedSimpleKeyService
      * @Flow\Inject
      */
     protected $fileBasedSimpleKeyService;
 
     /**
      * @Flow\Inject
-     * @var \TYPO3\Flow\Configuration\ConfigurationManager
+     * @var \Neos\Flow\Configuration\ConfigurationManager
      */
     protected $configurationManager;
 
@@ -52,7 +52,7 @@ class LoginController extends \TYPO3\Flow\Mvc\Controller\ActionController
      */
     public function initializeObject()
     {
-        $settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Flow');
+        $settings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         if (isset($settings['security']['authentication']['providers']['Typo3SetupProvider']['providerOptions']['keyName'])) {
             $this->keyName = $settings['security']['authentication']['providers']['Typo3SetupProvider']['providerOptions']['keyName'];
         }
@@ -98,7 +98,7 @@ class LoginController extends \TYPO3\Flow\Mvc\Controller\ActionController
                 unlink($this->settings['initialPasswordFile']);
             }
             $this->redirect('index', 'Setup', null, ['step' => $step]);
-        } catch (\TYPO3\Flow\Security\Exception\AuthenticationRequiredException $exception) {
+        } catch (\Neos\Flow\Security\Exception\AuthenticationRequiredException $exception) {
             $this->addFlashMessage('Sorry, you were not able to authenticate.', 'Authentication error', Message::SEVERITY_ERROR);
             $this->redirect('login', null, null, ['step' => $step]);
         }

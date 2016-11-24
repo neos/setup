@@ -14,6 +14,6 @@ namespace TYPO3\Setup;
 /**
  * A generic Setup Exception
  */
-class Exception extends \TYPO3\Flow\Exception
+class Exception extends \Neos\Flow\Exception
 {
 }

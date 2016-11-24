@@ -11,7 +11,7 @@ namespace TYPO3\Setup\ViewHelpers\Widget;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * Simple widget that checks given database credentials and returns a list of available database names via AJAX

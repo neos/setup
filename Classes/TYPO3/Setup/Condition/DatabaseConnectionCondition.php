@@ -11,7 +11,7 @@ namespace TYPO3\Setup\Condition;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * Condition that checks whether connection to the configured database can be established
@@ -25,7 +25,7 @@ class DatabaseConnectionCondition extends AbstractCondition
      */
     public function isMet()
     {
-        $settings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Flow');
+        $settings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         try {
             \Doctrine\DBAL\DriverManager::getConnection($settings['persistence']['backendOptions'])->connect();
         } catch (\PDOException $exception) {

@@ -11,7 +11,7 @@ namespace TYPO3\Setup\Condition;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * Abstract base class for Step Conditions
@@ -20,7 +20,7 @@ abstract class AbstractCondition implements ConditionInterface
 {
     /**
      * @Flow\Inject
-     * @var \TYPO3\Flow\Configuration\ConfigurationManager
+     * @var \Neos\Flow\Configuration\ConfigurationManager
      */
     protected $configurationManager;
 

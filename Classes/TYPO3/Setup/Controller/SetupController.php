@@ -11,23 +11,23 @@ namespace TYPO3\Setup\Controller;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * @Flow\Scope("singleton")
  */
-class SetupController extends \TYPO3\Flow\Mvc\Controller\ActionController
+class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
 {
     /**
      * The authentication manager
      *
-     * @var \TYPO3\Flow\Security\Authentication\AuthenticationManagerInterface
+     * @var \Neos\Flow\Security\Authentication\AuthenticationManagerInterface
      * @Flow\Inject
      */
     protected $authenticationManager;
 
     /**
-     * @var \TYPO3\Flow\Configuration\Source\YamlSource
+     * @var \Neos\Flow\Configuration\Source\YamlSource
      * @Flow\Inject
      */
     protected $configurationSource;
@@ -53,7 +53,7 @@ class SetupController extends \TYPO3\Flow\Mvc\Controller\ActionController
      */
     protected function initializeAction()
     {
-        $this->distributionSettings = $this->configurationSource->load(FLOW_PATH_CONFIGURATION . \TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS);
+        $this->distributionSettings = $this->configurationSource->load(FLOW_PATH_CONFIGURATION . \Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS);
     }
 
     /**
@@ -82,13 +82,13 @@ class SetupController extends \TYPO3\Flow\Mvc\Controller\ActionController
             $formDefinition->setRenderingOption('finalStep', true);
             $this->authenticationManager->logout();
         }
-        $response = new \TYPO3\Flow\Http\Response($this->response);
+        $response = new \Neos\Flow\Http\Response($this->response);
         $form = $formDefinition->bind($this->request, $response);
 
         try {
             $renderedForm = $form->render();
         } catch (\TYPO3\Setup\Exception $exception) {
-            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \TYPO3\Flow\Error\Message::SEVERITY_ERROR);
+            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \Neos\Flow\Error\Message::SEVERITY_ERROR);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex]);
         }
         $this->view->assignMultiple([
@@ -116,7 +116,7 @@ class SetupController extends \TYPO3\Flow\Mvc\Controller\ActionController
             if ($this->currentStepIndex === 0) {
                 throw new \TYPO3\Setup\Exception('Not all requirements are met for the first setup step, aborting setup', 1332169088);
             }
-            $this->addFlashMessage('Not all requirements are met for step "%s"', '', \TYPO3\Flow\Error\Message::SEVERITY_ERROR, [$stepOrder[$this->currentStepIndex]]);
+            $this->addFlashMessage('Not all requirements are met for step "%s"', '', \Neos\Flow\Error\Message::SEVERITY_ERROR, [$stepOrder[$this->currentStepIndex]]);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex - 1]);
         };
     }
@@ -187,7 +187,7 @@ class SetupController extends \TYPO3\Flow\Mvc\Controller\ActionController
         try {
             $currentStep->postProcessFormValues($formValues);
         } catch (\TYPO3\Setup\Exception $exception) {
-            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \TYPO3\Flow\Error\Message::SEVERITY_ERROR);
+            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \Neos\Flow\Error\Message::SEVERITY_ERROR);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex]);
         }
         $this->redirect('index', null, null, ['step' => $this->currentStepIndex + 1]);

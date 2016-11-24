@@ -13,8 +13,8 @@ namespace TYPO3\Setup\ViewHelpers\Widget\Controller;
 
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
 
 /**
  * Controller for the DatabaseSelector Fluid Widget
@@ -126,7 +126,7 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
      */
     protected function buildConnectionSettingsArray($driver, $user, $password, $host)
     {
-        $settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Flow');
+        $settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         $connectionSettings = $settings['persistence']['backendOptions'];
         $connectionSettings['driver'] = $driver;
         $connectionSettings['user'] = $user;

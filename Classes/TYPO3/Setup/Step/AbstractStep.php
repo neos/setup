@@ -11,7 +11,7 @@ namespace TYPO3\Setup\Step;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 use TYPO3\Form\Core\Model\FormDefinition;
 
 /**
@@ -33,7 +33,7 @@ abstract class AbstractStep implements \TYPO3\Setup\Step\StepInterface
 
     /**
      * @Flow\Inject
-     * @var \TYPO3\Flow\Configuration\ConfigurationManager
+     * @var \Neos\Flow\Configuration\ConfigurationManager
      */
     protected $configurationManager;
 
@@ -58,7 +58,7 @@ abstract class AbstractStep implements \TYPO3\Setup\Step\StepInterface
      */
     public function initializeObject()
     {
-        $this->formSettings = $this->configurationManager->getConfiguration(\TYPO3\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Form');
+        $this->formSettings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Form');
     }
 
     /**
@@ -103,7 +103,7 @@ abstract class AbstractStep implements \TYPO3\Setup\Step\StepInterface
         if (isset($preset['parentPreset'])) {
             $parentPreset = $this->getPresetConfiguration($preset['parentPreset']);
             unset($preset['parentPreset']);
-            $preset = \TYPO3\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($parentPreset, $preset);
+            $preset = \Neos\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($parentPreset, $preset);
         }
 
         return $preset;

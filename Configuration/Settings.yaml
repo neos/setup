@@ -9,93 +9,95 @@
 #                                                                        #
 
 TYPO3:
-  Flow:
-    security:
-      authentication:
-        providers:
-          Typo3SetupProvider:
-            provider: 'FileBasedSimpleKeyProvider'
-            providerOptions:
-              keyName: 'SetupKey'
-              authenticateRoles: ['TYPO3.Setup:SetupUser']
-            requestPatterns:
-              'TYPO3.Setup:controllerObjectName':
-                pattern: 'ControllerObjectName'
-                patternOptions:
-                  controllerObjectNamePattern: 'TYPO3\Setup\Controller\.*|TYPO3\Setup\ViewHelpers\Widget\Controller\.*'
-            entryPoint: 'WebRedirect'
-            entryPointOptions:
-              uri: 'setup/login'
-
   Setup:
     initialPasswordFile: '%FLOW_PATH_DATA%SetupPassword.txt'
-    stepOrder: ['database', 'final']
+    stepOrder:
+      - database
+      - final
     steps:
       database:
-        className: 'TYPO3\Setup\Step\DatabaseStep'
+        className: TYPO3\Setup\Step\DatabaseStep
         requiredConditions:
-          - className: 'TYPO3\Setup\Condition\PdoDriverCondition'
+          -
+            className: TYPO3\Setup\Condition\PdoDriverCondition
       final:
-        className: 'TYPO3\Setup\Step\FinalStep'
+        className: TYPO3\Setup\Step\FinalStep
     view:
-      # The title will be shown in the header of the setup wizard
-      title: 'Setup'
-
-    # These settings override the main HTTP component chain from TYPO3.Flow.http.chain when being inside the setup
+      title: Setup
     http:
       chain:
-        'preprocess':
+        preprocess:
           chain:
             configureRouting:
               position: start
               component: TYPO3\Setup\Core\ConfigureRoutingComponent
-
   Form:
     presets:
-      'typo3.setup':
+      typo3.setup:
         title: 'Setup Elements'
-        parentPreset: 'default'
+        parentPreset: default
         formElementTypes:
           'TYPO3.Form:Base':
             renderingOptions:
               layoutPathPattern: 'resource://TYPO3.Setup/Private/Form/Layouts/{@type}.html'
-              validationErrorTranslationPackage: 'TYPO3.Flow'
+              validationErrorTranslationPackage: Neos.Flow
           'TYPO3.Form:Form':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
           'TYPO3.Setup:LinkElement':
-            superTypes: ['TYPO3.Form:ReadOnlyFormElement']
+            superTypes:
+              - 'TYPO3.Form:ReadOnlyFormElement'
             properties:
               text: ''
-              class: 'btn'
+              class: btn
               href: ''
           'TYPO3.Setup:DatabaseSelector':
-            superTypes: ['TYPO3.Form:FormElement']
+            superTypes:
+              - 'TYPO3.Form:FormElement'
             properties:
-              elementClassAttribute: 'form-control'
+              elementClassAttribute: form-control
           'TYPO3.Form:SingleLineText':
             properties:
-              elementClassAttribute: 'form-control'
+              elementClassAttribute: form-control
           'TYPO3.Form:Password':
             properties:
-              elementClassAttribute: 'form-control'
+              elementClassAttribute: form-control
           'TYPO3.Form:PasswordWithConfirmation':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
             properties:
-              elementClassAttribute: 'form-control'
-              confirmationClassAttribute: 'form-control'
+              elementClassAttribute: form-control
+              confirmationClassAttribute: form-control
           'TYPO3.Form:Checkbox':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
             properties:
-              elementClassAttribute: 'checkbox'
+              elementClassAttribute: checkbox
           'TYPO3.Form:MultipleSelectDropdown':
             properties:
-              elementClassAttribute: 'form-control'
+              elementClassAttribute: form-control
           'TYPO3.Form:SingleSelectDropdown':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
           'TYPO3.Form:StaticText':
             renderingOptions:
               templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
+Neos:
+  Flow:
+    security:
+      authentication:
+        providers:
+          Typo3SetupProvider:
+            provider: FileBasedSimpleKeyProvider
+            providerOptions:
+              keyName: SetupKey
+              authenticateRoles:
+                - 'TYPO3.Setup:SetupUser'
+            requestPatterns:
+              'TYPO3.Setup:controllerObjectName':
+                pattern: ControllerObjectName
+                patternOptions:
+                  controllerObjectNamePattern: 'TYPO3\Setup\Controller\.*|TYPO3\Setup\ViewHelpers\Widget\Controller\.*'
+            entryPoint: WebRedirect
+            entryPointOptions:
+              uri: setup/login

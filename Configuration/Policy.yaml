@@ -4,7 +4,7 @@
 
 privilegeTargets:
 
-  'TYPO3\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
+  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
     'TYPO3.Setup:LoginController':
       matcher: method(TYPO3\Setup\Controller\LoginController->(login|authenticate|generateNewPassword)Action())
@@ -17,7 +17,7 @@ privilegeTargets:
 
 roles:
 
-  'TYPO3.Flow:Everybody':
+  'Neos.Flow:Everybody':
     privileges:
       -
         privilegeTarget: 'TYPO3.Setup:LoginController'

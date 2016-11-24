@@ -11,8 +11,8 @@ namespace TYPO3\Setup\Core;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Error\Message;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Error\Message;
 
 /**
  * Rendering class for displaying messages before the Flow proxy classes are built.
@@ -27,16 +27,16 @@ use TYPO3\Flow\Error\Message;
 class MessageRenderer
 {
     /**
-     * @var \TYPO3\Flow\Core\Bootstrap
+     * @var \Neos\Flow\Core\Bootstrap
      */
     protected $bootstrap;
 
     /**
      * Constructor.
      *
-     * @param \TYPO3\Flow\Core\Bootstrap $bootstrap
+     * @param \Neos\Flow\Core\Bootstrap $bootstrap
      */
-    public function __construct(\TYPO3\Flow\Core\Bootstrap $bootstrap)
+    public function __construct(\Neos\Flow\Core\Bootstrap $bootstrap)
     {
         $this->bootstrap = $bootstrap;
     }
@@ -45,7 +45,7 @@ class MessageRenderer
      * Display a message. As we cannot rely on any Flow requirements being fulfilled here,
      * we have to statically include the CSS styles at this point, and have to in-line the TYPO3 logo.
      *
-     * @param array <\TYPO3\Flow\Error\Message> $messages Array of messages (at least one message must be passed)
+     * @param array <\Neos\Flow\Error\Message> $messages Array of messages (at least one message must be passed)
      * @param string $extraHeaderHtml extra HTML code to include at the end of the head tag
      * @return void This method never returns.
      */
@@ -55,8 +55,8 @@ class MessageRenderer
             throw new \InvalidArgumentException('No messages given for rendering', 1416914970);
         }
 
-        /** @var \TYPO3\Flow\Package\PackageManagerInterface $packageManager */
-        $packageManager = $this->bootstrap->getEarlyInstance(\TYPO3\Flow\Package\PackageManagerInterface::class);
+        /** @var \Neos\Flow\Package\PackageManagerInterface $packageManager */
+        $packageManager = $this->bootstrap->getEarlyInstance(\Neos\Flow\Package\PackageManagerInterface::class);
 
         $css = '';
         if ($packageManager->isPackageAvailable('TYPO3.Twitter.Bootstrap')) {

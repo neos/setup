@@ -11,8 +11,8 @@ namespace TYPO3\Setup\Core;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Error\Error;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Error\Error;
 
 /**
  * This class checks the basic requirements and returns an error object in case
@@ -72,7 +72,7 @@ class BasicRequirements
     /**
      * Ensure that the environment and file permission requirements are fulfilled.
      *
-     * @return \TYPO3\Flow\Error\Error if requirements are fulfilled, NULL is returned. else, an Error object is returned.
+     * @return \Neos\Flow\Error\Error if requirements are fulfilled, NULL is returned. else, an Error object is returned.
      */
     public function findError()
     {
@@ -92,9 +92,9 @@ class BasicRequirements
     /**
      * return a new error object which has all options like $error except the $title overridden.
      *
-     * @param \TYPO3\Flow\Error\Error $error
+     * @param \Neos\Flow\Error\Error $error
      * @param string $title
-     * @return \TYPO3\Flow\Error\Error
+     * @return \Neos\Flow\Error\Error
      */
     protected function setErrorTitle(Error $error, $title)
     {
@@ -108,8 +108,8 @@ class BasicRequirements
      */
     protected function ensureRequiredEnvironment()
     {
-        if (version_compare(phpversion(), \TYPO3\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, '<')) {
-            return new Error('Flow requires PHP version %s or higher but your installed version is currently %s.', 1172215790, [\TYPO3\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, phpversion()]);
+        if (version_compare(phpversion(), \Neos\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, '<')) {
+            return new Error('Flow requires PHP version %s or higher but your installed version is currently %s.', 1172215790, [\Neos\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, phpversion()]);
         }
         if (!extension_loaded('mbstring')) {
             return new Error('Flow requires the PHP extension "mbstring" to be available', 1207148809);
@@ -154,10 +154,10 @@ class BasicRequirements
     {
         foreach ($this->requiredWritableFolders as $folder) {
             $folderPath = FLOW_PATH_ROOT . $folder;
-            if (!is_dir($folderPath) && !\TYPO3\Flow\Utility\Files::is_link($folderPath)) {
+            if (!is_dir($folderPath) && !\Neos\Flow\Utility\Files::is_link($folderPath)) {
                 try {
-                    \TYPO3\Flow\Utility\Files::createDirectoryRecursively($folderPath);
-                } catch (\TYPO3\Flow\Utility\Exception $exception) {
+                    \Neos\Flow\Utility\Files::createDirectoryRecursively($folderPath);
+                } catch (\Neos\Flow\Utility\Exception $exception) {
                     return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
                 }
             }

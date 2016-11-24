@@ -11,19 +11,19 @@ namespace TYPO3\Setup\Core;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Configuration\ConfigurationManager;
-use TYPO3\Flow\Configuration\Source\YamlSource;
-use TYPO3\Flow\Error\Error;
-use TYPO3\Flow\Error\Message;
-use TYPO3\Flow\Http\Component\ComponentChainFactory;
-use TYPO3\Flow\Http\Component\ComponentContext;
-use TYPO3\Flow\Http\Request;
-use TYPO3\Flow\Http\RequestHandler as FlowRequestHandler;
-use TYPO3\Flow\Http\Response;
-use TYPO3\Flow\Http\Uri;
-use TYPO3\Flow\Utility\Arrays;
-use TYPO3\Flow\Utility\Files;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Configuration\Source\YamlSource;
+use Neos\Flow\Error\Error;
+use Neos\Flow\Error\Message;
+use Neos\Flow\Http\Component\ComponentChainFactory;
+use Neos\Flow\Http\Component\ComponentContext;
+use Neos\Flow\Http\Request;
+use Neos\Flow\Http\RequestHandler as FlowRequestHandler;
+use Neos\Flow\Http\Response;
+use Neos\Flow\Http\Uri;
+use Neos\Flow\Utility\Arrays;
+use Neos\Flow\Utility\Files;
 
 /**
  * A request handler which can handle HTTP requests.
@@ -126,7 +126,7 @@ class RequestHandler extends FlowRequestHandler
         $objectManager = $this->bootstrap->getObjectManager();
         $componentChainFactory = $objectManager->get(ComponentChainFactory::class);
         $configurationManager = $objectManager->get(ConfigurationManager::class);
-        $this->settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Flow');
+        $this->settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         $setupSettings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Setup');
         $httpChainSettings = Arrays::arrayMergeRecursiveOverrule($this->settings['http']['chain'], $setupSettings['http']['chain']);
         $this->baseComponentChain = $componentChainFactory->create($httpChainSettings);
@@ -156,7 +156,7 @@ class RequestHandler extends FlowRequestHandler
                 $defaultPhpBinaryPathAndFilename = str_replace('\\', '/', $defaultPhpBinaryPathAndFilename) . '.exe';
             }
             if ($phpBinaryPathAndFilename !== $defaultPhpBinaryPathAndFilename) {
-                $distributionSettings = \TYPO3\Flow\Utility\Arrays::setValueByPath($distributionSettings, 'TYPO3.Flow.core.phpBinaryPathAndFilename', $phpBinaryPathAndFilename);
+                $distributionSettings = \Neos\Flow\Utility\Arrays::setValueByPath($distributionSettings, 'Neos.Flow.core.phpBinaryPathAndFilename', $phpBinaryPathAndFilename);
                 $configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $distributionSettings);
             }
         }
@@ -200,7 +200,7 @@ class RequestHandler extends FlowRequestHandler
         } else {
             $phpMinorVersionMatch = array_slice(explode('.', $phpVersion), 0, 2) === array_slice(explode('.', PHP_VERSION), 0, 2);
             if ($phpMinorVersionMatch) {
-                return new \TYPO3\Flow\Error\Warning('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not the exact same version as is currently running ("%s").', 1416913501, [$phpVersion, PHP_VERSION], 'Possible PHP version mismatch');
+                return new \Neos\Flow\Error\Warning('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not the exact same version as is currently running ("%s").', 1416913501, [$phpVersion, PHP_VERSION], 'Possible PHP version mismatch');
             } else {
                 return new Error('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not compatible to the version that is currently running ("%s").', 1341839377, [$phpVersion, PHP_VERSION], 'Environment requirements not fulfilled');
             }

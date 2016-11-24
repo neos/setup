@@ -11,7 +11,7 @@ namespace TYPO3\Setup\Condition;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * Condition that checks if the PDO driver is loaded and if there are available drivers

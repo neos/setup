@@ -15,11 +15,11 @@ use Doctrine\DBAL\DBALException;
 use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Configuration\ConfigurationManager;
-use TYPO3\Flow\Core\Booting\Scripts;
-use TYPO3\Flow\Utility\Arrays;
-use TYPO3\Flow\Validation\Validator\NotEmptyValidator;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Core\Booting\Scripts;
+use Neos\Flow\Utility\Arrays;
+use Neos\Flow\Validation\Validator\NotEmptyValidator;
 use TYPO3\Form\Core\Model\FormDefinition;
 use TYPO3\Setup\Exception as SetupException;
 
@@ -29,13 +29,13 @@ use TYPO3\Setup\Exception as SetupException;
 class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
 {
     /**
-     * @var \TYPO3\Flow\Configuration\Source\YamlSource
+     * @var \Neos\Flow\Configuration\Source\YamlSource
      * @Flow\Inject
      */
     protected $configurationSource;
 
     /**
-     * @var \TYPO3\Flow\Security\Policy\PolicyService
+     * @var \Neos\Flow\Security\Policy\PolicyService
      * @Flow\Inject
      */
     protected $policyService;
@@ -60,21 +60,21 @@ class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
         $databaseDriver = $connectionSection->createElement('driver', 'TYPO3.Form:SingleSelectDropdown');
         $databaseDriver->setLabel('DB Driver');
         $databaseDriver->setProperty('options', $this->getAvailableDrivers());
-        $databaseDriver->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.driver'));
+        $databaseDriver->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.driver'));
         $databaseDriver->addValidator(new NotEmptyValidator());
 
         $databaseUser = $connectionSection->createElement('user', 'TYPO3.Form:SingleLineText');
         $databaseUser->setLabel('DB Username');
-        $databaseUser->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.user'));
+        $databaseUser->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.user'));
         $databaseUser->addValidator(new NotEmptyValidator());
 
         $databasePassword = $connectionSection->createElement('password', 'TYPO3.Form:Password');
         $databasePassword->setLabel('DB Password');
-        $databasePassword->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.password'));
+        $databasePassword->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.password'));
 
         $databaseHost = $connectionSection->createElement('host', 'TYPO3.Form:SingleLineText');
         $databaseHost->setLabel('DB Host');
-        $defaultHost = Arrays::getValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.host');
+        $defaultHost = Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.host');
         if ($defaultHost === null) {
             $defaultHost = '127.0.0.1';
         }
@@ -90,7 +90,7 @@ class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
         $databaseName->setProperty('userFieldId', $databaseUser->getUniqueIdentifier());
         $databaseName->setProperty('passwordFieldId', $databasePassword->getUniqueIdentifier());
         $databaseName->setProperty('hostFieldId', $databaseHost->getUniqueIdentifier());
-        $databaseName->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.dbname'));
+        $databaseName->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.dbname'));
         $databaseName->addValidator(new NotEmptyValidator());
     }
 
@@ -103,16 +103,16 @@ class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
      */
     public function postProcessFormValues(array $formValues)
     {
-        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.driver', $formValues['driver']);
-        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.dbname', $formValues['dbname']);
-        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.user', $formValues['user']);
-        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.password', $formValues['password']);
-        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'TYPO3.Flow.persistence.backendOptions.host', $formValues['host']);
+        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.driver', $formValues['driver']);
+        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.dbname', $formValues['dbname']);
+        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.user', $formValues['user']);
+        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.password', $formValues['password']);
+        $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.host', $formValues['host']);
         $this->configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->distributionSettings);
 
         $this->configurationManager->flushConfigurationCache();
 
-        $settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Flow');
+        $settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         $connectionSettings = $settings['persistence']['backendOptions'];
         try {
             $this->connectToDatabase($connectionSettings);

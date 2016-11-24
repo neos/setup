@@ -11,13 +11,13 @@ namespace TYPO3\Setup\Core;
  * source code.
  */
 
-use TYPO3\Flow\Annotations as Flow;
-use TYPO3\Flow\Configuration\ConfigurationManager;
-use TYPO3\Flow\Http\Component\ComponentContext;
-use TYPO3\Flow\Http\Component\ComponentInterface;
-use TYPO3\Flow\Mvc\Routing\Router;
-use TYPO3\Flow\ObjectManagement\ObjectManagerInterface;
-use TYPO3\Flow\Package\PackageManagerInterface;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Http\Component\ComponentContext;
+use Neos\Flow\Http\Component\ComponentInterface;
+use Neos\Flow\Mvc\Routing\Router;
+use Neos\Flow\ObjectManagement\ObjectManagerInterface;
+use Neos\Flow\Package\PackageManagerInterface;
 
 /**
  * Configure routing HTTP component for Neos setup
@@ -70,9 +70,9 @@ class ConfigureRoutingComponent implements ComponentInterface
      */
     public function handle(ComponentContext $componentContext)
     {
-        $configurationSource = $this->objectManager->get(\TYPO3\Flow\Configuration\Source\YamlSource::class);
+        $configurationSource = $this->objectManager->get(\Neos\Flow\Configuration\Source\YamlSource::class);
         $routesConfiguration = $configurationSource->load($this->packageManager->getPackage('TYPO3.Setup')->getConfigurationPath() . ConfigurationManager::CONFIGURATION_TYPE_ROUTES);
         $this->router->setRoutesConfiguration($routesConfiguration);
-        $componentContext->setParameter(\TYPO3\Flow\Mvc\Routing\RoutingComponent::class, 'skipRouterInitialization', true);
+        $componentContext->setParameter(\Neos\Flow\Mvc\Routing\RoutingComponent::class, 'skipRouterInitialization', true);
     }
 }

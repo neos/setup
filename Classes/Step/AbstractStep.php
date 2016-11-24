@@ -12,7 +12,7 @@ namespace Neos\Setup\Step;
  */
 
 use Neos\Flow\Annotations as Flow;
-use TYPO3\Form\Core\Model\FormDefinition;
+use Neos\Form\Core\Model\FormDefinition;
 
 /**
  * @Flow\Scope("singleton")
@@ -25,7 +25,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
     protected $optional = false;
 
     /**
-     * The settings of the TYPO3.Form package
+     * The settings of the Neos.Form package
      *
      * @var array
      */
@@ -58,7 +58,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
      */
     public function initializeObject()
     {
-        $this->formSettings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Form');
+        $this->formSettings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Form');
     }
 
     /**
@@ -91,13 +91,13 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
      *
      * @param string $presetName name of the preset to get the configuration for
      * @return array the preset configuration
-     * @throws \TYPO3\Form\Exception\PresetNotFoundException if preset with the name $presetName was not found
+     * @throws \Neos\Form\Exception\PresetNotFoundException if preset with the name $presetName was not found
      * @api
      */
     public function getPresetConfiguration($presetName)
     {
         if (!isset($this->formSettings['presets'][$presetName])) {
-            throw new \TYPO3\Form\Exception\PresetNotFoundException(sprintf('The Preset "%s" was not found underneath TYPO3: Form: presets.', $presetName), 1332170104);
+            throw new \Neos\Form\Exception\PresetNotFoundException(sprintf('The Preset "%s" was not found underneath TYPO3: Form: presets.', $presetName), 1332170104);
         }
         $preset = $this->formSettings['presets'][$presetName];
         if (isset($preset['parentPreset'])) {
@@ -113,7 +113,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
      * Returns the form definitions for the step
      *
      * @param \Closure $callback closure to be invoked when the form has been submitted successfully
-     * @return \TYPO3\Form\Core\Model\FormDefinition
+     * @return \Neos\Form\Core\Model\FormDefinition
      * @api
      */
     final public function getFormDefinition(\Closure $callback)
@@ -124,7 +124,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
         $formDefinition = new FormDefinition($formIdentifier, $formConfiguration);
         $this->buildForm($formDefinition);
 
-        $closureFinisher = new \TYPO3\Form\Finishers\ClosureFinisher();
+        $closureFinisher = new \Neos\Form\Finishers\ClosureFinisher();
         $closureFinisher->setOption('closure', $callback);
         $formDefinition->addFinisher($closureFinisher);
 
@@ -133,11 +133,11 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
 
     /**
      * @abstract
-     * @param \TYPO3\Form\Core\Model\FormDefinition $formDefinition
+     * @param \Neos\Form\Core\Model\FormDefinition $formDefinition
      * @return void
      * @api
      */
-    abstract protected function buildForm(\TYPO3\Form\Core\Model\FormDefinition $formDefinition);
+    abstract protected function buildForm(\Neos\Form\Core\Model\FormDefinition $formDefinition);
 
     /**
      * This method is called when the form of this step has been submitted

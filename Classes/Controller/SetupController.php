@@ -67,7 +67,7 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
         $this->checkRequestedStepIndex();
         $currentStep = $this->instantiateCurrentStep();
         $controller = $this;
-        $callback = function (\TYPO3\Form\Core\Model\FinisherContext $finisherContext) use ($controller, $currentStep) {
+        $callback = function (\Neos\Form\Core\Model\FinisherContext $finisherContext) use ($controller, $currentStep) {
             $controller->postProcessStep($finisherContext->getFormValues(), $currentStep);
         };
         $formDefinition = $currentStep->getFormDefinition($callback);

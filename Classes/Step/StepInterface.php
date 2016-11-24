@@ -36,7 +36,7 @@ interface StepInterface
      * Returns the form definitions for the step
      *
      * @param \Closure $callback
-     * @return \TYPO3\Form\Core\Model\FormDefinition
+     * @return \Neos\Form\Core\Model\FormDefinition
      */
     public function getFormDefinition(\Closure $callback);
 

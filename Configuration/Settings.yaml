@@ -8,58 +8,6 @@
 # possible configuration options.                                        #
 #                                                                        #
 
-TYPO3:
-  Form:
-    presets:
-      typo3.setup:
-        title: 'Setup Elements'
-        parentPreset: default
-        formElementTypes:
-          'TYPO3.Form:Base':
-            renderingOptions:
-              layoutPathPattern: 'resource://Neos.Setup/Private/Form/Layouts/{@type}.html'
-              validationErrorTranslationPackage: Neos.Flow
-          'TYPO3.Form:Form':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
-          'Neos.Setup:LinkElement':
-            superTypes:
-              - 'TYPO3.Form:ReadOnlyFormElement'
-            properties:
-              text: ''
-              class: btn
-              href: ''
-          'Neos.Setup:DatabaseSelector':
-            superTypes:
-              - 'TYPO3.Form:FormElement'
-            properties:
-              elementClassAttribute: form-control
-          'TYPO3.Form:SingleLineText':
-            properties:
-              elementClassAttribute: form-control
-          'TYPO3.Form:Password':
-            properties:
-              elementClassAttribute: form-control
-          'TYPO3.Form:PasswordWithConfirmation':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
-            properties:
-              elementClassAttribute: form-control
-              confirmationClassAttribute: form-control
-          'TYPO3.Form:Checkbox':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
-            properties:
-              elementClassAttribute: checkbox
-          'TYPO3.Form:MultipleSelectDropdown':
-            properties:
-              elementClassAttribute: form-control
-          'TYPO3.Form:SingleSelectDropdown':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
-          'TYPO3.Form:StaticText':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
 Neos:
   Setup:
     initialPasswordFile: '%FLOW_PATH_DATA%SetupPassword.txt'
@@ -83,7 +31,6 @@ Neos:
             configureRouting:
               position: start
               component: Neos\Setup\Core\ConfigureRoutingComponent
-
   Flow:
     security:
       authentication:
@@ -102,3 +49,54 @@ Neos:
             entryPoint: WebRedirect
             entryPointOptions:
               uri: setup/login
+  Form:
+    presets:
+      typo3.setup:
+        title: 'Setup Elements'
+        parentPreset: default
+        formElementTypes:
+          'Neos.Form:Base':
+            renderingOptions:
+              layoutPathPattern: 'resource://Neos.Setup/Private/Form/Layouts/{@type}.html'
+              validationErrorTranslationPackage: Neos.Flow
+          'Neos.Form:Form':
+            renderingOptions:
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
+          'Neos.Setup:LinkElement':
+            superTypes:
+              - 'Neos.Form:ReadOnlyFormElement'
+            properties:
+              text: ''
+              class: btn
+              href: ''
+          'Neos.Setup:DatabaseSelector':
+            superTypes:
+              - 'Neos.Form:FormElement'
+            properties:
+              elementClassAttribute: form-control
+          'Neos.Form:SingleLineText':
+            properties:
+              elementClassAttribute: form-control
+          'Neos.Form:Password':
+            properties:
+              elementClassAttribute: form-control
+          'Neos.Form:PasswordWithConfirmation':
+            renderingOptions:
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
+            properties:
+              elementClassAttribute: form-control
+              confirmationClassAttribute: form-control
+          'Neos.Form:Checkbox':
+            renderingOptions:
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
+            properties:
+              elementClassAttribute: checkbox
+          'Neos.Form:MultipleSelectDropdown':
+            properties:
+              elementClassAttribute: form-control
+          'Neos.Form:SingleSelectDropdown':
+            renderingOptions:
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
+          'Neos.Form:StaticText':
+            renderingOptions:
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'

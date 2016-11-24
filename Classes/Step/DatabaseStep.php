@@ -20,7 +20,7 @@ use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Booting\Scripts;
 use Neos\Utility\Arrays;
 use Neos\Flow\Validation\Validator\NotEmptyValidator;
-use TYPO3\Form\Core\Model\FormDefinition;
+use Neos\Form\Core\Model\FormDefinition;
 use Neos\Setup\Exception as SetupException;
 
 /**
@@ -51,28 +51,28 @@ class DatabaseStep extends \Neos\Setup\Step\AbstractStep
         $page1 = $formDefinition->createPage('page1');
         $page1->setRenderingOption('header', 'Configure database');
 
-        $introduction = $page1->createElement('introduction', 'TYPO3.Form:StaticText');
+        $introduction = $page1->createElement('introduction', 'Neos.Form:StaticText');
         $introduction->setProperty('text', 'Please enter database details below:');
 
-        $connectionSection = $page1->createElement('connectionSection', 'TYPO3.Form:Section');
+        $connectionSection = $page1->createElement('connectionSection', 'Neos.Form:Section');
         $connectionSection->setLabel('Connection');
 
-        $databaseDriver = $connectionSection->createElement('driver', 'TYPO3.Form:SingleSelectDropdown');
+        $databaseDriver = $connectionSection->createElement('driver', 'Neos.Form:SingleSelectDropdown');
         $databaseDriver->setLabel('DB Driver');
         $databaseDriver->setProperty('options', $this->getAvailableDrivers());
         $databaseDriver->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.driver'));
         $databaseDriver->addValidator(new NotEmptyValidator());
 
-        $databaseUser = $connectionSection->createElement('user', 'TYPO3.Form:SingleLineText');
+        $databaseUser = $connectionSection->createElement('user', 'Neos.Form:SingleLineText');
         $databaseUser->setLabel('DB Username');
         $databaseUser->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.user'));
         $databaseUser->addValidator(new NotEmptyValidator());
 
-        $databasePassword = $connectionSection->createElement('password', 'TYPO3.Form:Password');
+        $databasePassword = $connectionSection->createElement('password', 'Neos.Form:Password');
         $databasePassword->setLabel('DB Password');
         $databasePassword->setDefaultValue(Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.password'));
 
-        $databaseHost = $connectionSection->createElement('host', 'TYPO3.Form:SingleLineText');
+        $databaseHost = $connectionSection->createElement('host', 'Neos.Form:SingleLineText');
         $databaseHost->setLabel('DB Host');
         $defaultHost = Arrays::getValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.host');
         if ($defaultHost === null) {
@@ -81,7 +81,7 @@ class DatabaseStep extends \Neos\Setup\Step\AbstractStep
         $databaseHost->setDefaultValue($defaultHost);
         $databaseHost->addValidator(new NotEmptyValidator());
 
-        $databaseSection = $page1->createElement('databaseSection', 'TYPO3.Form:Section');
+        $databaseSection = $page1->createElement('databaseSection', 'Neos.Form:Section');
         $databaseSection->setLabel('Database');
 
         $databaseName = $databaseSection->createElement('dbname', 'Neos.Setup:DatabaseSelector');

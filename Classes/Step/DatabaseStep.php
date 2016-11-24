@@ -136,9 +136,9 @@ class DatabaseStep extends \Neos\Setup\Step\AbstractStep
             }
         }
 
-        $migrationExecuted = Scripts::executeCommand('typo3.flow:doctrine:migrate', $settings, false);
+        $migrationExecuted = Scripts::executeCommand('neos.flow:doctrine:migrate', $settings, false);
         if ($migrationExecuted !== true) {
-            throw new SetupException(sprintf('Could not execute database migrations. Please check the permissions for user "%s" and execute "./flow typo3.flow:doctrine:migrate" manually.', $formValues['user']), 1346759486);
+            throw new SetupException(sprintf('Could not execute database migrations. Please check the permissions for user "%s" and execute "./flow neos.flow:doctrine:migrate" manually.', $formValues['user']), 1346759486);
         }
 
         $this->resetPolicyRolesCacheAfterDatabaseChanges();

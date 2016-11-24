@@ -1,16 +1,19 @@
 {
-    "name": "typo3/setup",
+    "name": "neos/setup",
     "type": "neos-package",
     "license": "LGPL-3.0+",
-    "description": "An extensible setup tool for TYPO3 Flow based applications",
+    "description": "An extensible setup tool for Neos Flow based applications",
     "require": {
-        "typo3/flow": "*",
-        "typo3/form": "*",
-        "typo3/twitter-bootstrap": "*"
+        "neos/flow": "*",
+        "neos/form": "*",
+        "neos/twitter-bootstrap": "*"
+    },
+    "replace": {
+        "typo3/setup": "self.version"
     },
     "autoload": {
-        "psr-0": {
-            "TYPO3\\Setup": "Classes"
+        "psr-4": {
+            "Neos\\Setup\\": "Classes"
         }
     },
     "extra": {

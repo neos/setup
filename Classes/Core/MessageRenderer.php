@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Setup\Core;
+namespace Neos\Setup\Core;
 
 /*
- * This file is part of the TYPO3.Setup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -63,9 +63,9 @@ class MessageRenderer
             $css .= file_get_contents($packageManager->getPackage('TYPO3.Twitter.Bootstrap')->getResourcesPath() . 'Public/3/css/bootstrap.min.css');
             $css = str_replace('url(../', 'url(/_Resources/Static/Packages/TYPO3.Twitter.Bootstrap/3.0/', $css);
         }
-        if ($packageManager->isPackageAvailable('TYPO3.Setup')) {
-            $css .= file_get_contents($packageManager->getPackage('TYPO3.Setup')->getResourcesPath() . 'Public/Styles/Setup.css');
-            $css = str_replace('url(\'../', 'url(\'/_Resources/Static/Packages/TYPO3.Setup/', $css);
+        if ($packageManager->isPackageAvailable('Neos.Setup')) {
+            $css .= file_get_contents($packageManager->getPackage('Neos.Setup')->getResourcesPath() . 'Public/Styles/Setup.css');
+            $css = str_replace('url(\'../', 'url(\'/_Resources/Static/Packages/Neos.Setup/', $css);
         }
 
         echo '<html>';

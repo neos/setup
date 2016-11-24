@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Setup;
+namespace Neos\Setup;
 
 /*
- * This file is part of the TYPO3.Setup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -15,7 +15,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Package\Package as BasePackage;
 
 /**
- * Package base class of the TYPO3.Setup package.
+ * Package base class of the Neos.Setup package.
  *
  * @Flow\Scope("singleton")
  */
@@ -29,6 +29,6 @@ class Package extends BasePackage
      */
     public function boot(\Neos\Flow\Core\Bootstrap $bootstrap)
     {
-        $bootstrap->registerRequestHandler(new \TYPO3\Setup\Core\RequestHandler($bootstrap));
+        $bootstrap->registerRequestHandler(new \Neos\Setup\Core\RequestHandler($bootstrap));
     }
 }

@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Setup\Step;
+namespace Neos\Setup\Step;
 
 /*
- * This file is part of the TYPO3.Setup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -21,12 +21,12 @@ use Neos\Flow\Core\Booting\Scripts;
 use Neos\Flow\Utility\Arrays;
 use Neos\Flow\Validation\Validator\NotEmptyValidator;
 use TYPO3\Form\Core\Model\FormDefinition;
-use TYPO3\Setup\Exception as SetupException;
+use Neos\Setup\Exception as SetupException;
 
 /**
  * @Flow\Scope("singleton")
  */
-class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
+class DatabaseStep extends \Neos\Setup\Step\AbstractStep
 {
     /**
      * @var \Neos\Flow\Configuration\Source\YamlSource
@@ -84,7 +84,7 @@ class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
         $databaseSection = $page1->createElement('databaseSection', 'TYPO3.Form:Section');
         $databaseSection->setLabel('Database');
 
-        $databaseName = $databaseSection->createElement('dbname', 'TYPO3.Setup:DatabaseSelector');
+        $databaseName = $databaseSection->createElement('dbname', 'Neos.Setup:DatabaseSelector');
         $databaseName->setLabel('DB Name');
         $databaseName->setProperty('driverDropdownFieldId', $databaseDriver->getUniqueIdentifier());
         $databaseName->setProperty('userFieldId', $databaseUser->getUniqueIdentifier());
@@ -173,7 +173,7 @@ class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
      *
      * @param array $connectionSettings array in the format array('user' => 'dbuser', 'password' => 'dbpassword', 'host' => 'dbhost', 'dbname' => 'dbname')
      * @param string $databaseName name of the database to create
-     * @throws \TYPO3\Setup\Exception
+     * @throws \Neos\Setup\Exception
      * @return void
      */
     protected function createDatabase(array $connectionSettings, $databaseName)

@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Setup\Step;
+namespace Neos\Setup\Step;
 
 /*
- * This file is part of the TYPO3.Setup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -16,7 +16,7 @@ use Neos\Flow\Annotations as Flow;
 /**
  * @Flow\Scope("singleton")
  */
-class FinalStep extends \TYPO3\Setup\Step\AbstractStep
+class FinalStep extends \Neos\Setup\Step\AbstractStep
 {
     /**
      * Returns the form definitions for the step
@@ -36,7 +36,7 @@ class FinalStep extends \TYPO3\Setup\Step\AbstractStep
         $success->setProperty('text', 'You successfully completed the setup');
         $success->setProperty('elementClassAttribute', 'alert alert-success');
 
-        $link = $title->createElement('link', 'TYPO3.Setup:LinkElement');
+        $link = $title->createElement('link', 'Neos.Setup:LinkElement');
         $link->setLabel('Go to the homepage');
         $link->setProperty('href', '/');
         $link->setProperty('elementClassAttribute', 'btn btn-large btn-primary');

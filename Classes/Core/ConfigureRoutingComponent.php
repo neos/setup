@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Setup\Core;
+namespace Neos\Setup\Core;
 
 /*
- * This file is part of the TYPO3.Setup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -71,7 +71,7 @@ class ConfigureRoutingComponent implements ComponentInterface
     public function handle(ComponentContext $componentContext)
     {
         $configurationSource = $this->objectManager->get(\Neos\Flow\Configuration\Source\YamlSource::class);
-        $routesConfiguration = $configurationSource->load($this->packageManager->getPackage('TYPO3.Setup')->getConfigurationPath() . ConfigurationManager::CONFIGURATION_TYPE_ROUTES);
+        $routesConfiguration = $configurationSource->load($this->packageManager->getPackage('Neos.Setup')->getConfigurationPath() . ConfigurationManager::CONFIGURATION_TYPE_ROUTES);
         $this->router->setRoutesConfiguration($routesConfiguration);
         $componentContext->setParameter(\Neos\Flow\Mvc\Routing\RoutingComponent::class, 'skipRouterInitialization', true);
     }

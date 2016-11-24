@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Setup\ViewHelpers\Widget;
+namespace Neos\Setup\ViewHelpers\Widget;
 
 /*
- * This file is part of the TYPO3.Setup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -25,7 +25,7 @@ class DatabaseSelectorViewHelper extends \Neos\FluidAdaptor\Core\Widget\Abstract
 
     /**
      * @Flow\Inject
-     * @var \TYPO3\Setup\ViewHelpers\Widget\Controller\DatabaseSelectorController
+     * @var \Neos\Setup\ViewHelpers\Widget\Controller\DatabaseSelectorController
      */
     protected $controller;
 

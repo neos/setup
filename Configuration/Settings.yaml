@@ -16,12 +16,12 @@ TYPO3:
       - final
     steps:
       database:
-        className: TYPO3\Setup\Step\DatabaseStep
+        className: Neos\Setup\Step\DatabaseStep
         requiredConditions:
           -
-            className: TYPO3\Setup\Condition\PdoDriverCondition
+            className: Neos\Setup\Condition\PdoDriverCondition
       final:
-        className: TYPO3\Setup\Step\FinalStep
+        className: Neos\Setup\Step\FinalStep
     view:
       title: Setup
     http:
@@ -30,7 +30,7 @@ TYPO3:
           chain:
             configureRouting:
               position: start
-              component: TYPO3\Setup\Core\ConfigureRoutingComponent
+              component: Neos\Setup\Core\ConfigureRoutingComponent
   Form:
     presets:
       typo3.setup:
@@ -39,19 +39,19 @@ TYPO3:
         formElementTypes:
           'TYPO3.Form:Base':
             renderingOptions:
-              layoutPathPattern: 'resource://TYPO3.Setup/Private/Form/Layouts/{@type}.html'
+              layoutPathPattern: 'resource://Neos.Setup/Private/Form/Layouts/{@type}.html'
               validationErrorTranslationPackage: Neos.Flow
           'TYPO3.Form:Form':
             renderingOptions:
-              templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
-          'TYPO3.Setup:LinkElement':
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
+          'Neos.Setup:LinkElement':
             superTypes:
               - 'TYPO3.Form:ReadOnlyFormElement'
             properties:
               text: ''
               class: btn
               href: ''
-          'TYPO3.Setup:DatabaseSelector':
+          'Neos.Setup:DatabaseSelector':
             superTypes:
               - 'TYPO3.Form:FormElement'
             properties:
@@ -64,13 +64,13 @@ TYPO3:
               elementClassAttribute: form-control
           'TYPO3.Form:PasswordWithConfirmation':
             renderingOptions:
-              templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
             properties:
               elementClassAttribute: form-control
               confirmationClassAttribute: form-control
           'TYPO3.Form:Checkbox':
             renderingOptions:
-              templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
             properties:
               elementClassAttribute: checkbox
           'TYPO3.Form:MultipleSelectDropdown':
@@ -78,10 +78,10 @@ TYPO3:
               elementClassAttribute: form-control
           'TYPO3.Form:SingleSelectDropdown':
             renderingOptions:
-              templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
           'TYPO3.Form:StaticText':
             renderingOptions:
-              templatePathPattern: 'resource://TYPO3.Setup/Private/Form/{@type}.html'
+              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
 Neos:
   Flow:
     security:
@@ -92,12 +92,12 @@ Neos:
             providerOptions:
               keyName: SetupKey
               authenticateRoles:
-                - 'TYPO3.Setup:SetupUser'
+                - 'Neos.Setup:SetupUser'
             requestPatterns:
-              'TYPO3.Setup:controllerObjectName':
+              'Neos.Setup:controllerObjectName':
                 pattern: ControllerObjectName
                 patternOptions:
-                  controllerObjectNamePattern: 'TYPO3\Setup\Controller\.*|TYPO3\Setup\ViewHelpers\Widget\Controller\.*'
+                  controllerObjectNamePattern: 'Neos\Setup\Controller\.*|Neos\Setup\ViewHelpers\Widget\Controller\.*'
             entryPoint: WebRedirect
             entryPointOptions:
               uri: setup/login

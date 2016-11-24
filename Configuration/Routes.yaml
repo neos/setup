@@ -1,5 +1,5 @@
 #                                                                        #
-# Default routes configuration for the TYPO3.Setup package               #
+# Default routes configuration for the Neos.Setup package               #
 #                                                                        #
 
 # While the setup is active on "setup/index", the URI "setup" is directly handled
@@ -8,7 +8,7 @@
   name: 'Setup'
   uriPattern: 'setup/index'
   defaults:
-    '@package':    'TYPO3.Setup'
+    '@package':    'Neos.Setup'
     '@controller': 'Setup'
     '@action':     'index'
     '@format':     'html'
@@ -18,7 +18,7 @@
   name: 'Login'
   uriPattern: 'setup/login(/{@action})'
   defaults:
-    '@package':    'TYPO3.Setup'
+    '@package':    'Neos.Setup'
     '@controller': 'Login'
     '@action':     'login'
     '@format':     'html'

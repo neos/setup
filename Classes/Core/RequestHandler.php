@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Setup\Core;
+namespace Neos\Setup\Core;
 
 /*
- * This file is part of the TYPO3.Setup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -127,7 +127,7 @@ class RequestHandler extends FlowRequestHandler
         $componentChainFactory = $objectManager->get(ComponentChainFactory::class);
         $configurationManager = $objectManager->get(ConfigurationManager::class);
         $this->settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
-        $setupSettings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'TYPO3.Setup');
+        $setupSettings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Setup');
         $httpChainSettings = Arrays::arrayMergeRecursiveOverrule($this->settings['http']['chain'], $setupSettings['http']['chain']);
         $this->baseComponentChain = $componentChainFactory->create($httpChainSettings);
     }

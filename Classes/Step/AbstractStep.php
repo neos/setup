@@ -1,8 +1,8 @@
 <?php
-namespace TYPO3\Setup\Step;
+namespace Neos\Setup\Step;
 
 /*
- * This file is part of the TYPO3.Setup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -17,7 +17,7 @@ use TYPO3\Form\Core\Model\FormDefinition;
 /**
  * @Flow\Scope("singleton")
  */
-abstract class AbstractStep implements \TYPO3\Setup\Step\StepInterface
+abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
 {
     /**
      * @var boolean

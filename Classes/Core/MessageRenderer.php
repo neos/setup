@@ -59,9 +59,9 @@ class MessageRenderer
         $packageManager = $this->bootstrap->getEarlyInstance(\Neos\Flow\Package\PackageManagerInterface::class);
 
         $css = '';
-        if ($packageManager->isPackageAvailable('TYPO3.Twitter.Bootstrap')) {
-            $css .= file_get_contents($packageManager->getPackage('TYPO3.Twitter.Bootstrap')->getResourcesPath() . 'Public/3/css/bootstrap.min.css');
-            $css = str_replace('url(../', 'url(/_Resources/Static/Packages/TYPO3.Twitter.Bootstrap/3.0/', $css);
+        if ($packageManager->isPackageAvailable('Neos.Twitter.Bootstrap')) {
+            $css .= file_get_contents($packageManager->getPackage('Neos.Twitter.Bootstrap')->getResourcesPath() . 'Public/3/css/bootstrap.min.css');
+            $css = str_replace('url(../', 'url(/_Resources/Static/Packages/Neos.Twitter.Bootstrap/3.0/', $css);
         }
         if ($packageManager->isPackageAvailable('Neos.Setup')) {
             $css .= file_get_contents($packageManager->getPackage('Neos.Setup')->getResourcesPath() . 'Public/Styles/Setup.css');

@@ -17,7 +17,7 @@ privilegeTargets:
 
 roles:
 
-  'Neos.Flow:Everybody':
+  'TYPO3.Flow:Everybody':
     privileges:
       -
         privilegeTarget: 'Neos.Setup:LoginController'

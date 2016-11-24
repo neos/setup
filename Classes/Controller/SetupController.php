@@ -88,7 +88,7 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
         try {
             $renderedForm = $form->render();
         } catch (\Neos\Setup\Exception $exception) {
-            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \Neos\Flow\Error\Message::SEVERITY_ERROR);
+            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \Neos\Error\Messages\Message::SEVERITY_ERROR);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex]);
         }
         $this->view->assignMultiple([
@@ -116,7 +116,7 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
             if ($this->currentStepIndex === 0) {
                 throw new \Neos\Setup\Exception('Not all requirements are met for the first setup step, aborting setup', 1332169088);
             }
-            $this->addFlashMessage('Not all requirements are met for step "%s"', '', \Neos\Flow\Error\Message::SEVERITY_ERROR, [$stepOrder[$this->currentStepIndex]]);
+            $this->addFlashMessage('Not all requirements are met for step "%s"', '', \Neos\Error\Messages\Message::SEVERITY_ERROR, [$stepOrder[$this->currentStepIndex]]);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex - 1]);
         };
     }
@@ -187,7 +187,7 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
         try {
             $currentStep->postProcessFormValues($formValues);
         } catch (\Neos\Setup\Exception $exception) {
-            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \Neos\Flow\Error\Message::SEVERITY_ERROR);
+            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \Neos\Error\Messages\Message::SEVERITY_ERROR);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex]);
         }
         $this->redirect('index', null, null, ['step' => $this->currentStepIndex + 1]);

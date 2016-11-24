@@ -12,8 +12,8 @@ namespace Neos\Setup\Controller;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Error\Message;
-use Neos\Flow\Utility\Files;
+use Neos\Error\Messages\Message;
+use Neos\Utility\Files;
 
 /**
  * @Flow\Scope("singleton")

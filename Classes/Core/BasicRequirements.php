@@ -12,7 +12,7 @@ namespace Neos\Setup\Core;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Error\Error;
+use Neos\Error\Messages\Error;
 
 /**
  * This class checks the basic requirements and returns an error object in case
@@ -72,7 +72,7 @@ class BasicRequirements
     /**
      * Ensure that the environment and file permission requirements are fulfilled.
      *
-     * @return \Neos\Flow\Error\Error if requirements are fulfilled, NULL is returned. else, an Error object is returned.
+     * @return \Neos\Error\Messages\Error if requirements are fulfilled, NULL is returned. else, an Error object is returned.
      */
     public function findError()
     {
@@ -92,9 +92,9 @@ class BasicRequirements
     /**
      * return a new error object which has all options like $error except the $title overridden.
      *
-     * @param \Neos\Flow\Error\Error $error
+     * @param \Neos\Error\Messages\Error $error
      * @param string $title
-     * @return \Neos\Flow\Error\Error
+     * @return \Neos\Error\Messages\Error
      */
     protected function setErrorTitle(Error $error, $title)
     {
@@ -154,9 +154,9 @@ class BasicRequirements
     {
         foreach ($this->requiredWritableFolders as $folder) {
             $folderPath = FLOW_PATH_ROOT . $folder;
-            if (!is_dir($folderPath) && !\Neos\Flow\Utility\Files::is_link($folderPath)) {
+            if (!is_dir($folderPath) && !\Neos\Utility\Files::is_link($folderPath)) {
                 try {
-                    \Neos\Flow\Utility\Files::createDirectoryRecursively($folderPath);
+                    \Neos\Utility\Files::createDirectoryRecursively($folderPath);
                 } catch (\Neos\Flow\Utility\Exception $exception) {
                     return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
                 }

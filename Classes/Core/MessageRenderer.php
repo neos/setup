@@ -12,7 +12,7 @@ namespace Neos\Setup\Core;
  */
 
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\Error\Message;
+use Neos\Error\Messages\Message;
 
 /**
  * Rendering class for displaying messages before the Flow proxy classes are built.
@@ -45,7 +45,7 @@ class MessageRenderer
      * Display a message. As we cannot rely on any Flow requirements being fulfilled here,
      * we have to statically include the CSS styles at this point, and have to in-line the TYPO3 logo.
      *
-     * @param array <\Neos\Flow\Error\Message> $messages Array of messages (at least one message must be passed)
+     * @param array <\Neos\Error\Messages\Message> $messages Array of messages (at least one message must be passed)
      * @param string $extraHeaderHtml extra HTML code to include at the end of the head tag
      * @return void This method never returns.
      */

@@ -103,7 +103,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
         if (isset($preset['parentPreset'])) {
             $parentPreset = $this->getPresetConfiguration($preset['parentPreset']);
             unset($preset['parentPreset']);
-            $preset = \Neos\Flow\Utility\Arrays::arrayMergeRecursiveOverrule($parentPreset, $preset);
+            $preset = \Neos\Utility\Arrays::arrayMergeRecursiveOverrule($parentPreset, $preset);
         }
 
         return $preset;

@@ -18,7 +18,7 @@ use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Booting\Scripts;
-use Neos\Flow\Utility\Arrays;
+use Neos\Utility\Arrays;
 use Neos\Flow\Validation\Validator\NotEmptyValidator;
 use TYPO3\Form\Core\Model\FormDefinition;
 use Neos\Setup\Exception as SetupException;

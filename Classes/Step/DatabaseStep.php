@@ -110,7 +110,7 @@ class DatabaseStep extends \Neos\Setup\Step\AbstractStep
         $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.host', $formValues['host']);
         $this->configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->distributionSettings);
 
-        $this->configurationManager->flushConfigurationCache();
+        $this->configurationManager->refreshConfiguration();
 
         $settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         $connectionSettings = $settings['persistence']['backendOptions'];

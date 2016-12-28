@@ -65,7 +65,7 @@ class BasicRequirements
     ];
 
     /**
-     * List of folders which need to be writable
+     * List of folders which need to be writable.
      *
      * @var array
      */
@@ -87,14 +87,14 @@ class BasicRequirements
         if ($filePermissionsError !== null) {
             return $this->setErrorTitle($filePermissionsError, 'Error with file system permissions');
         }
-        return null;
     }
 
     /**
      * return a new error object which has all options like $error except the $title overridden.
      *
      * @param \Neos\Error\Messages\Error $error
-     * @param string $title
+     * @param string                     $title
+     *
      * @return \Neos\Error\Messages\Error
      */
     protected function setErrorTitle(Error $error, $title)
@@ -145,7 +145,6 @@ class BasicRequirements
         if (ini_get('session.auto_start')) {
             return new Error('Flow requires the PHP setting "session.auto_start" set to off.', 1224003190);
         }
-        return null;
     }
 
     /**
@@ -161,18 +160,16 @@ class BasicRequirements
                 try {
                     \Neos\Utility\Files::createDirectoryRecursively($folderPath);
                 } catch (\Neos\Flow\Utility\Exception $exception){
-                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [ $folderPath ]);
+                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
                 }
             }
             if (!is_writable($folderPath)) {
-                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, [ $folderPath ]);
+                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, [$folderPath]);
             }
         }
         if (!$this->checkFileGroupWritePermission()) {
             return new Error('Files are not created with group write permissions. Check your webserver setup. On systems without filesystem ACLs, you need to set umask 0002 for the PHP/webserver daemon.');
         }
-
-        return null;
     }
 
     /**

@@ -150,7 +150,8 @@ class BasicRequirements
      *
      * @return mixed
      */
-    protected function checkFilePermissions() {
+    protected function checkFilePermissions()
+    {
         foreach ($this->requiredWritableFolders as $folder) {
             $folderPath = FLOW_PATH_ROOT . $folder;
             if (!is_dir($folderPath) && !\TYPO3\Flow\Utility\Files::is_link($folderPath)) {
@@ -176,8 +177,8 @@ class BasicRequirements
      * @return boolean
      */
 
-    protected function checkFileGroupWritePermission(){
-
+    protected function checkFileGroupWritePermission()
+    {
         $testfolder = FLOW_PATH_ROOT . 'Test';
         $testfile = FLOW_PATH_ROOT . 'Test/Test.txt';
 
@@ -190,6 +191,5 @@ class BasicRequirements
         rmdir($testfolder);
 
         return ($groupwrite === 'w') ? true : false;
-
     }
 }

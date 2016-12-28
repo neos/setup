@@ -150,22 +150,46 @@ class BasicRequirements
      *
      * @return mixed
      */
-    protected function checkFilePermissions()
-    {
+    protected function checkFilePermissions() {
         foreach ($this->requiredWritableFolders as $folder) {
             $folderPath = FLOW_PATH_ROOT . $folder;
-            if (!is_dir($folderPath) && !\Neos\Utility\Files::is_link($folderPath)) {
+            if (!is_dir($folderPath) && !\TYPO3\Flow\Utility\Files::is_link($folderPath)) {
                 try {
-                    \Neos\Utility\Files::createDirectoryRecursively($folderPath);
-                } catch (\Neos\Flow\Utility\Exception $exception) {
-                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
+                    \TYPO3\Flow\Utility\Files::createDirectoryRecursively($folderPath);
+                } catch (\TYPO3\Flow\Utility\Exception $exception) {
+                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, array($folderPath));
                 }
             }
             if (!is_writable($folderPath)) {
-                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, [$folderPath]);
+                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, array($folderPath));
             }
         }
+        if(!$this->checkFileGroupWritePermission()){
+            return new Error('Files are not created with group write permissions. Check your webserver setup. On systems without filesystem ACLs, you need to set umask 0002 for the PHP/webserver daemon.');
+        }
+        return NULL;
+    }
 
-        return null;
+    /**
+     * Check that files are being created with group write privileges
+     *
+     * @return boolean
+     */
+
+    protected function checkFileGroupWritePermission(){
+
+        $testfolder = FLOW_PATH_ROOT . 'Test';
+        $testfile = FLOW_PATH_ROOT . 'Test/Test.txt';
+
+        mkdir($testfolder);
+        $testhandle = fopen($testfile, 'w');
+        $perms = fileperms($testfile);
+        $groupwrite =  (($perms & 0x0010) ? 'w' : '-');
+        fclose($testhandle);
+        unlink($testfile);
+        rmdir($testfolder);
+
+        return ($groupwrite === 'w') ? true : false;
+
     }
 }

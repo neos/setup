@@ -159,7 +159,7 @@ class BasicRequirements
             if (!is_dir($folderPath) && !\Neos\Utility\Files::is_link($folderPath)) {
                 try {
                     \Neos\Utility\Files::createDirectoryRecursively($folderPath);
-                } catch (\Neos\Flow\Utility\Exception $exception){
+                } catch (\Neos\Flow\Utility\Exception $exception) {
                     return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
                 }
             }
@@ -177,7 +177,6 @@ class BasicRequirements
      *
      * @return bool
      */
-
     protected function checkFileGroupWritePermission()
     {
         $testfolder = FLOW_PATH_ROOT.'Test';

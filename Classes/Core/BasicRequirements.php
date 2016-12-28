@@ -24,7 +24,6 @@ use Neos\Flow\Annotations as Flow;
  */
 class BasicRequirements
 {
-
     /**
      * List of required PHP extensions and their error key if the extension was not found.
      *

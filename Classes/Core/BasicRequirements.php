@@ -154,10 +154,10 @@ class BasicRequirements
     {
         foreach ($this->requiredWritableFolders as $folder) {
             $folderPath = FLOW_PATH_ROOT . $folder;
-            if (!is_dir($folderPath) && !\TYPO3\Flow\Utility\Files::is_link($folderPath)) {
+            if (!is_dir($folderPath) && !\Neos\Utility\Files::is_link($folderPath)) {
                 try {
-                    \TYPO3\Flow\Utility\Files::createDirectoryRecursively($folderPath);
-                } catch (\TYPO3\Flow\Utility\Exception $exception) {
+                    \Neos\Utility\Files::createDirectoryRecursively($folderPath);
+                } catch (\Neos\Flow\Utility\Exception $exception) {
                     return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, array($folderPath));
                 }
             }
@@ -172,7 +172,7 @@ class BasicRequirements
     }
 
     /**
-     * Check that files are being created with group write privileges
+     * Check that files are being created with group write permissions
      *
      * @return boolean
      */

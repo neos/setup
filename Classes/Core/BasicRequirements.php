@@ -158,17 +158,17 @@ class BasicRequirements
                 try {
                     \Neos\Utility\Files::createDirectoryRecursively($folderPath);
                 } catch (\Neos\Flow\Utility\Exception $exception) {
-                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, array($folderPath));
+                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
                 }
             }
             if (!is_writable($folderPath)) {
-                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, array($folderPath));
+                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, [$folderPath]);
             }
         }
         if(!$this->checkFileGroupWritePermission()){
             return new Error('Files are not created with group write permissions. Check your webserver setup. On systems without filesystem ACLs, you need to set umask 0002 for the PHP/webserver daemon.');
         }
-        return NULL;
+        return null;
     }
 
     /**

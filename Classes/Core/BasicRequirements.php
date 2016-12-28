@@ -11,8 +11,8 @@ namespace Neos\Setup\Core;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Error;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * This class checks the basic requirements and returns an error object in case
@@ -23,6 +23,7 @@ use Neos\Error\Messages\Error;
  */
 class BasicRequirements
 {
+
     /**
      * List of required PHP extensions and their error key if the extension was not found
      *
@@ -30,24 +31,24 @@ class BasicRequirements
      */
     protected $requiredExtensions = [
         'Reflection' => 1329403179,
-        'tokenizer' => 1329403180,
-        'json' => 1329403181,
-        'session' => 1329403182,
-        'ctype' => 1329403183,
-        'dom' => 1329403184,
-        'date' => 1329403185,
-        'libxml' => 1329403186,
-        'xmlreader' => 1329403187,
-        'xmlwriter' => 1329403188,
-        'SimpleXML' => 1329403189,
-        'openssl' => 1329403190,
-        'pcre' => 1329403191,
-        'zlib' => 1329403192,
-        'filter' => 1329403193,
-        'SPL' => 1329403194,
-        'iconv' => 1329403195,
-        'PDO' => 1329403196,
-        'hash' => 1329403198
+        'tokenizer'  => 1329403180,
+        'json'       => 1329403181,
+        'session'    => 1329403182,
+        'ctype'      => 1329403183,
+        'dom'        => 1329403184,
+        'date'       => 1329403185,
+        'libxml'     => 1329403186,
+        'xmlreader'  => 1329403187,
+        'xmlwriter'  => 1329403188,
+        'SimpleXML'  => 1329403189,
+        'openssl'    => 1329403190,
+        'pcre'       => 1329403191,
+        'zlib'       => 1329403192,
+        'filter'     => 1329403193,
+        'SPL'        => 1329403194,
+        'iconv'      => 1329403195,
+        'PDO'        => 1329403196,
+        'hash'       => 1329403198
     ];
 
     /**
@@ -56,8 +57,8 @@ class BasicRequirements
      * @var array
      */
     protected $requiredFunctions = [
-        'system' => 1330707108,
-        'shell_exec' => 1330707133,
+        'system'         => 1330707108,
+        'shell_exec'     => 1330707133,
         'escapeshellcmd' => 1330707156,
         'escapeshellarg' => 1330707177
     ];
@@ -67,7 +68,7 @@ class BasicRequirements
      *
      * @var array
      */
-    protected $requiredWritableFolders = ['Configuration', 'Data', 'Packages', 'Web/_Resources'];
+    protected $requiredWritableFolders = [ 'Configuration', 'Data', 'Packages', 'Web/_Resources' ];
 
     /**
      * Ensure that the environment and file permission requirements are fulfilled.
@@ -109,7 +110,10 @@ class BasicRequirements
     protected function ensureRequiredEnvironment()
     {
         if (version_compare(phpversion(), \Neos\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, '<')) {
-            return new Error('Flow requires PHP version %s or higher but your installed version is currently %s.', 1172215790, [\Neos\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, phpversion()]);
+            return new Error('Flow requires PHP version %s or higher but your installed version is currently %s.', 1172215790, [
+                \Neos\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION,
+                phpversion()
+            ]);
         }
         if (!extension_loaded('mbstring')) {
             return new Error('Flow requires the PHP extension "mbstring" to be available', 1207148809);
@@ -119,18 +123,18 @@ class BasicRequirements
         }
         foreach ($this->requiredExtensions as $extension => $errorKey) {
             if (!extension_loaded($extension)) {
-                return new Error('Flow requires the PHP extension "%s" to be available.', $errorKey, [$extension]);
+                return new Error('Flow requires the PHP extension "%s" to be available.', $errorKey, [ $extension ]);
             }
         }
         foreach ($this->requiredFunctions as $function => $errorKey) {
             if (!function_exists($function)) {
-                return new Error('Flow requires the PHP function "%s" to be available.', $errorKey, [$function]);
+                return new Error('Flow requires the PHP function "%s" to be available.', $errorKey, [ $function ]);
             }
         }
 
         // TODO: Check for database drivers? PDO::getAvailableDrivers()
 
-        $method = new \ReflectionMethod(__CLASS__, __FUNCTION__);
+        $method     = new \ReflectionMethod(__CLASS__, __FUNCTION__);
         $docComment = $method->getDocComment();
         if ($docComment === false || $docComment === '') {
             return new Error('Reflection of doc comments is not supported by your PHP setup. Please check if you have installed an accelerator which removes doc comments.', 1329405326);
@@ -153,21 +157,22 @@ class BasicRequirements
     protected function checkFilePermissions()
     {
         foreach ($this->requiredWritableFolders as $folder) {
-            $folderPath = FLOW_PATH_ROOT . $folder;
+            $folderPath = FLOW_PATH_ROOT.$folder;
             if (!is_dir($folderPath) && !\Neos\Utility\Files::is_link($folderPath)) {
-                try {
+                try{
                     \Neos\Utility\Files::createDirectoryRecursively($folderPath);
-                } catch (\Neos\Flow\Utility\Exception $exception) {
-                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
+                } catch (\Neos\Flow\Utility\Exception $exception){
+                    return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [ $folderPath ]);
                 }
             }
             if (!is_writable($folderPath)) {
-                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, [$folderPath]);
+                return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, [ $folderPath ]);
             }
         }
-        if(!$this->checkFileGroupWritePermission()){
+        if (!$this->checkFileGroupWritePermission()) {
             return new Error('Files are not created with group write permissions. Check your webserver setup. On systems without filesystem ACLs, you need to set umask 0002 for the PHP/webserver daemon.');
         }
+
         return null;
     }
 
@@ -179,17 +184,17 @@ class BasicRequirements
 
     protected function checkFileGroupWritePermission()
     {
-        $testfolder = FLOW_PATH_ROOT . 'Test';
-        $testfile = FLOW_PATH_ROOT . 'Test/Test.txt';
+        $testfolder = FLOW_PATH_ROOT.'Test';
+        $testfile   = FLOW_PATH_ROOT.'Test/Test.txt';
 
         mkdir($testfolder);
         $testhandle = fopen($testfile, 'w');
-        $perms = fileperms($testfile);
-        $groupwrite =  (($perms & 0x0010) ? 'w' : '-');
+        $perms      = fileperms($testfile);
+        $groupwrite = ( ( $perms & 0x0010 ) ? 'w' : '-' );
         fclose($testhandle);
         unlink($testfile);
         rmdir($testfolder);
 
-        return ($groupwrite === 'w') ? true : false;
+        return ( $groupwrite === 'w' ) ? true : false;
     }
 }

@@ -89,9 +89,7 @@ class MessageRenderer
 						<li><a class="active">Setup</a></li>
 					</ul>
 					<h3>%s</h3>
-					<div class="t3-module-container indented">
-						%s
-					</div>
+                    %s
 				</div>
 			</div>
 			', $lastMessage->getTitle(), $renderedMessages);

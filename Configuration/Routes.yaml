@@ -1,5 +1,5 @@
 #                                                                        #
-# Default routes configuration for the Neos.Setup package               #
+# Default routes configuration for the Neos.Setup package                #
 #                                                                        #
 
 # While the setup is active on "setup/index", the URI "setup" is directly handled

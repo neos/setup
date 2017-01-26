@@ -1,5 +1,5 @@
 #                                                                        #
-# Security policy for the Neos.Setup package                            #
+# Security policy for the Neos.Setup package                             #
 #                                                                        #
 
 privilegeTargets:
@@ -7,7 +7,7 @@ privilegeTargets:
   'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
 
     'Neos.Setup:LoginController':
-      matcher: method(Neos\Setup\Controller\LoginController->(login|authenticate|generateNewPassword)Action())
+      matcher: 'method(Neos\Setup\Controller\LoginController->(login|authenticate|generateNewPassword)Action())'
 
     'Neos.Setup:SetupController':
       matcher: 'method(Neos\Setup\Controller\SetupController->indexAction()) || method(Neos\Setup\Controller\LoginController->logoutAction())'

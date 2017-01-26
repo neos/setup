@@ -35,7 +35,7 @@ Neos:
     security:
       authentication:
         providers:
-          Typo3SetupProvider:
+          'Neos.Setup:Login':
             provider: FileBasedSimpleKeyProvider
             providerOptions:
               keyName: SetupKey

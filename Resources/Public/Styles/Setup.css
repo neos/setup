@@ -515,6 +515,9 @@ input[type="number"].neos-modified,
   text-align: center;
   margin-top: -20px;
 }
+.alert a {
+  color: #fff;
+}
 
 p.alert::before {
   content: "";

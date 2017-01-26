@@ -146,8 +146,8 @@ class RequestHandler extends FlowRequestHandler
     {
         $configurationSource = new YamlSource();
         $distributionSettings = $configurationSource->load(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS);
-        if (isset($distributionSettings['TYPO3']['Flow']['core']['phpBinaryPathAndFilename'])) {
-            return $this->checkPhpBinary($distributionSettings['TYPO3']['Flow']['core']['phpBinaryPathAndFilename']);
+        if (isset($distributionSettings['Neos']['Flow']['core']['phpBinaryPathAndFilename'])) {
+            return $this->checkPhpBinary($distributionSettings['Neos']['Flow']['core']['phpBinaryPathAndFilename']);
         }
         list($phpBinaryPathAndFilename, $message) = $this->detectPhpBinaryPathAndFilename();
         if ($phpBinaryPathAndFilename !== null) {

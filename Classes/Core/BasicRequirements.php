@@ -56,7 +56,7 @@ class BasicRequirements
      * @var array
      */
     protected $requiredFunctions = [
-        'system' => 1330707108,
+        'exec' => 1330707108,
         'shell_exec' => 1330707133,
         'escapeshellcmd' => 1330707156,
         'escapeshellarg' => 1330707177

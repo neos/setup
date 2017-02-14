@@ -14,43 +14,43 @@ namespace TYPO3\Setup\Step;
 /**
  * A contract for setup steps.
  */
-interface StepInterface {
+interface StepInterface
+{
 
-	/**
-	 * Sets options of this step
-	 *
-	 * @param array $options
-	 * @return void
-	 */
-	public function setOptions(array $options);
+    /**
+     * Sets options of this step
+     *
+     * @param array $options
+     * @return void
+     */
+    public function setOptions(array $options);
 
-	/**
-	 * Sets global settings of the Flow distribution
-	 *
-	 * @param array $distributionSettings
-	 * @return void
-	 */
-	public function setDistributionSettings(array $distributionSettings);
+    /**
+     * Sets global settings of the Flow distribution
+     *
+     * @param array $distributionSettings
+     * @return void
+     */
+    public function setDistributionSettings(array $distributionSettings);
 
-	/**
-	 * Returns the form definitions for the step
-	 *
-	 * @param \Closure $callback
-	 * @return \TYPO3\Form\Core\Model\FormDefinition
-	 */
-	public function getFormDefinition(\Closure $callback);
+    /**
+     * Returns the form definitions for the step
+     *
+     * @param \Closure $callback
+     * @return \TYPO3\Form\Core\Model\FormDefinition
+     */
+    public function getFormDefinition(\Closure $callback);
 
-	/**
-	 * This method is called when the form of this step has been submitted
-	 *
-	 * @param array $formValues
-	 * @return void
-	 */
-	public function postProcessFormValues(array $formValues);
+    /**
+     * This method is called when the form of this step has been submitted
+     *
+     * @param array $formValues
+     * @return void
+     */
+    public function postProcessFormValues(array $formValues);
 
-	/**
-	 * @return boolean
-	 */
-	public function isOptional();
-
+    /**
+     * @return boolean
+     */
+    public function isOptional();
 }

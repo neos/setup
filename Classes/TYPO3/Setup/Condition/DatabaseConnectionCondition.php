@@ -33,5 +33,4 @@ class DatabaseConnectionCondition extends AbstractCondition
 
         return true;
     }
-
 }

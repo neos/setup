@@ -160,5 +160,4 @@ abstract class AbstractStep implements \TYPO3\Setup\Step\StepInterface
     {
         return $this->optional;
     }
-
 }

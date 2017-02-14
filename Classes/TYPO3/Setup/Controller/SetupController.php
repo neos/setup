@@ -192,5 +192,4 @@ class SetupController extends \TYPO3\Flow\Mvc\Controller\ActionController
         }
         $this->redirect('index', null, null, ['step' => $this->currentStepIndex + 1]);
     }
-
 }

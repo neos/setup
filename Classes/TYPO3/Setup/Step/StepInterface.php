@@ -53,5 +53,4 @@ interface StepInterface
      * @return boolean
      */
     public function isOptional();
-
 }

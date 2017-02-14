@@ -135,7 +135,7 @@ class RequestHandler extends FlowRequestHandler
      * Checks if the configured PHP binary is executable and the same version as the one
      * running the current (web server) PHP process. If not or if there is no binary configured,
      * tries to find the correct one on the PATH.
-	 *
+     *
      * Once found, the binary will be written to the configuration, if it is not the default one
      * (PHP_BINARY or in PHP_BINDIR).
      *
@@ -209,7 +209,7 @@ class RequestHandler extends FlowRequestHandler
     /**
      * Traverse the PATH locations and check for the existence of a valid PHP binary.
      * If found, the path and filename are returned, if not NULL is returned.
-	 *
+     *
      * We only use PHP_BINARY if it's set to a file in the path PHP_BINDIR.
      * This is because PHP_BINARY might, for example, be "/opt/local/sbin/php54-fpm"
      * while PHP_BINDIR contains "/opt/local/bin" and the actual CLI binary is "/opt/local/bin/php".
@@ -244,7 +244,7 @@ class RequestHandler extends FlowRequestHandler
 
     /**
      * Checks if PHP binary file exists bypassing open_basedir violation.
-	 *
+     *
      * If PHP binary is not within open_basedir path,
      * it is impossible to access this binary in any other way than exec() or system().
      * So we must check existence of this file with system tools.
@@ -288,5 +288,4 @@ class RequestHandler extends FlowRequestHandler
     {
         return $this->response;
     }
-
 }

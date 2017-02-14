@@ -73,7 +73,7 @@ class BasicRequirements
     /**
      * Ensure that the environment and file permission requirements are fulfilled.
      *
-	 * @return \TYPO3\Flow\Error\Error if requirements are fulfilled, NULL is returned. else, an Error object is returned.
+     * @return \TYPO3\Flow\Error\Error if requirements are fulfilled, NULL is returned. else, an Error object is returned.
      */
     public function findError()
     {

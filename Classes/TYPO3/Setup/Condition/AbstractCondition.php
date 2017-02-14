@@ -40,5 +40,4 @@ abstract class AbstractCondition implements ConditionInterface
     {
         $this->options = $options;
     }
-
 }

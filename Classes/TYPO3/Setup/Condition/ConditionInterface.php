@@ -32,5 +32,4 @@ interface ConditionInterface
      * @api
      */
     public function isMet();
-
 }

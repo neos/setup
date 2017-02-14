@@ -133,5 +133,4 @@ class LoginController extends \TYPO3\Flow\Mvc\Controller\ActionController
         $this->addFlashMessage('Successfully logged out.', 'Logged out');
         $this->redirect('login');
     }
-
 }

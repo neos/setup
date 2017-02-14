@@ -32,5 +32,4 @@ class Package extends BasePackage
     {
         $bootstrap->registerRequestHandler(new \TYPO3\Setup\Core\RequestHandler($bootstrap));
     }
-
 }

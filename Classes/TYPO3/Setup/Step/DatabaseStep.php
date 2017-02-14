@@ -158,7 +158,7 @@ class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
     /**
      * Tries to connect to the database using the specified $connectionSettings
      *
-	 * @param array $connectionSettings array in the format array('user' => 'dbuser', 'password' => 'dbpassword', 'host' => 'dbhost', 'dbname' => 'dbname')
+     * @param array $connectionSettings array in the format array('user' => 'dbuser', 'password' => 'dbpassword', 'host' => 'dbhost', 'dbname' => 'dbname')
      * @return void
      * @throws \PDOException if the connection fails
      */
@@ -172,7 +172,7 @@ class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
      * Connects to the database using the specified $connectionSettings
      * and tries to create a database named $databaseName.
      *
-	 * @param array $connectionSettings array in the format array('user' => 'dbuser', 'password' => 'dbpassword', 'host' => 'dbhost', 'dbname' => 'dbname')
+     * @param array $connectionSettings array in the format array('user' => 'dbuser', 'password' => 'dbpassword', 'host' => 'dbhost', 'dbname' => 'dbname')
      * @param string $databaseName name of the database to create
      * @throws \TYPO3\Setup\Exception
      * @return void
@@ -196,7 +196,7 @@ class DatabaseStep extends \TYPO3\Setup\Step\AbstractStep
 
     /**
      * Return an array with driver.
-	 *
+     *
      * This is built on supported drivers (those we actually provide migration for in Flow and Neos), filtered to show
      * only available options (needed extension loaded, actually usable in current setup).
      *

@@ -16,7 +16,9 @@ namespace Neos\Flow\Core\Migrations;
  */
 class Version20161125014759 extends AbstractMigration
 {
-
+    /**
+     * @return string
+     */
     public function getIdentifier()
     {
         return 'Neos.Setup-20161125014759';

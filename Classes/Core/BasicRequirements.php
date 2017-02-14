@@ -1,5 +1,4 @@
 <?php
-
 namespace Neos\Setup\Core;
 
 /*
@@ -18,7 +17,6 @@ use Neos\Flow\Annotations as Flow;
 /**
  * This class checks the basic requirements and returns an error object in case
  * of missing requirements.
- *
  * @Flow\Proxy(false)
  * @Flow\Scope("singleton")
  */
@@ -31,24 +29,24 @@ class BasicRequirements
      */
     protected $requiredExtensions = [
         'Reflection' => 1329403179,
-        'tokenizer'  => 1329403180,
-        'json'       => 1329403181,
-        'session'    => 1329403182,
-        'ctype'      => 1329403183,
-        'dom'        => 1329403184,
-        'date'       => 1329403185,
-        'libxml'     => 1329403186,
-        'xmlreader'  => 1329403187,
-        'xmlwriter'  => 1329403188,
-        'SimpleXML'  => 1329403189,
-        'openssl'    => 1329403190,
-        'pcre'       => 1329403191,
-        'zlib'       => 1329403192,
-        'filter'     => 1329403193,
-        'SPL'        => 1329403194,
-        'iconv'      => 1329403195,
-        'PDO'        => 1329403196,
-        'hash'       => 1329403198,
+        'tokenizer' => 1329403180,
+        'json' => 1329403181,
+        'session' => 1329403182,
+        'ctype' => 1329403183,
+        'dom' => 1329403184,
+        'date' => 1329403185,
+        'libxml' => 1329403186,
+        'xmlreader' => 1329403187,
+        'xmlwriter' => 1329403188,
+        'SimpleXML' => 1329403189,
+        'openssl' => 1329403190,
+        'pcre' => 1329403191,
+        'zlib' => 1329403192,
+        'filter' => 1329403193,
+        'SPL' => 1329403194,
+        'iconv' => 1329403195,
+        'PDO' => 1329403196,
+        'hash' => 1329403198,
     ];
 
     /**
@@ -92,8 +90,7 @@ class BasicRequirements
      * return a new error object which has all options like $error except the $title overridden.
      *
      * @param \Neos\Error\Messages\Error $error
-     * @param string                     $title
-     *
+     * @param string $title
      * @return \Neos\Error\Messages\Error
      */
     protected function setErrorTitle(Error $error, $title)
@@ -154,7 +151,7 @@ class BasicRequirements
     protected function checkFilePermissions()
     {
         foreach ($this->requiredWritableFolders as $folder) {
-            $folderPath = FLOW_PATH_ROOT.$folder;
+            $folderPath = FLOW_PATH_ROOT . $folder;
             if (!is_dir($folderPath) && !\Neos\Utility\Files::is_link($folderPath)) {
                 try {
                     \Neos\Utility\Files::createDirectoryRecursively($folderPath);
@@ -178,8 +175,8 @@ class BasicRequirements
      */
     protected function checkFileGroupWritePermission()
     {
-        $testfolder = FLOW_PATH_ROOT.'Test';
-        $testfile = FLOW_PATH_ROOT.'Test/Test.txt';
+        $testfolder = FLOW_PATH_ROOT . 'Test';
+        $testfile = FLOW_PATH_ROOT . 'Test/Test.txt';
 
         mkdir($testfolder);
         $testhandle = fopen($testfile, 'w');

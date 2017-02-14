@@ -11,23 +11,24 @@ namespace TYPO3\Setup\Condition;
  * The TYPO3 project - inspiring people to share!                         *
  *                                                                        */
 
-use TYPO3\Flow\Annotations as Flow;
-
 /**
  * Condition that checks if the PDO driver is loaded and if there are available drivers
  */
-class PdoDriverCondition extends AbstractCondition {
+class PdoDriverCondition extends AbstractCondition
+{
 
-	/**
-	 * Returns TRUE if the condition is satisfied, otherwise FALSE
-	 *
-	 * @return boolean
-	 */
-	public function isMet() {
-		if (defined('PDO::ATTR_DRIVER_NAME') === FALSE || \PDO::getAvailableDrivers() === array()) {
-			return FALSE;
-		}
-		return TRUE;
-	}
+    /**
+     * Returns TRUE if the condition is satisfied, otherwise FALSE
+     *
+     * @return boolean
+     */
+    public function isMet()
+    {
+        if (defined('PDO::ATTR_DRIVER_NAME') === false || \PDO::getAvailableDrivers() === []) {
+            return false;
+        }
+
+        return true;
+    }
 
 }

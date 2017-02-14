@@ -16,27 +16,29 @@ use TYPO3\Flow\Annotations as Flow;
 /**
  * Abstract base class for Step Conditions
  */
-abstract class AbstractCondition implements ConditionInterface {
+abstract class AbstractCondition implements ConditionInterface
+{
 
-	/**
-	 * @Flow\Inject
-	 * @var \TYPO3\Flow\Configuration\ConfigurationManager
-	 */
-	protected $configurationManager;
+    /**
+     * @Flow\Inject
+     * @var \TYPO3\Flow\Configuration\ConfigurationManager
+     */
+    protected $configurationManager;
 
-	/**
-	 * @var array
-	 */
-	protected $options;
+    /**
+     * @var array
+     */
+    protected $options;
 
-	/**
-	 * Sets options of this condition
-	 *
-	 * @param array $options
-	 * @return void
-	 */
-	public function setOptions(array $options) {
-		$this->options = $options;
-	}
+    /**
+     * Sets options of this condition
+     *
+     * @param array $options
+     * @return void
+     */
+    public function setOptions(array $options)
+    {
+        $this->options = $options;
+    }
 
 }

@@ -14,22 +14,22 @@ namespace TYPO3\Setup\Condition;
 /**
  * Contract for Step Conditions
  */
-interface ConditionInterface {
+interface ConditionInterface
+{
 
-	/**
-	 * Sets options of this condition
-	 *
-	 * @param array $options
-	 * @return void
-	 */
-	public function setOptions(array $options);
+    /**
+     * Sets options of this condition
+     *
+     * @param array $options
+     * @return void
+     */
+    public function setOptions(array $options);
 
-	/**
-	 * Returns TRUE if the condition is satisfied, otherwise FALSE
-	 *
-	 * @return boolean
-	 * @api
-	 */
-	public function isMet();
-
+    /**
+     * Returns TRUE if the condition is satisfied, otherwise FALSE
+     *
+     * @return boolean
+     * @api
+     */
+    public function isMet();
 }

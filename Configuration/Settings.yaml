@@ -35,7 +35,7 @@ Neos:
     security:
       authentication:
         providers:
-          Typo3SetupProvider:
+          'Neos.Setup:Login':
             provider: FileBasedSimpleKeyProvider
             providerOptions:
               keyName: SetupKey
@@ -51,7 +51,7 @@ Neos:
               uri: setup/login
   Form:
     presets:
-      typo3.setup:
+      neos.setup:
         title: 'Setup Elements'
         parentPreset: default
         formElementTypes:

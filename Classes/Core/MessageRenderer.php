@@ -43,7 +43,7 @@ class MessageRenderer
 
     /**
      * Display a message. As we cannot rely on any Flow requirements being fulfilled here,
-     * we have to statically include the CSS styles at this point, and have to in-line the TYPO3 logo.
+     * we have to statically include the CSS styles at this point, and have to in-line the Neos logo.
      *
      * @param array <\Neos\Error\Messages\Message> $messages Array of messages (at least one message must be passed)
      * @param string $extraHeaderHtml extra HTML code to include at the end of the head tag
@@ -89,9 +89,7 @@ class MessageRenderer
 						<li><a class="active">Setup</a></li>
 					</ul>
 					<h3>%s</h3>
-					<div class="t3-module-container indented">
-						%s
-					</div>
+                    %s
 				</div>
 			</div>
 			', $lastMessage->getTitle(), $renderedMessages);

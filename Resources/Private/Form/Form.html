@@ -2,19 +2,17 @@
 
 <h1>{form.currentPage.renderingOptions.header}</h1>
 
-<div class="row t3-module-container indented">
-	<f:flashMessages class="alert" as="errors">
-		<f:for each="{errors}" as="error">
-			<div class="alert alert-{f:if(condition: '{error.severity} == \'OK\'', then: 'success', else: '{error.severity -> f:format.case(mode: \'lower\')}')}">
-				<a class="close" data-dismiss="alert" href="#">×</a>
-				<f:if condition="{error.title}">
-					<h4 class="alert-heading">{error.title}</h4>
-				</f:if>
-				{error}
-			</div>
-		</f:for>
-	</f:flashMessages>
-</div>
+<f:flashMessages class="alert" as="errors">
+	<f:for each="{errors}" as="error">
+		<div class="alert alert-{f:if(condition: '{error.severity} == \'OK\'', then: 'success', else: '{error.severity -> f:format.case(mode: \'lower\')}')}">
+			<a class="close" data-dismiss="alert" href="#">×</a>
+			<f:if condition="{error.title}">
+				<h4 class="alert-heading">{error.title}</h4>
+			</f:if>
+			{error}
+		</div>
+	</f:for>
+</f:flashMessages>
 
 <form:form action="index" object="{form}" method="post" id="{form.identifier}" enctype="multipart/form-data" class="form-element">
 	<form:renderRenderable renderable="{form.currentPage}" />

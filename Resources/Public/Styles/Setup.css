@@ -6,25 +6,25 @@
   font-family: 'Noto Sans';
   font-style: normal;
   font-weight: 400;
-  src: local("Noto Sans"), local("NotoSans"), url('../Fonts/NotoSans/NotoSans-Regular.ttf?1408190077') format('truetype');
+  src: local("Noto Sans"), local("NotoSans"), url('../Fonts/NotoSans/NotoSans-Regular.ttf?1484948744') format('truetype');
 }
 @font-face {
   font-family: 'Noto Sans';
   font-style: normal;
   font-weight: 700;
-  src: local("Noto Sans Bold"), local("NotoSans-Bold"), url('../Fonts/NotoSans/NotoSans-Bold.ttf?1408190077') format('truetype');
+  src: local("Noto Sans Bold"), local("NotoSans-Bold"), url('../Fonts/NotoSans/NotoSans-Bold.ttf?1484948744') format('truetype');
 }
 @font-face {
   font-family: 'Noto Sans';
   font-style: italic;
   font-weight: 400;
-  src: local("Noto Sans Italic"), local("NotoSans-Italic"), url('../Fonts/NotoSans/NotoSans-Italic.ttf?1408190077') format('truetype');
+  src: local("Noto Sans Italic"), local("NotoSans-Italic"), url('../Fonts/NotoSans/NotoSans-Italic.ttf?1484948744') format('truetype');
 }
 @font-face {
   font-family: 'Noto Sans';
   font-style: italic;
   font-weight: 700;
-  src: local("Noto Sans Bold Italic"), local("NotoSans-BoldItalic"), url('../Fonts/NotoSans/NotoSans-BoldItalic.ttf?1408190077') format('truetype');
+  src: local("Noto Sans Bold Italic"), local("NotoSans-BoldItalic"), url('../Fonts/NotoSans/NotoSans-BoldItalic.ttf?1484948744') format('truetype');
 }
 body {
   font-family: 'Noto Sans', sans-serif;
@@ -37,14 +37,14 @@ body {
 .well {
   position: relative;
   background: #222;
-  margin-top: 10px;
   padding: 50px 0px;
   border: 0px none;
   min-height: 500px;
 }
 
 .logo {
-  background: transparent;
+  background: transparent url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxMTEuNDIgMTI1Ij48ZGVmcz48c3R5bGU+LmNscy0xe2ZpbGw6I2ZmZjt9PC9zdHlsZT48L2RlZnM+PHRpdGxlPm5lb3NfYXZhdGFyX21vbm9jaHJvbWU8L3RpdGxlPjxnIGlkPSJFYmVuZV8yIiBkYXRhLW5hbWU9IkViZW5lIDIiPjxnIGlkPSJMYXllcl8xIiBkYXRhLW5hbWU9IkxheWVyIDEiPjxwYXRoIGNsYXNzPSJjbHMtMSIgZD0iTTk0LjU5LDEyNUg3MS4zN0w0NC45NSw4Ny4yN3YyMi4yNEwyMy44NSwxMjVIMFY3LjI4TDkuODgsMEgzNi4yNkw2Ni40Nyw0M1YxNS40OUw4Ny41NywwaDIzLjg1VjExMi42N1pNMi42Myw4LjYxVjEyMS4wOWwxNy41OC0xMi45MVY0Ny4zNWw1Mi42MSw3NS4xMmgyMC43bDEyLjc4LTkuMzJIODcuMTlMMTAsMy4xN1pNMjIuNzgsMTIyLjUzbDE5LjU0LTE0LjM1VjgzLjUxTDIyLjg0LDU1LjU5djUzLjk0bC0xNy43MiwxM1pNMTIuODUsMi42Myw4OC42OCwxMTAuNjhoMjAuMTFWMi42M0g4OS4zMlY4MC4xNkwzNC44OSwyLjYzWk02OS4xMSw0Ni43OWwxNy41OCwyNS4xdi02OEw2OS4xMSwxNi44MloiLz48L2c+PC9nPjwvc3ZnPgo=') center right 10px no-repeat;
+  background-size: 32px;
   height: 60px;
   width: 100%;
 }
@@ -515,9 +515,8 @@ input[type="number"].neos-modified,
   text-align: center;
   margin-top: -20px;
 }
-
 .alert a {
-   color: #ffffff;
+  color: #fff;
 }
 
 p.alert::before {
@@ -675,10 +674,4 @@ p.alert.alert-info::before {
 }
 .tooltip-info .tooltip-inner {
   background-color: #00b5ff;
-}
-
-.step-tracker {
-	display: inline-block;
-	height: 40px;
-	line-height: 40px;
 }

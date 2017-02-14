@@ -53,8 +53,8 @@ class LoginController extends \Neos\Flow\Mvc\Controller\ActionController
     public function initializeObject()
     {
         $settings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
-        if (isset($settings['security']['authentication']['providers']['Typo3SetupProvider']['providerOptions']['keyName'])) {
-            $this->keyName = $settings['security']['authentication']['providers']['Typo3SetupProvider']['providerOptions']['keyName'];
+        if (isset($settings['security']['authentication']['providers']['Neos.Setup:Login']['providerOptions']['keyName'])) {
+            $this->keyName = $settings['security']['authentication']['providers']['Neos.Setup:Login']['providerOptions']['keyName'];
         }
     }
 

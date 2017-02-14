@@ -50,7 +50,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
     /**
      * @var string
      */
-    protected $presetName = 'typo3.setup';
+    protected $presetName = 'neos.setup';
 
     /**
      * @return void
@@ -97,7 +97,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
     public function getPresetConfiguration($presetName)
     {
         if (!isset($this->formSettings['presets'][$presetName])) {
-            throw new \Neos\Form\Exception\PresetNotFoundException(sprintf('The Preset "%s" was not found underneath TYPO3: Form: presets.', $presetName), 1332170104);
+            throw new \Neos\Form\Exception\PresetNotFoundException(sprintf('The Preset "%s" was not found underneath Neos: Form: presets.', $presetName), 1332170104);
         }
         $preset = $this->formSettings['presets'][$presetName];
         if (isset($preset['parentPreset'])) {

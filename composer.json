@@ -5,7 +5,7 @@
     "description": "An extensible setup tool for Neos Flow based applications",
     "require": {
         "neos/flow": "~4.0 || dev-master",
-        "neos/form": "~3.0 || dev-master",
+        "neos/form": "~4.0 || dev-master",
         "neos/twitter-bootstrap": "~3.0 || dev-master"
     },
     "replace": {

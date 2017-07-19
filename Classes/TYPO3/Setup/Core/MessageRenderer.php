@@ -24,62 +24,65 @@ use TYPO3\Flow\Error\Message;
  * @Flow\Proxy(false)
  * @Flow\Scope("singleton")
  */
-class MessageRenderer {
+class MessageRenderer
+{
 
-	/**
-	 * @var \TYPO3\Flow\Core\Bootstrap
-	 */
-	protected $bootstrap;
+    /**
+     * @var \TYPO3\Flow\Core\Bootstrap
+     */
+    protected $bootstrap;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param \TYPO3\Flow\Core\Bootstrap $bootstrap
-	 */
-	public function __construct(\TYPO3\Flow\Core\Bootstrap $bootstrap) {
-		$this->bootstrap = $bootstrap;
-	}
+    /**
+     * Constructor.
+     *
+     * @param \TYPO3\Flow\Core\Bootstrap $bootstrap
+     */
+    public function __construct(\TYPO3\Flow\Core\Bootstrap $bootstrap)
+    {
+        $this->bootstrap = $bootstrap;
+    }
 
-	/**
-	 * Display a message. As we cannot rely on any Flow requirements being fulfilled here,
-	 * we have to statically include the CSS styles at this point, and have to in-line the TYPO3 logo.
-	 *
-	 * @param array<\TYPO3\Flow\Error\Message> $messages Array of messages (at least one message must be passed)
-	 * @param string $extraHeaderHtml extra HTML code to include at the end of the head tag
-	 * @return void This method never returns.
-	 */
-	public function showMessages(array $messages, $extraHeaderHtml = '') {
-		if ($messages === array()) {
-			throw new \InvalidArgumentException('No messages given for rendering', 1416914970);
-		}
+    /**
+     * Display a message. As we cannot rely on any Flow requirements being fulfilled here,
+     * we have to statically include the CSS styles at this point, and have to in-line the TYPO3 logo.
+     *
+     * @param array <\TYPO3\Flow\Error\Message> $messages Array of messages (at least one message must be passed)
+     * @param string $extraHeaderHtml extra HTML code to include at the end of the head tag
+     * @return void This method never returns.
+     */
+    public function showMessages(array $messages, $extraHeaderHtml = '')
+    {
+        if ($messages === []) {
+            throw new \InvalidArgumentException('No messages given for rendering', 1416914970);
+        }
 
-		/** @var \TYPO3\Flow\Package\PackageManagerInterface $packageManager */
-		$packageManager = $this->bootstrap->getEarlyInstance('TYPO3\Flow\Package\PackageManagerInterface');
+        /** @var \TYPO3\Flow\Package\PackageManagerInterface $packageManager */
+        $packageManager = $this->bootstrap->getEarlyInstance('TYPO3\Flow\Package\PackageManagerInterface');
 
-		$css = '';
-		if ($packageManager->isPackageAvailable('TYPO3.Twitter.Bootstrap')) {
-			$css .= file_get_contents($packageManager->getPackage('TYPO3.Twitter.Bootstrap')->getResourcesPath() . 'Public/3/css/bootstrap.min.css');
-			$css = str_replace('url(../', 'url(/_Resources/Static/Packages/TYPO3.Twitter.Bootstrap/3.0/', $css);
-		}
-		if ($packageManager->isPackageAvailable('TYPO3.Setup')) {
-			$css .= file_get_contents($packageManager->getPackage('TYPO3.Setup')->getResourcesPath() . 'Public/Styles/Setup.css');
-			$css = str_replace('url(\'../', 'url(\'/_Resources/Static/Packages/TYPO3.Setup/', $css);
-		}
+        $css = '';
+        if ($packageManager->isPackageAvailable('TYPO3.Twitter.Bootstrap')) {
+            $css .= file_get_contents($packageManager->getPackage('TYPO3.Twitter.Bootstrap')->getResourcesPath() . 'Public/3/css/bootstrap.min.css');
+            $css = str_replace('url(../', 'url(/_Resources/Static/Packages/TYPO3.Twitter.Bootstrap/3.0/', $css);
+        }
+        if ($packageManager->isPackageAvailable('TYPO3.Setup')) {
+            $css .= file_get_contents($packageManager->getPackage('TYPO3.Setup')->getResourcesPath() . 'Public/Styles/Setup.css');
+            $css = str_replace('url(\'../', 'url(\'/_Resources/Static/Packages/TYPO3.Setup/', $css);
+        }
 
-		echo '<html>';
-		echo '<head>';
-		echo '<title>Setup message</title>';
-		echo '<style type="text/css">';
-		echo $css;
-		echo '</style>';
-		echo $extraHeaderHtml;
-		echo '</head>';
-		echo '<body>';
+        echo '<html>';
+        echo '<head>';
+        echo '<title>Setup message</title>';
+        echo '<style type="text/css">';
+        echo $css;
+        echo '</style>';
+        echo $extraHeaderHtml;
+        echo '</head>';
+        echo '<body>';
 
-		$renderedMessages = $this->renderMessages($messages);
-		$lastMessage = end($messages);
+        $renderedMessages = $this->renderMessages($messages);
+        $lastMessage = end($messages);
 
-		echo sprintf('
+        echo sprintf('
 			<div class="logo"></div>
 			<div class="well">
 				<div class="container">
@@ -93,45 +96,47 @@ class MessageRenderer {
 				</div>
 			</div>
 			', $lastMessage->getTitle(), $renderedMessages);
-		echo '</body></html>';
-		exit(0);
-	}
+        echo '</body></html>';
+        exit(0);
+    }
 
-	/**
-	 * @param array $messages
-	 * @return string Rendered messages
-	 */
-	protected function renderMessages(array $messages) {
-		$content = '';
-		foreach ($messages as $message) {
-			switch ($message->getSeverity()) {
-				case Message::SEVERITY_ERROR:
-					$severity = 'error';
-					$icon = '<span class="glyphicon glyphicon glyphicon-ban-circle"></span>';
-					break;
-				case Message::SEVERITY_WARNING:
-					$severity = 'warning';
-					$icon = '<span class="glyphicon glyphicon-warning-sign"></span>';
-					break;
-				case Message::SEVERITY_OK:
-					$severity = 'success';
-					$icon = '<span class="glyphicon glyphicon-refresh glyphicon-spin"></span>';
-					break;
-				case Message::SEVERITY_NOTICE:
-				default:
-					$severity = 'info';
-					$icon = '<span class="glyphicon glyphicon-info-sign"></span>';
-					break;
-			}
+    /**
+     * @param array $messages
+     * @return string Rendered messages
+     */
+    protected function renderMessages(array $messages)
+    {
+        $content = '';
+        foreach ($messages as $message) {
+            switch ($message->getSeverity()) {
+                case Message::SEVERITY_ERROR:
+                    $severity = 'error';
+                    $icon = '<span class="glyphicon glyphicon glyphicon-ban-circle"></span>';
+                break;
+                case Message::SEVERITY_WARNING:
+                    $severity = 'warning';
+                    $icon = '<span class="glyphicon glyphicon-warning-sign"></span>';
+                break;
+                case Message::SEVERITY_OK:
+                    $severity = 'success';
+                    $icon = '<span class="glyphicon glyphicon-refresh glyphicon-spin"></span>';
+                break;
+                case Message::SEVERITY_NOTICE:
+                default:
+                    $severity = 'info';
+                    $icon = '<span class="glyphicon glyphicon-info-sign"></span>';
+                break;
+            }
 
-			$messageBody = $message->render();
-			$content .= sprintf('
+            $messageBody = $message->render();
+            $content .= sprintf('
 			<div class="alert alert-%s">
 				%s
 				%s
 			</div>
 			', $severity, $icon, $messageBody);
-		}
-		return $content;
-	}
+        }
+
+        return $content;
+    }
 }

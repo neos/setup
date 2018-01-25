@@ -1,7 +1,7 @@
 {
     "name": "typo3/setup",
     "type": "typo3-flow-package",
-    "license": "LGPL-3.0+",
+    "license": ["LGPL-3.0-or-later"],
     "description": "An extensible setup tool for TYPO3 Flow based applications",
     "require": {
         "typo3/flow": "~3.0",

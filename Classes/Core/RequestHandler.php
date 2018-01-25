@@ -182,7 +182,7 @@ class RequestHandler extends FlowRequestHandler
             // If the tested binary is a CGI binary that also runs the current request the SCRIPT_FILENAME would take precedence and create an endless recursion.
             $possibleScriptFilenameValue = getenv('SCRIPT_FILENAME');
             putenv('SCRIPT_FILENAME');
-            exec($phpCommand . ' -v', $phpVersionString);
+            exec($phpCommand . ' -r "echo \'(\' . php_sapi_name() . \') \' . PHP_VERSION;"', $phpVersionString);
             if ($possibleScriptFilenameValue !== false) {
                 putenv('SCRIPT_FILENAME=' . (string)$possibleScriptFilenameValue);
             }

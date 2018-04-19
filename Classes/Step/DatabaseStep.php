@@ -184,7 +184,7 @@ class DatabaseStep extends \Neos\Setup\Step\AbstractStep
         $databaseName = $databasePlatform->quoteIdentifier($databaseName);
         // we are not using $databasePlatform->getCreateDatabaseSQL() below since we want to specify charset and collation
         if ($databasePlatform instanceof MySqlPlatform) {
-            $connection->executeUpdate(sprintf('CREATE DATABASE %s CHARACTER SET utf8 COLLATE utf8_unicode_ci', $databaseName));
+            $connection->executeUpdate(sprintf('CREATE DATABASE %s CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci', $databaseName));
         } elseif ($databasePlatform instanceof PostgreSqlPlatform) {
             $connection->executeUpdate(sprintf('CREATE DATABASE %s WITH ENCODING = %s', $databaseName, "'UTF8'"));
         } else {

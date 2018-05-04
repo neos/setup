@@ -97,12 +97,12 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
                 $result = ['level' => 'error', 'message' => sprintf('Only MySQL/MariaDB and PostgreSQL are supported, the selected database is "%s".', $databasePlatform->getName())];
             }
             if (isset($databaseCharacterSet)) {
-                if ($databaseCharacterSet === 'utf8') {
-                    $result = ['level' => 'notice', 'message' => 'The selected database\'s character set is set to "utf8" which is the recommended setting.'];
+                if ($databaseCharacterSet === 'utf8mb4') {
+                    $result = ['level' => 'notice', 'message' => 'The selected database\'s character set is set to "utf8mb4" which is the recommended setting.'];
                 } else {
                     $result = [
                         'level' => 'warning',
-                        'message' => sprintf('The selected database\'s character set is "%s", however changing it to "utf8" is urgently recommended. This setup tool won\'t do this for you.', $databaseCharacterSet)
+                        'message' => sprintf('The selected database\'s character set is "%s", however changing it to "utf8mb4" is urgently recommended. This setup tool won\'t do this for you.', $databaseCharacterSet)
                     ];
                 }
             }

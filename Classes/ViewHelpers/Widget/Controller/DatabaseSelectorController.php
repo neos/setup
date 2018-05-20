@@ -84,6 +84,7 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
         $this->response->setHeader('Content-Type', 'application/json');
         $connectionSettings = $this->buildConnectionSettingsArray($driver, $user, $password, $host);
         $connectionSettings['dbname'] = $databaseName;
+        $result = [];
         try {
             $connection = $this->getConnectionAndConnect($connectionSettings);
             $databasePlatform = $connection->getDatabasePlatform();
@@ -94,13 +95,13 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
                 $queryResult = $connection->executeQuery('SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = ?', [$databaseName])->fetch();
                 $databaseCharacterSet = strtolower($queryResult['pg_encoding_to_char']);
             } else {
-                $result = ['level' => 'error', 'message' => sprintf('Only MySQL/MariaDB and PostgreSQL are supported, the selected database is "%s".', $databasePlatform->getName())];
+                $result[] = ['level' => 'error', 'message' => sprintf('Only MySQL/MariaDB and PostgreSQL are supported, the selected database is "%s".', $databasePlatform->getName())];
             }
             if (isset($databaseCharacterSet)) {
                 if ($databaseCharacterSet === 'utf8mb4') {
-                    $result = ['level' => 'notice', 'message' => 'The selected database\'s character set is set to "utf8mb4" which is the recommended setting.'];
+                    $result[] = ['level' => 'notice', 'message' => 'The selected database\'s character set is set to "utf8mb4" which is the recommended setting.'];
                 } else {
-                    $result = [
+                    $result[] = [
                         'level' => 'warning',
                         'message' => sprintf('The selected database\'s character set is "%s", however changing it to "utf8mb4" is urgently recommended. This setup tool won\'t do this for you.', $databaseCharacterSet)
                     ];

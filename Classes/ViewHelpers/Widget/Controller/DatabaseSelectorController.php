@@ -27,6 +27,9 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
      */
     protected $configurationManager;
 
+    const MINIMUM_MYSQL_VERSION = '5.7';
+    const MINIMUM_MARIA_DB_VERSION = '10.2.2-MariaDb';
+
     /**
      * @return void
      */
@@ -91,6 +94,14 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
             if ($databasePlatform instanceof MySqlPlatform) {
                 $queryResult = $connection->executeQuery('SHOW VARIABLES LIKE \'character_set_database\'')->fetch();
                 $databaseCharacterSet = strtolower($queryResult['Value']);
+                $databaseVersionQueryResult = $connection->executeQuery('SELECT VERSION()')->fetch();
+                $databaseVersion = isset($databaseVersionQueryResult['VERSION()']) ? $databaseVersionQueryResult['VERSION()'] : null;
+                if (isset($databaseVersion) && $this->databaseSupportsUtf8Mb4($databaseVersion) === false) {
+                    $result[] = [
+                        'level' => 'error',
+                        'message' => sprintf('The minimum required version for MySQL is "%s" or "%s" for MariaDB.', self::MINIMUM_MYSQL_VERSION, self::MINIMUM_MARIA_DB_VERSION)
+                    ];
+                }
             } elseif ($databasePlatform instanceof PostgreSqlPlatform) {
                 $queryResult = $connection->executeQuery('SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = ?', [$databaseName])->fetch();
                 $databaseCharacterSet = strtolower($queryResult['pg_encoding_to_char']);
@@ -154,5 +165,28 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
         $connection->connect();
 
         return $connection;
+    }
+
+    /**
+     * Check if MySQL based database supports utf8mb4 character set.
+     *
+     * @param string $databaseVersion
+     * @return bool
+     */
+    protected function databaseSupportsUtf8Mb4(string $databaseVersion): bool
+    {
+        if (strpos($databaseVersion, '-MariaDb') !== false &&
+            version_compare($databaseVersion, self::MINIMUM_MARIA_DB_VERSION) === -1
+        ) {
+            return false;
+        }
+
+        if (preg_match('([a-zA-Z])', $databaseVersion) === 0 &&
+            version_compare($databaseVersion, self::MINIMUM_MYSQL_VERSION) === -1
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }

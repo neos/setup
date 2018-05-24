@@ -60,30 +60,34 @@
 					},
 					dataType: 'json',
 					cache: false
-				}).done(function(result) {
+				}).done(function(results) {
 					metadataStatusContainer.removeClass('loading');
-					var alertClassName,
-						iconClassName;
-					switch (result.level) {
-						case 'ok':
-							metadataStatusContainer.addClass('db-success');
-							alertClassName = 'success';
-							iconClassName = 'ok';
-							break;
-						case 'notice':
-							alertClassName = 'info';
-							iconClassName = 'info-sign';
-							break;
-						case 'warning':
-							alertClassName = 'warning';
-							iconClassName = 'warning-sign';
-							break;
-						case 'error':
-							metadataStatusContainer.addClass('error');
-							alertClassName = 'error';
-							iconClassName = 'ban-circle';
-					}
-					metadataStatusContainer.html('<div class="alert alert-' + alertClassName + '"><span class="glyphicon glyphicon-' + iconClassName + '"></span>' + result.message + '</div>');
+					var messageContainerContent = '';
+					results.forEach(function(result) {
+						var alertClassName,
+							iconClassName;
+						switch (result.level) {
+							case 'ok':
+								metadataStatusContainer.addClass('db-success');
+								alertClassName = 'success';
+								iconClassName = 'ok';
+								break;
+							case 'notice':
+								alertClassName = 'info';
+								iconClassName = 'info-sign';
+								break;
+							case 'warning':
+								alertClassName = 'warning';
+								iconClassName = 'warning-sign';
+								break;
+							case 'error':
+								metadataStatusContainer.addClass('error');
+								alertClassName = 'error';
+								iconClassName = 'ban-circle';
+						}
+						messageContainerContent += '<div class="alert alert-' + alertClassName + '"><span class="glyphicon glyphicon-' + iconClassName + '"></span>' + result.message + '</div>';
+					});
+					metadataStatusContainer.html(messageContainerContent);
 				}).error(function() {
 					metadataStatusContainer.removeClass('loading').addClass('error').text('Unexpected error');
 				});

@@ -75,7 +75,7 @@ class RequestHandler extends FlowRequestHandler
         $componentContext = new ComponentContext($this->request, $this->response);
         $this->baseComponentChain->handle($componentContext);
 
-        $this->response->send();
+        $this->baseComponentChain->getResponse()->send();
 
         $this->bootstrap->shutdown('Runtime');
         $this->exit->__invoke();

@@ -146,6 +146,8 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
         $connectionSettings['host'] = $host;
         if ($connectionSettings['driver'] === 'pdo_pgsql') {
             $connectionSettings['dbname'] = 'template1';
+            // Postgres natively supports multibyte-UTF8. It does not know utf8mb4
+            $connectionSettings['charset'] = 'utf8';
 
             return $connectionSettings;
         } else {

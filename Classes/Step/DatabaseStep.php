@@ -108,6 +108,10 @@ class DatabaseStep extends \Neos\Setup\Step\AbstractStep
         $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.user', $formValues['user']);
         $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.password', $formValues['password']);
         $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.host', $formValues['host']);
+        // Postgres natively supports multibyte-UTF8. It does not know utf8mb4, which is the default now
+        if ($formValues['driver'] === 'pdo_pgsql') {
+            $this->distributionSettings = Arrays::setValueByPath($this->distributionSettings, 'Neos.Flow.persistence.backendOptions.charset', 'utf8');
+        }
         $this->configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $this->distributionSettings);
 
         $this->configurationManager->refreshConfiguration();

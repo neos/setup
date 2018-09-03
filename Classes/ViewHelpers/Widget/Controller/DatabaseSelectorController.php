@@ -92,8 +92,6 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
             $connection = $this->getConnectionAndConnect($connectionSettings);
             $databasePlatform = $connection->getDatabasePlatform();
             if ($databasePlatform instanceof MySqlPlatform) {
-                $queryResult = $connection->executeQuery('SHOW VARIABLES LIKE \'character_set_database\'')->fetch();
-                $databaseCharacterSet = strtolower($queryResult['Value']);
                 $databaseVersionQueryResult = $connection->executeQuery('SELECT VERSION()')->fetch();
                 $databaseVersion = isset($databaseVersionQueryResult['VERSION()']) ? $databaseVersionQueryResult['VERSION()'] : null;
                 if (isset($databaseVersion) && $this->databaseSupportsUtf8Mb4($databaseVersion) === false) {
@@ -102,21 +100,34 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
                         'message' => sprintf('The minimum required version for MySQL is "%s" or "%s" for MariaDB.', self::MINIMUM_MYSQL_VERSION, self::MINIMUM_MARIA_DB_VERSION)
                     ];
                 }
+
+                $charsetQueryResult = $connection->executeQuery('SHOW VARIABLES LIKE \'character_set_database\'')->fetch();
+                $databaseCharacterSet = strtolower($charsetQueryResult['Value']);
+                if (isset($databaseCharacterSet)) {
+                    if ($databaseCharacterSet === 'utf8mb4') {
+                        $result[] = ['level' => 'notice', 'message' => 'The selected database\'s character set is set to "utf8mb4" which is the recommended setting for MySQL/MariaDB databases.'];
+                    } else {
+                        $result[] = [
+                            'level' => 'warning',
+                            'message' => sprintf('The selected database\'s character set is "%s", however changing it to "utf8mb4" is urgently recommended. This setup tool won\'t do this for you.', $databaseCharacterSet)
+                        ];
+                    }
+                }
             } elseif ($databasePlatform instanceof PostgreSqlPlatform) {
-                $queryResult = $connection->executeQuery('SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = ?', [$databaseName])->fetch();
-                $databaseCharacterSet = strtolower($queryResult['pg_encoding_to_char']);
+                $charsetQueryResult = $connection->executeQuery('SELECT pg_encoding_to_char(encoding) FROM pg_database WHERE datname = ?', [$databaseName])->fetch();
+                $databaseCharacterSet = strtolower($charsetQueryResult['pg_encoding_to_char']);
+                if (isset($databaseCharacterSet)) {
+                    if ($databaseCharacterSet === 'utf8') {
+                        $result[] = ['level' => 'notice', 'message' => 'The selected database\'s character set is set to "utf8" which is the recommended setting for PostgreSQL databases.'];
+                    } else {
+                        $result[] = [
+                            'level' => 'warning',
+                            'message' => sprintf('The selected database\'s character set is "%s", however changing it to "utf8" is urgently recommended. This setup tool won\'t do this for you.', $databaseCharacterSet)
+                        ];
+                    }
+                }
             } else {
                 $result[] = ['level' => 'error', 'message' => sprintf('Only MySQL/MariaDB and PostgreSQL are supported, the selected database is "%s".', $databasePlatform->getName())];
-            }
-            if (isset($databaseCharacterSet)) {
-                if ($databaseCharacterSet === 'utf8mb4') {
-                    $result[] = ['level' => 'notice', 'message' => 'The selected database\'s character set is set to "utf8mb4" which is the recommended setting.'];
-                } else {
-                    $result[] = [
-                        'level' => 'warning',
-                        'message' => sprintf('The selected database\'s character set is "%s", however changing it to "utf8mb4" is urgently recommended. This setup tool won\'t do this for you.', $databaseCharacterSet)
-                    ];
-                }
             }
         } catch (\PDOException $exception) {
             $result = ['level' => 'error', 'message' => $exception->getMessage(), 'errorCode' => $exception->getCode()];
@@ -146,6 +157,8 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
         $connectionSettings['host'] = $host;
         if ($connectionSettings['driver'] === 'pdo_pgsql') {
             $connectionSettings['dbname'] = 'template1';
+            // Postgres natively supports multibyte-UTF8. It does not know utf8mb4
+            $connectionSettings['charset'] = 'utf8';
 
             return $connectionSettings;
         } else {

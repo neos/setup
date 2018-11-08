@@ -28,7 +28,7 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
     protected $configurationManager;
 
     const MINIMUM_MYSQL_VERSION = '5.7';
-    const MINIMUM_MARIA_DB_VERSION = '10.2.2-MariaDb';
+    const MINIMUM_MARIA_DB_VERSION = '10.2.2';
 
     /**
      * @return void
@@ -188,7 +188,7 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
      */
     protected function databaseSupportsUtf8Mb4(string $databaseVersion): bool
     {
-        if (strpos($databaseVersion, '-MariaDb') !== false &&
+        if (strpos($databaseVersion, '-MariaDB') !== false &&
             version_compare($databaseVersion, self::MINIMUM_MARIA_DB_VERSION) === -1
         ) {
             return false;

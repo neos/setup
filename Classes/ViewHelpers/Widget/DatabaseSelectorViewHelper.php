@@ -12,11 +12,12 @@ namespace Neos\Setup\ViewHelpers\Widget;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\FluidAdaptor\Core\Widget\AbstractWidgetViewHelper;
 
 /**
  * Simple widget that checks given database credentials and returns a list of available database names via AJAX
  */
-class DatabaseSelectorViewHelper extends \Neos\FluidAdaptor\Core\Widget\AbstractWidgetViewHelper
+class DatabaseSelectorViewHelper extends AbstractWidgetViewHelper
 {
     /**
      * @var boolean
@@ -39,18 +40,31 @@ class DatabaseSelectorViewHelper extends \Neos\FluidAdaptor\Core\Widget\Abstract
     protected $storeConfigurationInSession = false;
 
     /**
+     * Initialize the arguments.
      *
-     * @param string $driverDropdownFieldId id of the DB driver input field
-     * @param string $userFieldId id of the DB username input field
-     * @param string $passwordFieldId id of the DB password input field
-     * @param string $hostFieldId id of the DB host input field
-     * @param string $dbNameTextFieldId id of the input field for the db name (fallback)
-     * @param string $dbNameDropdownFieldId id of the select field for the fetched db names (this is hidden by default)
-     * @param string $statusContainerId id of the element displaying AJAX status (gets class "loading", "success" or "error" depending on the state)
-     * @param string $metadataStatusContainerId id of the element displaying status information of the selected database (gets class "loading", "success" or "error" depending on the state)
-     * @return string
+     * @return void
+     * @throws \Neos\FluidAdaptor\Core\ViewHelper\Exception
      */
-    public function render($driverDropdownFieldId, $userFieldId, $passwordFieldId, $hostFieldId, $dbNameTextFieldId, $dbNameDropdownFieldId, $statusContainerId, $metadataStatusContainerId)
+    public function initializeArguments()
+    {
+        parent::initializeArguments();
+        $this->registerArgument('driverDropdownFieldId', 'string', 'id of the DB driver input field', true);
+        $this->registerArgument('userFieldId', 'string', 'id of the DB username input field', true);
+        $this->registerArgument('passwordFieldId', 'string', 'id of the DB password input field', true);
+        $this->registerArgument('hostFieldId', 'string', 'id of the DB host input field', true);
+        $this->registerArgument('dbNameTextFieldId', 'string', 'id of the input field for the db name (fallback)', true);
+        $this->registerArgument('dbNameDropdownFieldId', 'string', 'id of the select field for the fetched db names (this is hidden by default)', true);
+        $this->registerArgument('statusContainerId', 'string', 'id of the element displaying AJAX status (gets class "loading", "success" or "error" depending on the state)', true);
+        $this->registerArgument('metadataStatusContainerId', 'string', 'id of the element displaying status information of the selected database (gets class "loading", "success" or "error" depending on the state)', true);
+    }
+
+    /**
+     * @return string
+     * @throws \Neos\Flow\Mvc\Exception\InfiniteLoopException
+     * @throws \Neos\FluidAdaptor\Core\Widget\Exception\InvalidControllerException
+     * @throws \Neos\FluidAdaptor\Core\Widget\Exception\MissingControllerException
+     */
+    public function render(): string
     {
         return $this->initiateSubRequest();
     }

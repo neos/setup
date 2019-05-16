@@ -52,6 +52,14 @@
 	(function($) {
 		$(function() {
 			$('[rel="tooltip"]').tooltip();
+
+			const $error = $('.alert.alert-error');
+			const $nextButton = $('.btn.btn-primary.pull-right');
+
+			if ($error.length > 0) {
+			    $nextButton.prop('disabled', true);
+			    $nextButton.addClass('neos-disabled');
+            }
 		});
 	})(jQuery);
 </script>

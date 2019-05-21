@@ -13,6 +13,7 @@ namespace Neos\Setup\Core;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Message;
+use Neos\Flow\Package\PackageManager;
 
 /**
  * Rendering class for displaying messages before the Flow proxy classes are built.
@@ -55,8 +56,8 @@ class MessageRenderer
             throw new \InvalidArgumentException('No messages given for rendering', 1416914970);
         }
 
-        /** @var \Neos\Flow\Package\PackageManagerInterface $packageManager */
-        $packageManager = $this->bootstrap->getEarlyInstance(\Neos\Flow\Package\PackageManagerInterface::class);
+        /** @var PackageManager $packageManager */
+        $packageManager = $this->bootstrap->getEarlyInstance(PackageManager::class);
 
         $css = '';
         if ($packageManager->isPackageAvailable('Neos.Twitter.Bootstrap')) {

@@ -11,20 +11,19 @@ namespace Neos\Setup\Core;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Error;
+use Neos\Flow\Annotations as Flow;
 
 /**
  * This class checks the basic requirements and returns an error object in case
  * of missing requirements.
- *
  * @Flow\Proxy(false)
  * @Flow\Scope("singleton")
  */
 class BasicRequirements
 {
     /**
-     * List of required PHP extensions and their error key if the extension was not found
+     * List of required PHP extensions and their error key if the extension was not found.
      *
      * @var array
      */
@@ -47,11 +46,11 @@ class BasicRequirements
         'SPL' => 1329403194,
         'iconv' => 1329403195,
         'PDO' => 1329403196,
-        'hash' => 1329403198
+        'hash' => 1329403198,
     ];
 
     /**
-     * List of required PHP functions and their error key if the function was not found
+     * List of required PHP functions and their error key if the function was not found.
      *
      * @var array
      */
@@ -59,11 +58,11 @@ class BasicRequirements
         'exec' => 1330707108,
         'shell_exec' => 1330707133,
         'escapeshellcmd' => 1330707156,
-        'escapeshellarg' => 1330707177
+        'escapeshellarg' => 1330707177,
     ];
 
     /**
-     * List of folders which need to be writable
+     * List of folders which need to be writable.
      *
      * @var array
      */
@@ -85,8 +84,6 @@ class BasicRequirements
         if ($filePermissionsError !== null) {
             return $this->setErrorTitle($filePermissionsError, 'Error with file system permissions');
         }
-
-        return null;
     }
 
     /**
@@ -102,14 +99,17 @@ class BasicRequirements
     }
 
     /**
-     * Checks PHP version and other parameters of the environment
+     * Checks PHP version and other parameters of the environment.
      *
      * @return mixed
      */
     protected function ensureRequiredEnvironment()
     {
         if (version_compare(phpversion(), \Neos\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, '<')) {
-            return new Error('Flow requires PHP version %s or higher but your installed version is currently %s.', 1172215790, [\Neos\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION, phpversion()]);
+            return new Error('Flow requires PHP version %s or higher but your installed version is currently %s.', 1172215790, [
+                \Neos\Flow\Core\Bootstrap::MINIMUM_PHP_VERSION,
+                phpversion(),
+            ]);
         }
         if (!extension_loaded('mbstring')) {
             return new Error('Flow requires the PHP extension "mbstring" to be available', 1207148809);
@@ -141,12 +141,10 @@ class BasicRequirements
         if (ini_get('session.auto_start')) {
             return new Error('Flow requires the PHP setting "session.auto_start" set to off.', 1224003190);
         }
-
-        return null;
     }
 
     /**
-     * Check write permissions for folders used for writing files
+     * Check write permissions for folders used for writing files.
      *
      * @return mixed
      */
@@ -165,7 +163,29 @@ class BasicRequirements
                 return new Error('The folder "%s" is not writable. Check your file permissions (did you use flow:core:setfilepermissions?)', 1330372964, [$folderPath]);
             }
         }
+        if (!$this->checkFileGroupWritePermission()) {
+            return new Error('Files are not created with group write permissions. Check your webserver setup. On systems without filesystem ACLs, you need to set umask 0002 for the PHP/webserver daemon.');
+        }
+    }
 
-        return null;
+    /**
+     * Check that files are being created with group write permissions.
+     *
+     * @return bool
+     */
+    protected function checkFileGroupWritePermission()
+    {
+        $testfolder = FLOW_PATH_ROOT . 'Test';
+        $testfile = FLOW_PATH_ROOT . 'Test/Test.txt';
+
+        mkdir($testfolder);
+        $testhandle = fopen($testfile, 'w');
+        $perms = fileperms($testfile);
+        $groupwrite = (($perms & 0x0010) ? 'w' : '-');
+        fclose($testhandle);
+        unlink($testfile);
+        rmdir($testfolder);
+
+        return ($groupwrite === 'w') ? true : false;
     }
 }

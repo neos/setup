@@ -12,6 +12,7 @@ namespace Neos\Setup\Controller;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Mvc\ActionResponse;
 
 /**
  * @Flow\Scope("singleton")
@@ -82,8 +83,8 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
             $formDefinition->setRenderingOption('finalStep', true);
             $this->authenticationManager->logout();
         }
-        $response = new \Neos\Flow\Http\Response($this->response);
-        $form = $formDefinition->bind($this->request, $response);
+
+        $form = $formDefinition->bind($this->request, $this->response);
 
         try {
             $renderedForm = $form->render();

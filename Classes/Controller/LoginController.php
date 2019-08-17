@@ -13,6 +13,7 @@ namespace Neos\Setup\Controller;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Message;
+use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Utility\Files;
 
 /**
@@ -41,7 +42,7 @@ class LoginController extends \Neos\Flow\Mvc\Controller\ActionController
 
     /**
      * @Flow\Inject
-     * @var \Neos\Flow\Configuration\ConfigurationManager
+     * @var ConfigurationManager
      */
     protected $configurationManager;
 
@@ -52,7 +53,7 @@ class LoginController extends \Neos\Flow\Mvc\Controller\ActionController
      */
     public function initializeObject()
     {
-        $settings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
+        $settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         if (isset($settings['security']['authentication']['providers']['Neos.Setup:Login']['providerOptions']['keyName'])) {
             $this->keyName = $settings['security']['authentication']['providers']['Neos.Setup:Login']['providerOptions']['keyName'];
         }

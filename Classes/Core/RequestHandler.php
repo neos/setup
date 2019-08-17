@@ -11,6 +11,7 @@ namespace Neos\Setup\Core;
  * source code.
  */
 
+use GuzzleHttp\Psr7\ServerRequest;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Configuration\Source\YamlSource;
@@ -18,10 +19,7 @@ use Neos\Error\Messages\Error;
 use Neos\Error\Messages\Message;
 use Neos\Flow\Http\Component\ComponentChainFactory;
 use Neos\Flow\Http\Component\ComponentContext;
-use Neos\Flow\Http\Request;
 use Neos\Flow\Http\RequestHandler as FlowRequestHandler;
-use Neos\Flow\Http\Response;
-use Neos\Flow\Http\Uri;
 use Neos\Utility\Arrays;
 use Neos\Utility\Files;
 
@@ -60,23 +58,17 @@ class RequestHandler extends FlowRequestHandler
      */
     public function handleRequest()
     {
-        // Create the request very early so the Resource Management has a chance to grab it:
-        $this->request = Request::createFromEnvironment();
-        $this->response = new Response();
+        $request = ServerRequest::fromGlobals();
+        $response = new \GuzzleHttp\Psr7\Response();
+        $this->componentContext = new ComponentContext($request, $response);
 
         $this->checkBasicRequirementsAndDisplayLoadingScreen();
 
         $this->boot();
         $this->resolveDependencies();
-        if (isset($this->settings['http']['baseUri'])) {
-            $this->request->setBaseUri(new Uri($this->settings['http']['baseUri']));
-        }
+        $this->baseComponentChain->handle($this->componentContext);
 
-        $componentContext = new ComponentContext($this->request, $this->response);
-        $this->baseComponentChain->handle($componentContext);
-
-        $this->baseComponentChain->getResponse()->send();
-
+        $this->sendResponse();
         $this->bootstrap->shutdown('Runtime');
         $this->exit->__invoke();
     }
@@ -104,9 +96,9 @@ class RequestHandler extends FlowRequestHandler
             return;
         }
 
-        $currentUri = substr($this->request->getUri(), strlen($this->request->getBaseUri()));
-        if ($currentUri === 'setup' || $currentUri === 'setup/') {
-            $redirectUri = ($currentUri === 'setup/' ? 'index' : 'setup/index');
+        $currentUriPath = $this->componentContext->getHttpRequest()->getUri()->getPath();
+        if ($currentUriPath === '/setup' || $currentUriPath === '/setup/') {
+            $redirectUri = '/setup/index';
             $messages = [new Message('We are now redirecting you to the setup. <b>This might take 10-60 seconds on the first run,</b> because the application needs to build up various caches.', null, [], 'Initialising Setup ...')];
             if ($phpBinaryDetectionMessage !== null) {
                 array_unshift($messages, $phpBinaryDetectionMessage);
@@ -268,25 +260,5 @@ class RequestHandler extends FlowRequestHandler
         }
 
         return false;
-    }
-
-    /**
-     * Note: We override this method because the base class now uses the ComponentChain to retrieve the request
-     *
-     * @return Request
-     */
-    public function getHttpRequest()
-    {
-        return $this->request;
-    }
-
-    /**
-     * Note: We override this method because the base class now uses the ComponentChain to retrieve the response
-     *
-     * @return Response
-     */
-    public function getHttpResponse()
-    {
-        return $this->response;
     }
 }

@@ -54,7 +54,7 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
      */
     public function checkConnectionAction($driver, $user, $password, $host)
     {
-        $this->response->setHeader('Content-Type', 'application/json');
+        $this->response->setContentType('application/json');
         $connectionSettings = $this->buildConnectionSettingsArray($driver, $user, $password, $host);
         try {
             $connection = $this->getConnectionAndConnect($connectionSettings);
@@ -84,7 +84,7 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
      */
     public function getMetadataAction($driver, $user, $password, $host, $databaseName)
     {
-        $this->response->setHeader('Content-Type', 'application/json');
+        $this->response->setContentType('application/json');
         $connectionSettings = $this->buildConnectionSettingsArray($driver, $user, $password, $host);
         $connectionSettings['dbname'] = $databaseName;
         $result = [];

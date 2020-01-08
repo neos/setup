@@ -12,7 +12,9 @@ namespace Neos\Setup;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Package\Package as BasePackage;
+use Neos\Setup\Core\RequestHandler;
 
 /**
  * Package base class of the Neos.Setup package.
@@ -27,8 +29,8 @@ class Package extends BasePackage
      * @param \Neos\Flow\Core\Bootstrap $bootstrap The current bootstrap
      * @return void
      */
-    public function boot(\Neos\Flow\Core\Bootstrap $bootstrap)
+    public function boot(Bootstrap $bootstrap)
     {
-        $bootstrap->registerRequestHandler(new \Neos\Setup\Core\RequestHandler($bootstrap));
+        $bootstrap->registerRequestHandler(new RequestHandler($bootstrap));
     }
 }

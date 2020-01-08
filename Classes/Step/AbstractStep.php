@@ -12,12 +12,16 @@ namespace Neos\Setup\Step;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Form\Core\Model\FormDefinition;
+use Neos\Form\Exception\PresetNotFoundException;
+use Neos\Form\Finishers\ClosureFinisher;
+use Neos\Utility\Arrays;
 
 /**
  * @Flow\Scope("singleton")
  */
-abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
+abstract class AbstractStep implements StepInterface
 {
     /**
      * @var boolean
@@ -58,7 +62,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
      */
     public function initializeObject()
     {
-        $this->formSettings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Form');
+        $this->formSettings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Form');
     }
 
     /**
@@ -97,13 +101,13 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
     public function getPresetConfiguration($presetName)
     {
         if (!isset($this->formSettings['presets'][$presetName])) {
-            throw new \Neos\Form\Exception\PresetNotFoundException(sprintf('The Preset "%s" was not found underneath Neos: Form: presets.', $presetName), 1332170104);
+            throw new PresetNotFoundException(sprintf('The Preset "%s" was not found underneath Neos: Form: presets.', $presetName), 1332170104);
         }
         $preset = $this->formSettings['presets'][$presetName];
         if (isset($preset['parentPreset'])) {
             $parentPreset = $this->getPresetConfiguration($preset['parentPreset']);
             unset($preset['parentPreset']);
-            $preset = \Neos\Utility\Arrays::arrayMergeRecursiveOverrule($parentPreset, $preset);
+            $preset = Arrays::arrayMergeRecursiveOverrule($parentPreset, $preset);
         }
 
         return $preset;
@@ -124,7 +128,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
         $formDefinition = new FormDefinition($formIdentifier, $formConfiguration);
         $this->buildForm($formDefinition);
 
-        $closureFinisher = new \Neos\Form\Finishers\ClosureFinisher();
+        $closureFinisher = new ClosureFinisher();
         $closureFinisher->setOption('closure', $callback);
         $formDefinition->addFinisher($closureFinisher);
 
@@ -137,7 +141,7 @@ abstract class AbstractStep implements \Neos\Setup\Step\StepInterface
      * @return void
      * @api
      */
-    abstract protected function buildForm(\Neos\Form\Core\Model\FormDefinition $formDefinition);
+    abstract protected function buildForm(FormDefinition $formDefinition);
 
     /**
      * This method is called when the form of this step has been submitted

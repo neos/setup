@@ -25,10 +25,6 @@ class PdoDriverCondition extends AbstractCondition
      */
     public function isMet()
     {
-        if (defined('PDO::ATTR_DRIVER_NAME') === false || \PDO::getAvailableDrivers() === []) {
-            return false;
-        }
-
-        return true;
+        return !(defined('PDO::ATTR_DRIVER_NAME') === false || \PDO::getAvailableDrivers() === []);
     }
 }

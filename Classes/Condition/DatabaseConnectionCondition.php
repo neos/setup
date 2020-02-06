@@ -11,7 +11,8 @@ namespace Neos\Setup\Condition;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
+use Doctrine\DBAL\DriverManager;
+use Neos\Flow\Configuration\ConfigurationManager;
 
 /**
  * Condition that checks whether connection to the configured database can be established
@@ -25,9 +26,9 @@ class DatabaseConnectionCondition extends AbstractCondition
      */
     public function isMet()
     {
-        $settings = $this->configurationManager->getConfiguration(\Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
+        $settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         try {
-            \Doctrine\DBAL\DriverManager::getConnection($settings['persistence']['backendOptions'])->connect();
+            DriverManager::getConnection($settings['persistence']['backendOptions'])->connect();
         } catch (\PDOException $exception) {
             return false;
         }

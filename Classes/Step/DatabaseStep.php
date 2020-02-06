@@ -26,7 +26,7 @@ use Neos\Setup\Exception as SetupException;
 /**
  * @Flow\Scope("singleton")
  */
-class DatabaseStep extends \Neos\Setup\Step\AbstractStep
+class DatabaseStep extends AbstractStep
 {
     /**
      * @var \Neos\Flow\Configuration\Source\YamlSource

@@ -12,6 +12,7 @@ namespace Neos\Setup\Core;
  */
 
 use GuzzleHttp\Psr7\ServerRequest;
+use Neos\Error\Messages\Warning;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Configuration\Source\YamlSource;
@@ -37,7 +38,11 @@ class RequestHandler extends FlowRequestHandler
      */
     public function canHandleRequest()
     {
-        return (PHP_SAPI !== 'cli' && ((strlen($_SERVER['REQUEST_URI']) === 6 && $_SERVER['REQUEST_URI'] === '/setup') || in_array(substr($_SERVER['REQUEST_URI'], 0, 7), ['/setup/', '/setup?'])));
+        return (PHP_SAPI !== 'cli'
+            && (
+                (strlen($_SERVER['REQUEST_URI']) === 6 && $_SERVER['REQUEST_URI'] === '/setup')
+                || in_array(substr($_SERVER['REQUEST_URI'], 0, 7), ['/setup/', '/setup?'])
+            ));
     }
 
     /**
@@ -148,7 +153,7 @@ class RequestHandler extends FlowRequestHandler
                 $defaultPhpBinaryPathAndFilename = str_replace('\\', '/', $defaultPhpBinaryPathAndFilename) . '.exe';
             }
             if ($phpBinaryPathAndFilename !== $defaultPhpBinaryPathAndFilename) {
-                $distributionSettings = \Neos\Utility\Arrays::setValueByPath($distributionSettings, 'Neos.Flow.core.phpBinaryPathAndFilename', $phpBinaryPathAndFilename);
+                $distributionSettings = Arrays::setValueByPath($distributionSettings, 'Neos.Flow.core.phpBinaryPathAndFilename', $phpBinaryPathAndFilename);
                 $configurationSource->save(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, $distributionSettings);
             }
         }
@@ -189,14 +194,14 @@ class RequestHandler extends FlowRequestHandler
         }
         if ($phpVersion === null) {
             return new Error('The specified path to your PHP binary (see Configuration/Settings.yaml) is incorrect: not found at "%s"', 1341839376, [$phpBinaryPathAndFilename], 'Environment requirements not fulfilled');
-        } else {
-            $phpMinorVersionMatch = array_slice(explode('.', $phpVersion), 0, 2) === array_slice(explode('.', PHP_VERSION), 0, 2);
-            if ($phpMinorVersionMatch) {
-                return new \Neos\Error\Messages\Warning('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not the exact same version as is currently running ("%s").', 1416913501, [$phpVersion, PHP_VERSION], 'Possible PHP version mismatch');
-            } else {
-                return new Error('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not compatible to the version that is currently running ("%s").', 1341839377, [$phpVersion, PHP_VERSION], 'Environment requirements not fulfilled');
-            }
         }
+
+        $phpMinorVersionMatch = array_slice(explode('.', $phpVersion), 0, 2) === array_slice(explode('.', PHP_VERSION), 0, 2);
+        if ($phpMinorVersionMatch) {
+            return new Warning('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not the exact same version as is currently running ("%s").', 1416913501, [$phpVersion, PHP_VERSION], 'Possible PHP version mismatch');
+        }
+
+        return new Error('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not compatible to the version that is currently running ("%s").', 1341839377, [$phpVersion, PHP_VERSION], 'Environment requirements not fulfilled');
     }
 
     /**
@@ -222,7 +227,7 @@ class RequestHandler extends FlowRequestHandler
         $lastCheckMessage = null;
         foreach ($environmentPaths as $path) {
             $path = rtrim(str_replace('\\', '/', $path), '/');
-            if (strlen($path) === 0) {
+            if ($path === '') {
                 continue;
             }
             $phpBinaryPathAndFilename = $path . '/php' . (DIRECTORY_SEPARATOR !== '/' ? '.exe' : '');
@@ -255,10 +260,6 @@ class RequestHandler extends FlowRequestHandler
         }
 
         exec($command, $outputLines, $exitCode);
-        if ($exitCode === 0) {
-            return true;
-        }
-
-        return false;
+        return $exitCode === 0;
     }
 }

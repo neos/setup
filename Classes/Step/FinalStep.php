@@ -12,11 +12,12 @@ namespace Neos\Setup\Step;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Form\Core\Model\FormDefinition;
 
 /**
  * @Flow\Scope("singleton")
  */
-class FinalStep extends \Neos\Setup\Step\AbstractStep
+class FinalStep extends AbstractStep
 {
     /**
      * Returns the form definitions for the step
@@ -24,7 +25,7 @@ class FinalStep extends \Neos\Setup\Step\AbstractStep
      * @param \Neos\Form\Core\Model\FormDefinition $formDefinition
      * @return void
      */
-    protected function buildForm(\Neos\Form\Core\Model\FormDefinition $formDefinition)
+    protected function buildForm(FormDefinition $formDefinition)
     {
         $page1 = $formDefinition->createPage('page1');
         $page1->setRenderingOption('header', 'Setup complete');

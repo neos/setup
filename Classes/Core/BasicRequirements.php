@@ -11,8 +11,9 @@ namespace Neos\Setup\Core;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Error;
+use Neos\Flow\Annotations as Flow;
+use Neos\Utility\Files;
 
 /**
  * This class checks the basic requirements and returns an error object in case
@@ -154,9 +155,9 @@ class BasicRequirements
     {
         foreach ($this->requiredWritableFolders as $folder) {
             $folderPath = FLOW_PATH_ROOT . $folder;
-            if (!is_dir($folderPath) && !\Neos\Utility\Files::is_link($folderPath)) {
+            if (!is_dir($folderPath) && !Files::is_link($folderPath)) {
                 try {
-                    \Neos\Utility\Files::createDirectoryRecursively($folderPath);
+                    Files::createDirectoryRecursively($folderPath);
                 } catch (\Neos\Flow\Utility\Exception $exception) {
                     return new Error('Unable to create folder "%s". Check your file permissions (did you use flow:core:setfilepermissions?).', 1330363887, [$folderPath]);
                 }

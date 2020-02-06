@@ -11,13 +11,18 @@ namespace Neos\Setup\Controller;
  * source code.
  */
 
+use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Mvc\ActionResponse;
+use Neos\Flow\Mvc\Controller\ActionController;
+use Neos\Form\Core\Model\FinisherContext;
+use Neos\Setup\Step\StepInterface;
 
 /**
  * @Flow\Scope("singleton")
  */
-class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
+class SetupController extends ActionController
 {
     /**
      * The authentication manager
@@ -54,7 +59,7 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
      */
     protected function initializeAction()
     {
-        $this->distributionSettings = $this->configurationSource->load(FLOW_PATH_CONFIGURATION . \Neos\Flow\Configuration\ConfigurationManager::CONFIGURATION_TYPE_SETTINGS);
+        $this->distributionSettings = $this->configurationSource->load(FLOW_PATH_CONFIGURATION . ConfigurationManager::CONFIGURATION_TYPE_SETTINGS);
     }
 
     /**
@@ -68,7 +73,7 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
         $this->checkRequestedStepIndex();
         $currentStep = $this->instantiateCurrentStep();
         $controller = $this;
-        $callback = function (\Neos\Form\Core\Model\FinisherContext $finisherContext) use ($controller, $currentStep) {
+        $callback = function (FinisherContext $finisherContext) use ($controller, $currentStep) {
             $controller->postProcessStep($finisherContext->getFormValues(), $currentStep);
         };
         $formDefinition = $currentStep->getFormDefinition($callback);
@@ -89,7 +94,7 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
         try {
             $renderedForm = $form->render();
         } catch (\Neos\Setup\Exception $exception) {
-            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \Neos\Error\Messages\Message::SEVERITY_ERROR);
+            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', Message::SEVERITY_ERROR);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex]);
         }
         $this->view->assignMultiple([
@@ -117,9 +122,9 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
             if ($this->currentStepIndex === 0) {
                 throw new \Neos\Setup\Exception('Not all requirements are met for the first setup step, aborting setup', 1332169088);
             }
-            $this->addFlashMessage('Not all requirements are met for step "%s"', '', \Neos\Error\Messages\Message::SEVERITY_ERROR, [$stepOrder[$this->currentStepIndex]]);
+            $this->addFlashMessage('Not all requirements are met for step "%s"', '', Message::SEVERITY_ERROR, [$stepOrder[$this->currentStepIndex]]);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex - 1]);
-        };
+        }
     }
 
     /**
@@ -134,7 +139,7 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
             throw new \Neos\Setup\Exception(sprintf('No className specified for setup step "%s", setup can\'t be invoked', $currentStepIdentifier), 1332169398);
         }
         $currentStep = new $currentStepConfiguration['className']();
-        if (!$currentStep instanceof \Neos\Setup\Step\StepInterface) {
+        if (!$currentStep instanceof StepInterface) {
             throw new \Neos\Setup\Exception(sprintf('ClassName %s of setup step "%s" does not implement StepInterface, setup can\'t be invoked', $currentStepConfiguration['className'], $currentStepIdentifier), 1332169576);
         }
         if (isset($currentStepConfiguration['options'])) {
@@ -183,12 +188,12 @@ class SetupController extends \Neos\Flow\Mvc\Controller\ActionController
      * @param \Neos\Setup\Step\StepInterface $currentStep
      * @return void
      */
-    public function postProcessStep(array $formValues, \Neos\Setup\Step\StepInterface $currentStep)
+    public function postProcessStep(array $formValues, StepInterface $currentStep)
     {
         try {
             $currentStep->postProcessFormValues($formValues);
         } catch (\Neos\Setup\Exception $exception) {
-            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', \Neos\Error\Messages\Message::SEVERITY_ERROR);
+            $this->addFlashMessage($exception->getMessage(), 'Exception while executing setup step', Message::SEVERITY_ERROR);
             $this->redirect('index', null, null, ['step' => $this->currentStepIndex]);
         }
         $this->redirect('index', null, null, ['step' => $this->currentStepIndex + 1]);

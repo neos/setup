@@ -11,15 +11,17 @@ namespace Neos\Setup\Controller;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Message;
+use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Mvc\Controller\ActionController;
+use Neos\Flow\Security\Exception\AuthenticationRequiredException;
 use Neos\Utility\Files;
 
 /**
  * @Flow\Scope("singleton")
  */
-class LoginController extends \Neos\Flow\Mvc\Controller\ActionController
+class LoginController extends ActionController
 {
     /**
      * @var string
@@ -99,7 +101,7 @@ class LoginController extends \Neos\Flow\Mvc\Controller\ActionController
                 unlink($this->settings['initialPasswordFile']);
             }
             $this->redirect('index', 'Setup', null, ['step' => $step]);
-        } catch (\Neos\Flow\Security\Exception\AuthenticationRequiredException $exception) {
+        } catch (AuthenticationRequiredException $exception) {
             $this->addFlashMessage('Sorry, you were not able to authenticate.', 'Authentication error', Message::SEVERITY_ERROR);
             $this->redirect('login', null, null, ['step' => $step]);
         }

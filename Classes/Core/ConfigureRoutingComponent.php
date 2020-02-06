@@ -13,9 +13,11 @@ namespace Neos\Setup\Core;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Configuration\Source\YamlSource;
 use Neos\Flow\Http\Component\ComponentContext;
 use Neos\Flow\Http\Component\ComponentInterface;
 use Neos\Flow\Mvc\Routing\Router;
+use Neos\Flow\Mvc\Routing\RoutingComponent;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Package\PackageManager;
 
@@ -70,9 +72,11 @@ class ConfigureRoutingComponent implements ComponentInterface
      */
     public function handle(ComponentContext $componentContext)
     {
-        $configurationSource = $this->objectManager->get(\Neos\Flow\Configuration\Source\YamlSource::class);
-        $routesConfiguration = $configurationSource->load($this->packageManager->getPackage('Neos.Setup')->getConfigurationPath() . ConfigurationManager::CONFIGURATION_TYPE_ROUTES);
+        $configurationSource = $this->objectManager->get(YamlSource::class);
+        $routesConfiguration = $configurationSource->load(
+            $this->packageManager->getPackage('Neos.Setup')->getConfigurationPath() . ConfigurationManager::CONFIGURATION_TYPE_ROUTES
+        );
         $this->router->setRoutesConfiguration($routesConfiguration);
-        $componentContext->setParameter(\Neos\Flow\Mvc\Routing\RoutingComponent::class, 'skipRouterInitialization', true);
+        $componentContext->setParameter(RoutingComponent::class, 'skipRouterInitialization', true);
     }
 }

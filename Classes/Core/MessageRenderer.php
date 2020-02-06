@@ -11,8 +11,9 @@ namespace Neos\Setup\Core;
  * source code.
  */
 
-use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Message;
+use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Package\PackageManager;
 
 /**
@@ -37,7 +38,7 @@ class MessageRenderer
      *
      * @param \Neos\Flow\Core\Bootstrap $bootstrap
      */
-    public function __construct(\Neos\Flow\Core\Bootstrap $bootstrap)
+    public function __construct(Bootstrap $bootstrap)
     {
         $this->bootstrap = $bootstrap;
     }

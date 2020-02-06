@@ -11,15 +11,17 @@ namespace Neos\Setup\ViewHelpers\Widget\Controller;
  * source code.
  */
 
+use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
 use Doctrine\DBAL\Platforms\PostgreSqlPlatform;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\FluidAdaptor\Core\Widget\AbstractWidgetController;
 
 /**
  * Controller for the DatabaseSelector Fluid Widget
  */
-class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\AbstractWidgetController
+class DatabaseSelectorController extends AbstractWidgetController
 {
     /**
      * @Flow\Inject
@@ -161,11 +163,11 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
             $connectionSettings['charset'] = 'utf8';
 
             return $connectionSettings;
-        } else {
-            unset($connectionSettings['dbname']);
-
-            return $connectionSettings;
         }
+
+        unset($connectionSettings['dbname']);
+
+        return $connectionSettings;
     }
 
     /**
@@ -174,7 +176,7 @@ class DatabaseSelectorController extends \Neos\FluidAdaptor\Core\Widget\Abstract
      */
     protected function getConnectionAndConnect(array $connectionSettings)
     {
-        $connection = \Doctrine\DBAL\DriverManager::getConnection($connectionSettings);
+        $connection = DriverManager::getConnection($connectionSettings);
         $connection->connect();
 
         return $connection;

@@ -73,7 +73,7 @@ class RequestHandler extends FlowRequestHandler
         $this->resolveDependencies();
         $this->baseComponentChain->handle($this->componentContext);
 
-        $this->sendResponse();
+        $this->sendResponse($this->baseComponentChain->getResponse());
         $this->bootstrap->shutdown('Runtime');
         $this->exit->__invoke();
     }

@@ -18,11 +18,11 @@ use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Configuration\Source\YamlSource;
 use Neos\Error\Messages\Error;
 use Neos\Error\Messages\Message;
-use Neos\Flow\Http\Component\ComponentContext;
 use Neos\Flow\Http\Middleware\MiddlewaresChainFactory;
 use Neos\Flow\Http\RequestHandler as FlowRequestHandler;
 use Neos\Utility\Arrays;
 use Neos\Utility\Files;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * A request handler which can handle HTTP requests.
@@ -63,17 +63,16 @@ class RequestHandler extends FlowRequestHandler
      */
     public function handleRequest()
     {
-        $request = ServerRequest::fromGlobals();
-        // TODO: Required for b/c - can be removed with Flow 7
-        $response = new \GuzzleHttp\Psr7\Response();
-        $this->componentContext = new ComponentContext($request, $response);
-        $this->bootstrap->setEarlyInstance(ComponentContext::class, $this->componentContext);
+        $this->httpRequest = ServerRequest::fromGlobals();
 
         $this->checkBasicRequirementsAndDisplayLoadingScreen();
 
         $this->boot();
         $this->resolveDependencies();
-        $response = $this->middlewaresChain->handle($request);
+        $this->middlewaresChain->onStep(function (ServerRequestInterface $request) {
+            $this->httpRequest = $request;
+        });
+        $response = $this->middlewaresChain->handle($this->httpRequest);
 
         $this->sendResponse($response);
         $this->bootstrap->shutdown('Runtime');

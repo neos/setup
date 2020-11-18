@@ -18,11 +18,11 @@ use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Configuration\Source\YamlSource;
 use Neos\Error\Messages\Error;
 use Neos\Error\Messages\Message;
-use Neos\Flow\Http\Component\ComponentChainFactory;
-use Neos\Flow\Http\Component\ComponentContext;
+use Neos\Flow\Http\Middleware\MiddlewaresChainFactory;
 use Neos\Flow\Http\RequestHandler as FlowRequestHandler;
 use Neos\Utility\Arrays;
 use Neos\Utility\Files;
+use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * A request handler which can handle HTTP requests.
@@ -63,17 +63,18 @@ class RequestHandler extends FlowRequestHandler
      */
     public function handleRequest()
     {
-        $request = ServerRequest::fromGlobals();
-        $response = new \GuzzleHttp\Psr7\Response();
-        $this->componentContext = new ComponentContext($request, $response);
+        $this->httpRequest = ServerRequest::fromGlobals();
 
         $this->checkBasicRequirementsAndDisplayLoadingScreen();
 
         $this->boot();
         $this->resolveDependencies();
-        $this->baseComponentChain->handle($this->componentContext);
+        $this->middlewaresChain->onStep(function (ServerRequestInterface $request) {
+            $this->httpRequest = $request;
+        });
+        $response = $this->middlewaresChain->handle($this->httpRequest);
 
-        $this->sendResponse($this->baseComponentChain->getResponse());
+        $this->sendResponse($response);
         $this->bootstrap->shutdown('Runtime');
         $this->exit->__invoke();
     }
@@ -101,7 +102,7 @@ class RequestHandler extends FlowRequestHandler
             return;
         }
 
-        $currentUriPath = $this->componentContext->getHttpRequest()->getUri()->getPath();
+        $currentUriPath = $this->getHttpRequest()->getUri()->getPath();
         if ($currentUriPath === '/setup' || $currentUriPath === '/setup/') {
             $redirectUri = '/setup/index';
             $messages = [new Message('We are now redirecting you to the setup. <b>This might take 10-60 seconds on the first run,</b> because the application needs to build up various caches.', null, [], 'Initialising Setup ...')];
@@ -121,12 +122,12 @@ class RequestHandler extends FlowRequestHandler
     protected function resolveDependencies()
     {
         $objectManager = $this->bootstrap->getObjectManager();
-        $componentChainFactory = $objectManager->get(ComponentChainFactory::class);
         $configurationManager = $objectManager->get(ConfigurationManager::class);
         $this->settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
         $setupSettings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Setup');
-        $httpChainSettings = Arrays::arrayMergeRecursiveOverrule($this->settings['http']['chain'], $setupSettings['http']['chain']);
-        $this->baseComponentChain = $componentChainFactory->create($httpChainSettings);
+        $httpChainSettings = Arrays::arrayMergeRecursiveOverrule($this->settings['http']['middlewares'], $setupSettings['http']['middlewares']);
+        $factory = $objectManager->get(MiddlewaresChainFactory::class);
+        $this->middlewaresChain = $factory->create($httpChainSettings);
     }
 
     /**

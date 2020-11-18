@@ -25,12 +25,10 @@ Neos:
     view:
       title: Setup
     http:
-      chain:
-        preprocess:
-          chain:
-            configureRouting:
-              position: start
-              component: Neos\Setup\Core\ConfigureRoutingComponent
+      middlewares:
+        configureRouting:
+          position: before routing
+          middleware: Neos\Setup\Core\ConfigureRoutingMiddleware
   Flow:
     security:
       authentication:

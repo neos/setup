@@ -14,17 +14,18 @@ namespace Neos\Setup\Core;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Configuration\Source\YamlSource;
-use Neos\Flow\Http\Component\ComponentContext;
-use Neos\Flow\Http\Component\ComponentInterface;
 use Neos\Flow\Mvc\Routing\Router;
-use Neos\Flow\Mvc\Routing\RoutingComponent;
 use Neos\Flow\ObjectManagement\ObjectManagerInterface;
 use Neos\Flow\Package\PackageManager;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * Configure routing HTTP component for Neos setup
+ * Configure routing HTTP middleware for Neos setup
  */
-class ConfigureRoutingComponent implements ComponentInterface
+class ConfigureRoutingMiddleware implements MiddlewareInterface
 {
     /**
      * @Flow\Inject
@@ -66,17 +67,14 @@ class ConfigureRoutingComponent implements ComponentInterface
     /**
      * Set the routes configuration for the Neos setup and configures the routing component
      * to skip initialisation, which would overwrite the specific settings again.
-     *
-     * @param ComponentContext $componentContext
-     * @return void
      */
-    public function handle(ComponentContext $componentContext)
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $next): ResponseInterface
     {
         $configurationSource = $this->objectManager->get(YamlSource::class);
         $routesConfiguration = $configurationSource->load(
             $this->packageManager->getPackage('Neos.Setup')->getConfigurationPath() . ConfigurationManager::CONFIGURATION_TYPE_ROUTES
         );
         $this->router->setRoutesConfiguration($routesConfiguration);
-        $componentContext->setParameter(RoutingComponent::class, 'skipRouterInitialization', true);
+        return $next->handle($request);
     }
 }

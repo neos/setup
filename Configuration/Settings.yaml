@@ -2,12 +2,12 @@ Neos:
   Setup:
     healthchecks:
       compiletime:
-        functions:
+        basicRequirements:
           postion: 'start 100'
-          className: Neos\Setup\Infrastructure\Healthcheck\DatabaseHealthcheck
+          className: Neos\Setup\Infrastructure\Healthcheck\BasicRequirementsHealthcheck
         database:
           postion: 'start 200'
-          className: Neos\Setup\Infrastructure\Healthcheck\RequiredFunctionsHealthcheck
+          className: Neos\Setup\Infrastructure\Healthcheck\DatabaseHealthcheck
 
       runtime:
         routing:

@@ -17,12 +17,9 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 use Neos\Utility\Arrays;
 use Neos\Setup\Exception as SetupException;
-use Neos\CliSetup\Infrastructure\Database\DatabaseConnectionService;
+use Neos\Setup\Infrastructure\Database\DatabaseConnectionService;
 use Symfony\Component\Yaml\Yaml;
 
-/**
- * @Flow\Scope("singleton")
- */
 class SetupCommandController extends CommandController
 {
 
@@ -30,13 +27,13 @@ class SetupCommandController extends CommandController
      * @var DatabaseConnectionService
      * @Flow\Inject
      */
-    protected $databaseConnectionService;
+    protected DatabaseConnectionService $databaseConnectionService;
 
     /**
      * @var array
      * @Flow\InjectConfiguration(package="Neos.Flow", path="persistence.backendOptions")
      */
-    protected $persistenceConfiguration;
+    protected array $persistenceConfiguration;
 
     /**
      * Configure the database connection for flow persistence

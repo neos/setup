@@ -29,12 +29,17 @@ class HealthCollection implements \JsonSerializable, \IteratorAggregate
 
     public function hasError(): bool
     {
+        return $this->getFirstError() ? true : false;
+    }
+
+    public function getFirstError(): ?Health
+    {
         foreach ($this->items as $item) {
             if ($item->status === Status::ERROR) {
-                return true;
+                return $item;
             }
         }
-        return false;
+        return null;
     }
 
     public function jsonSerialize(): mixed

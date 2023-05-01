@@ -90,6 +90,7 @@ class RequestHandler implements RequestHandlerInterface
             );
         }
         $response = (new Response($healthCollection->hasError() ? 500 : 200))
+            ->withHeader('Content-Type', 'application/json')
             ->withBody(ContentStream::fromContents(
                 json_encode($healthCollection, JSON_THROW_ON_ERROR)
             ));

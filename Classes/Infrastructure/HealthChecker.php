@@ -34,13 +34,13 @@ class HealthChecker
 
             /** @var HealthcheckInterface $className */
             $healthcheck = $className::fromBootstrap($this->bootstrap);
+            $healt = $healthCollection->hasError()
+                ? new Health('', Status::NOT_RUN)
+                : $healthcheck->execute();
+            $healt->title = $healthcheck->getTitle();
+
             $healthCollection = $healthCollection->append(
-                $healthCollection->hasError()
-                    ? new Health(
-                    $healthcheck->getTitle(),
-                    '...',
-                    Status::UNKNOWN
-                ) : $healthcheck->execute()
+                $healt
             );
         }
 

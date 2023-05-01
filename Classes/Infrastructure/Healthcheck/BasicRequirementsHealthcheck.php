@@ -4,7 +4,6 @@ namespace Neos\Setup\Infrastructure\Healthcheck;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Setup\Domain\Health;
 use Neos\Setup\Domain\HealthcheckInterface;
-use Neos\Setup\Domain\HealthCollection;
 use Neos\Setup\Domain\Status;
 use Neos\Utility\Files;
 
@@ -36,14 +35,13 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
             }
         }
 
-        return new Health($this->getTitle(), 'All basic requirements are fullfilled.', Status::OK);
+        return new Health('All basic requirements are fullfilled.', Status::OK);
     }
 
     private function checkDirectorySeparator(): Health
     {
         if (DIRECTORY_SEPARATOR !== '/' && PHP_WINDOWS_VERSION_MAJOR < 6) {
             return new Health(
-                $this->getTitle(),
                 <<<MSG
                     Flow does not support Windows versions older than Windows Vista or Windows Server 2008, because they lack proper support for symbolic links.
                     MSG,
@@ -51,7 +49,7 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
             );
         }
 
-        return new Health($this->getTitle(), 'Directory separator and/or windows version are suitable.', Status::OK);
+        return new Health('Directory separator and/or windows version are suitable.', Status::OK);
     }
 
     private function checkFilePermissions(): Health
@@ -65,7 +63,6 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
                     Files::createDirectoryRecursively($folderPath);
                 } catch (\Neos\Flow\Utility\Exception $_) {
                     return new Health(
-                        $this->getTitle(),
                         <<<MSG
                     The folder "$folder" does not exist and could not be created but we need it.
                     MSG,
@@ -76,7 +73,6 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
 
             if (!is_writable($folderPath)) {
                 return new Health(
-                    $this->getTitle(),
                     <<<MSG
                     The folder "$folder" is not writeable but should be.
                     MSG,
@@ -85,7 +81,7 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
             }
         }
 
-        return new Health($this->getTitle(), 'All required folders exist and are writeable', Status::OK);
+        return new Health('All required folders exist and are writeable', Status::OK);
     }
 
     private function requiredFunctionsAvailable(): Health
@@ -100,7 +96,6 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
         foreach ($requiredFunctions as $requiredFunction) {
             if (!is_callable($requiredFunction)) {
                 return new Health(
-                    $this->getTitle(),
                     <<<MSG
                     Function $requiredFunction is not callable but required.
                     MSG,
@@ -109,14 +104,13 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
             }
         }
 
-        return new Health($this->getTitle(), 'All required functions existing', Status::OK);
+        return new Health('All required functions existing', Status::OK);
     }
 
     private function checkSessionAutostart(): Health
     {
         if (ini_get('session.auto_start')) {
             return new Health(
-                $this->getTitle(),
                 <<<MSG
                     "session.auto_start" is enabled in your php.ini. This is not supported and will cause problems.
                     MSG,
@@ -124,7 +118,7 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
             );
         }
 
-        return new Health($this->getTitle(), 'session.auto_start disabled.', Status::OK);
+        return new Health('session.auto_start disabled.', Status::OK);
     }
 
     /**
@@ -139,7 +133,6 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
         $docComment = $method->getDocComment();
         if ($docComment === false || $docComment === '') {
             return new Health(
-                $this->getTitle(),
                 <<<MSG
                     Reflection of doc comments is not supported by your PHP setup. Please check if you have installed an accelerator which removes doc comments.
                     MSG,
@@ -147,6 +140,6 @@ class BasicRequirementsHealthcheck implements HealthcheckInterface
             );
         }
 
-        return new Health($this->getTitle(), 'Reflection of doc comments is supported.', Status::OK);
+        return new Health('Reflection of doc comments is supported.', Status::OK);
     }
 }

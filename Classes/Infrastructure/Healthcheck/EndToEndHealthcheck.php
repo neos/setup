@@ -21,6 +21,6 @@ class EndToEndHealthcheck implements HealthcheckInterface
 
     public function execute(): Health
     {
-        return new Health($this->getTitle(), 'Flow is up and running.', Status::OK);
+        return new Health('Flow is up and running.', Status::OK);
     }
 }

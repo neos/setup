@@ -36,7 +36,6 @@ class DatabaseHealthcheck implements HealthcheckInterface
 
         if (!$connectionSettings) {
             return new Health(
-                $this->getTitle(),
                 <<<'MSG'
                 please configure your database in the settings or use the command <i>./flow setup:database</i>
                 MSG,
@@ -49,13 +48,12 @@ class DatabaseHealthcheck implements HealthcheckInterface
             $connection->connect();
         } catch (DBALException | \PDOException) {
             return new Health(
-                $this->getTitle(),
                 <<<'MSG'
                 please check your database settings. You can also rerun <i>./flow setup:database</i>
                 MSG,
                 Status::ERROR
             );
         }
-        return new Health($this->getTitle(), 'Connection up', Status::OK);
+        return new Health('Connection up', Status::OK);
     }
 }

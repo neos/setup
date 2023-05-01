@@ -8,4 +8,5 @@ enum Status: string
     case ERROR = 'ERROR';
     case WARNING = 'WARNING';
     case UNKNOWN = 'UNKNOWN';
+    case NOT_RUN = 'NOT_RUN';
 }

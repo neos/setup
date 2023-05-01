@@ -1,0 +1,8 @@
+-
+  name: 'Setup'
+  uriPattern: 'setup/runtime.json'
+  defaults:
+    '@package': 'Neos.Setup'
+    '@controller': 'Setup'
+    '@action': 'index'
+    '@format': 'json'

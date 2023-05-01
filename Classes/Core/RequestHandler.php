@@ -18,11 +18,7 @@ use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Core\RequestHandlerInterface;
 use Neos\Flow\Http\ContentStream;
 use Neos\Flow\Http\Helper\ResponseInformationHelper;
-use Neos\Setup\Domain\Health;
-use Neos\Setup\Domain\HealthcheckInterface;
-use Neos\Setup\Domain\HealthCollection;
-use Neos\Setup\Domain\Status;
-use Neos\Utility\PositionalArraySorter;
+use Neos\Setup\Infrastructure\HealthChecker;
 use Psr\Http\Message\ResponseInterface;
 
 /**
@@ -67,28 +63,11 @@ class RequestHandler implements RequestHandlerInterface
     {
         $healthchecksConfiguration = $this->configurationManager->getConfiguration(
             ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
-            'Neos.Setup.healthchecks'
+            'Neos.Setup.healthchecks.compiletime'
         );
 
-        $sortedHealthchecksConfiguration = (new PositionalArraySorter($healthchecksConfiguration, 'position'))->toArray();
+        $healthCollection = (new HealthChecker($this->bootstrap, $healthchecksConfiguration))->run();
 
-        $healthCollection = HealthCollection::empty();
-        foreach ($sortedHealthchecksConfiguration as $identifier => ['className' => $className]) {
-            if (!is_a($className, HealthcheckInterface::class, true)) {
-                throw new \RuntimeException('ClassName ' . $className . ' does not implement HealthcheckInterface', 1682947890221);
-            }
-
-            /** @var HealthcheckInterface $className */
-            $healthcheck = $className::fromBootstrap($this->bootstrap);
-            $healthCollection = $healthCollection->append(
-                $healthCollection->hasError()
-                    ? new Health(
-                        $healthcheck->getTitle(),
-                        '...',
-                        Status::UNKNOWN
-                    ) : $healthcheck->execute()
-            );
-        }
         $response = (new Response($healthCollection->hasError() ? 500 : 200))
             ->withHeader('Content-Type', 'application/json')
             ->withBody(ContentStream::fromContents(

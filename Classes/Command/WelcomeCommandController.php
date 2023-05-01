@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Neos\Setup\Command;
 
 /*
- * This file is part of the Neos.CliSetup package.
+ * This file is part of the Neos.Setup package.
  *
  * (c) Contributors of the Neos Project - www.neos.io
  *
@@ -16,18 +16,33 @@ namespace Neos\Setup\Command;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Core\Bootstrap;
+use Neos\Setup\Domain\Status;
+use Neos\Setup\Infrastructure\HealthChecker;
 
 /**
  * @Flow\Scope("singleton")
  */
 class WelcomeCommandController extends CommandController
 {
-
     public function indexCommand(): void
     {
-        $this->output(
-            <<<EOT
-            <info>
+        $this->objectManager->get(Bootstrap::class);
+
+        $bootstrap = $this->objectManager->get(Bootstrap::class);
+        $configurationManager = $this->objectManager->get(ConfigurationManager::class);
+
+        $healthchecksConfiguration = $configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
+            'Neos.Setup.healthchecks.compiletime'
+        );
+
+        $healthCollection = (new HealthChecker($bootstrap, $healthchecksConfiguration))->run();
+
+        $this->outputLine(
+            ($healthCollection->hasError() ? '<error>' : '<success>')
+            . <<<EOT
                 ....######          .######
                 .....#######      ...######
                 .......#######   ....######
@@ -41,28 +56,18 @@ class WelcomeCommandController extends CommandController
                 .#######         ........
 
             Welcome to Neos.
-            </info>
 
-            The following steps will help you to configure Neos:
-
-            1. Configure the database connection:
-               <info>./flow setup:database</info>
-            2. Create the required database tables:
-               <info>./flow doctrine:migrate</info>
-            3. Configure the image handler:
-               <info>./flow setup:imagehandler</info>
-            4. Create an admin user:
-               <info>./flow user:create --roles Administrator username password firstname lastname </info>
-            5. Create your own site package or require an existing one (choose one option):
-               - <info>./flow kickstart:site Vendor.Site</info>
-               - <info>composer require neos/demo && ./flow flow:package:rescan</info>
-            6. Import a site or create an empty one (choose one option):
-               - <info>./flow site:import Neos.Demo</info>
-               - <info>./flow site:import Vendor.Site</info>
-               - <info>./flow site:create sitename Vendor.Site Vendor.Site:Document.HomePage</info>
-
-            EOT
+            EOT . ($healthCollection->hasError() ? '</error>' : '</success>')
         );
-    }
 
+        foreach ($healthCollection as $health) {
+            $this->outputLine(match($health->status) {
+                Status::OK => '<success>' . $health->title . '</success>',
+                Status::ERROR => '<error>' . $health->title . '</error>',
+                Status::UNKNOWN => '<b>' . $health->title . '</b>',
+            });
+            $this->outputLine($health->message);
+            $this->outputLine('------');
+        }
+    }
 }

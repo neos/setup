@@ -3,9 +3,10 @@
 namespace Neos\Setup\Domain;
 
 use Neos\Flow\Annotations as Flow;
+use Traversable;
 
 /** @Flow\Proxy(false) */
-class HealthCollection implements \JsonSerializable
+class HealthCollection implements \JsonSerializable, \IteratorAggregate
 {
     /** @var array<string|int, Health> */
     private readonly array $items;
@@ -39,5 +40,11 @@ class HealthCollection implements \JsonSerializable
     public function jsonSerialize(): mixed
     {
         return $this->items;
+    }
+
+    /** @return Traversable<Health> */
+    public function getIterator(): Traversable
+    {
+        yield from $this->items;
     }
 }

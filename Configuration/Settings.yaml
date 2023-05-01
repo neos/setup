@@ -1,9 +1,19 @@
 Neos:
   Setup:
     healthchecks:
-      functions:
-        postion: 'start 100'
-        className: Neos\Setup\Infrastructure\Healthcheck\DatabaseHealthcheck
-      database:
-        postion: 'start 200'
-        className: Neos\Setup\Infrastructure\Healthcheck\RequiredFunctionsHealthcheck
+      compiletime:
+        functions:
+          postion: 'start 100'
+          className: Neos\Setup\Infrastructure\Healthcheck\DatabaseHealthcheck
+        database:
+          postion: 'start 200'
+          className: Neos\Setup\Infrastructure\Healthcheck\RequiredFunctionsHealthcheck
+
+      runtime:
+        routing:
+          className: Neos\Setup\Infrastructure\Healthcheck\EndToEndHealthcheck
+
+  Flow:
+    mvc:
+      routes:
+        'Neos.Setup': true

@@ -1,0 +1,11 @@
+privilegeTargets:
+  Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
+    Neos.Setup:RuntimeHealth:
+      matcher: 'method(Neos\Setup\Controller\RuntimeHealthController->indexAction())'
+
+roles:
+  Neos.Flow:Everybody:
+    privileges:
+      -
+        privilegeTarget: Neos.Setup:RuntimeHealth
+        permission: GRANT

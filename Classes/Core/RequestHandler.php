@@ -13,15 +13,19 @@ namespace Neos\Setup\Core;
 
 use GuzzleHttp\Psr7\Response;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Core\RequestHandlerInterface;
 use Neos\Flow\Http\ContentStream;
 use Neos\Flow\Http\Helper\ResponseInformationHelper;
+use Neos\Setup\Domain\Health;
+use Neos\Setup\Domain\HealthcheckInterface;
+use Neos\Setup\Domain\HealthCollection;
+use Neos\Setup\Domain\Status;
+use Neos\Utility\PositionalArraySorter;
 use Psr\Http\Message\ResponseInterface;
 
 /**
- * A request handler which can handle HTTP requests.
- *
  * @Flow\Scope("singleton")
  * @Flow\Proxy(false)
  */
@@ -29,56 +33,117 @@ class RequestHandler implements RequestHandlerInterface
 {
     private Bootstrap $bootstrap;
 
+    private ConfigurationManager $configurationManager;
+
+    private const COMPILETIME_ENDPOINT = '/setup/compiletime.json';
+
+    private const BASE_ENDPOINT = '/setup';
+
     public function __construct(Bootstrap $bootstrap)
     {
         $this->bootstrap = $bootstrap;
-        $this->exit = function () {
-            exit();
-        };
     }
 
     public function canHandleRequest(): bool
     {
-        $uriPrefix = '/setup';
-
         return (PHP_SAPI !== 'cli'
             && (
-                $_SERVER['REQUEST_URI'] === $uriPrefix ||
-                $_SERVER['REQUEST_URI'] === $uriPrefix . '_compiletime.json'
+                $_SERVER['REQUEST_URI'] === self::BASE_ENDPOINT ||
+                $_SERVER['REQUEST_URI'] === self::COMPILETIME_ENDPOINT
             ));
     }
 
     /**
-     * Returns the priority - how eager the handler is to actually handle the
-     * request.
+     * Overrules the default http request chandler
      *
-     * @return integer The priority of the request handler.
+     * @return integer
      */
     public function getPriority()
     {
         return 200;
     }
 
-    public function handleRequest()
+    private function handleCompiletimeEndpoint(): ResponseInterface
     {
-        $this->boot();
+        $healthchecksConfiguration = $this->configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
+            'Neos.Setup.healthchecks'
+        );
 
-        $response = (new Response(200))->withBody(ContentStream::fromContents('YOLO'));
-        $this->sendResponse($response);
-        $this->bootstrap->shutdown('Compiletime');
-        $this->exit->__invoke();
+        $sortedHealthchecksConfiguration = (new PositionalArraySorter($healthchecksConfiguration, 'position'))->toArray();
+
+        $healthCollection = HealthCollection::empty();
+        foreach ($sortedHealthchecksConfiguration as $identifier => ['className' => $className]) {
+            if (!is_a($className, HealthcheckInterface::class, true)) {
+                throw new \RuntimeException('ClassName ' . $className . ' does not implement HealthcheckInterface', 1682947890221);
+            }
+
+            /** @var HealthcheckInterface $className */
+            $healthcheck = $className::fromBootstrap($this->bootstrap);
+            $healthCollection = $healthCollection->append(
+                $healthCollection->hasError()
+                    ? new Health(
+                        $healthcheck->getTitle(),
+                        '...',
+                        Status::UNKNOWN
+                    ) : $healthcheck->execute()
+            );
+        }
+        $response = (new Response($healthCollection->hasError() ? 500 : 200))
+            ->withBody(ContentStream::fromContents(
+                json_encode($healthCollection, JSON_THROW_ON_ERROR)
+            ));
+
+        assert($response instanceof Response);
+        return $response;
     }
 
-    /**
-     * Boots up Flow to runtime
-     *
-     * @return void
-     */
-    protected function boot()
+    private function handleBaseEndpoint(): ResponseInterface
+    {
+        $html = <<<'HTML'
+<head>
+<title>Setup</title>
+<script defer>
+
+
+
+
+
+</script>
+</head>
+<body>
+   <h1>Yolo</h1>
+   <div id="app"></div>
+</body>
+HTML;
+
+        $response = (new Response(200))
+            ->withBody(ContentStream::fromContents(
+                $html
+            ));
+
+        assert($response instanceof Response);
+        return $response;
+    }
+
+    public function handleRequest()
     {
         $sequence = $this->bootstrap->buildRuntimeSequence();
         $sequence->invoke($this->bootstrap);
+
+        $this->configurationManager = $this->bootstrap->getObjectManager()->get(ConfigurationManager::class);
+
+
+        $response = match($_SERVER['REQUEST_URI']) {
+            self::COMPILETIME_ENDPOINT => $this->handleCompiletimeEndpoint(),
+            self::BASE_ENDPOINT => $this->handleBaseEndpoint()
+        };
+
+        $this->sendResponse($response);
+        $this->bootstrap->shutdown('Compiletime');
+        die();
     }
+
 
     /**
      * Send the HttpResponse of the component context to the browser and flush all output buffers.

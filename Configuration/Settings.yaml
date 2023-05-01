@@ -1,0 +1,9 @@
+Neos:
+  Setup:
+    healthchecks:
+      functions:
+        postion: 'start 100'
+        className: Neos\Setup\Infrastructure\Healthcheck\DatabaseHealthcheck
+      database:
+        postion: 'start 200'
+        className: Neos\Setup\Infrastructure\Healthcheck\RequiredFunctionsHealthcheck

@@ -31,6 +31,7 @@ class Package extends BasePackage
      */
     public function boot(Bootstrap $bootstrap)
     {
+        $bootstrap->registerCompiletimeCommand('neos.setup:welcome:index');
         $bootstrap->registerRequestHandler(new RequestHandler($bootstrap));
     }
 }

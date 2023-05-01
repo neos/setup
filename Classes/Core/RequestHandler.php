@@ -11,37 +11,44 @@ namespace Neos\Setup\Core;
  * source code.
  */
 
-use GuzzleHttp\Psr7\ServerRequest;
+use GuzzleHttp\Psr7\Response;
 use Neos\Error\Messages\Warning;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Configuration\Source\YamlSource;
 use Neos\Error\Messages\Error;
 use Neos\Error\Messages\Message;
-use Neos\Flow\Http\Middleware\MiddlewaresChainFactory;
-use Neos\Flow\Http\RequestHandler as FlowRequestHandler;
+use Neos\Flow\Core\Bootstrap;
+use Neos\Flow\Core\RequestHandlerInterface;
+use Neos\Flow\Http\ContentStream;
 use Neos\Utility\Arrays;
 use Neos\Utility\Files;
-use Psr\Http\Message\ServerRequestInterface;
 
 /**
  * A request handler which can handle HTTP requests.
  *
  * @Flow\Scope("singleton")
+ * @Flow\Proxy(false)
  */
-class RequestHandler extends FlowRequestHandler
+class RequestHandler implements RequestHandlerInterface
 {
-    /**
-     * This request handler can handle any web request.
-     *
-     * @return boolean If the request is a web request, TRUE otherwise FALSE
-     */
-    public function canHandleRequest()
+    private Bootstrap $bootstrap;
+
+    public function __construct(Bootstrap $bootstrap)
     {
+        $this->bootstrap = $bootstrap;
+        $this->exit = function () {
+            exit();
+        };
+    }
+
+    public function canHandleRequest(): bool
+    {
+        $uriPrefix = '/setup';
         return (PHP_SAPI !== 'cli'
             && (
-                (strlen($_SERVER['REQUEST_URI']) === 6 && $_SERVER['REQUEST_URI'] === '/setup')
-                || in_array(substr($_SERVER['REQUEST_URI'], 0, 7), ['/setup/', '/setup?'])
+                $_SERVER['REQUEST_URI'] === $uriPrefix ||
+                $_SERVER['REQUEST_URI'] === $uriPrefix . '_compiletime.json'
             ));
     }
 
@@ -56,80 +63,15 @@ class RequestHandler extends FlowRequestHandler
         return 200;
     }
 
-    /**
-     * Handles a HTTP request
-     *
-     * @return void
-     */
     public function handleRequest()
     {
-        $this->httpRequest = ServerRequest::fromGlobals();
-
-        $this->checkBasicRequirementsAndDisplayLoadingScreen();
-
         $this->boot();
-        $this->resolveDependencies();
-        $this->middlewaresChain->onStep(function (ServerRequestInterface $request) {
-            $this->httpRequest = $request;
-        });
-        $response = $this->middlewaresChain->handle($this->httpRequest);
 
+        $response = (new Response(200))->withBody(ContentStream::fromContents('YOLO'));
         $this->sendResponse($response);
-        $this->bootstrap->shutdown('Runtime');
+        $this->bootstrap->shutdown('Compiletime');
         $this->exit->__invoke();
     }
-
-    /**
-     * Check the basic requirements, and display a loading screen on initial request.
-     *
-     * @return void
-     */
-    protected function checkBasicRequirementsAndDisplayLoadingScreen()
-    {
-        $messageRenderer = new MessageRenderer($this->bootstrap);
-        $basicRequirements = new BasicRequirements();
-        $result = $basicRequirements->findError();
-        if ($result instanceof Error) {
-            $messageRenderer->showMessages([$result]);
-
-            return;
-        }
-
-        $phpBinaryDetectionMessage = $this->checkAndSetPhpBinaryIfNeeded();
-        if ($phpBinaryDetectionMessage instanceof Error) {
-            $messageRenderer->showMessages([$phpBinaryDetectionMessage]);
-
-            return;
-        }
-
-        $currentUriPath = $this->getHttpRequest()->getUri()->getPath();
-        if ($currentUriPath === '/setup' || $currentUriPath === '/setup/') {
-            $redirectUri = '/setup/index';
-            $messages = [new Message('We are now redirecting you to the setup. <b>This might take 10-60 seconds on the first run,</b> because the application needs to build up various caches.', null, [], 'Initialising Setup ...')];
-            if ($phpBinaryDetectionMessage !== null) {
-                array_unshift($messages, $phpBinaryDetectionMessage);
-            }
-            $messageRenderer->showMessages($messages, '<meta http-equiv="refresh" content="2;URL=\'' . $redirectUri . '\'">');
-        }
-    }
-
-    /**
-     * Create a HTTP component chain that adds our own routing configuration component
-     * only for this request handler.
-     *
-     * @return void
-     */
-    protected function resolveDependencies()
-    {
-        $objectManager = $this->bootstrap->getObjectManager();
-        $configurationManager = $objectManager->get(ConfigurationManager::class);
-        $this->settings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
-        $setupSettings = $configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Setup');
-        $httpChainSettings = Arrays::arrayMergeRecursiveOverrule($this->settings['http']['middlewares'], $setupSettings['http']['middlewares']);
-        $factory = $objectManager->get(MiddlewaresChainFactory::class);
-        $this->middlewaresChain = $factory->create($httpChainSettings);
-    }
-
     /**
      * Checks if the configured PHP binary is executable and the same version as the one
      * running the current (web server) PHP process. If not or if there is no binary configured,
@@ -147,7 +89,7 @@ class RequestHandler extends FlowRequestHandler
         if (isset($distributionSettings['Neos']['Flow']['core']['phpBinaryPathAndFilename'])) {
             return $this->checkPhpBinary($distributionSettings['Neos']['Flow']['core']['phpBinaryPathAndFilename']);
         }
-        list($phpBinaryPathAndFilename, $message) = $this->detectPhpBinaryPathAndFilename();
+        [$phpBinaryPathAndFilename, $message] = $this->detectPhpBinaryPathAndFilename();
         if ($phpBinaryPathAndFilename !== null) {
             $defaultPhpBinaryPathAndFilename = PHP_BINDIR . '/php';
             if (DIRECTORY_SEPARATOR !== '/') {

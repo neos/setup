@@ -2,14 +2,14 @@
 namespace Neos\Setup\Infrastructure\Healthcheck;
 
 use Neos\Flow\Core\Bootstrap;
+use Neos\Setup\Domain\CompiletimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
-use Neos\Setup\Domain\HealthcheckInterface;
 use Neos\Setup\Domain\Status;
 use Neos\Utility\Files;
 
-class BasicRequirementsHealthcheck implements HealthcheckInterface
+class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
 {
-    public static function fromBootstrap(Bootstrap $bootstrap): HealthcheckInterface
+    public static function fromBootstrap(Bootstrap $bootstrap): self
     {
         return new self();
     }

@@ -3,6 +3,7 @@
 namespace Neos\Setup\Infrastructure;
 
 use Neos\Flow\Core\Bootstrap;
+use Neos\Setup\Domain\CompiletimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
 use Neos\Setup\Domain\HealthcheckInterface;
 use Neos\Setup\Domain\HealthCollection;
@@ -28,12 +29,17 @@ class HealthChecker
                 continue;
             }
 
-            if (!in_array(HealthcheckInterface::class, class_implements($className), true)) {
+            $interfacesClassIsImplementing = class_implements($className);
+            if (!in_array(HealthcheckInterface::class, $interfacesClassIsImplementing, true)) {
                 throw new \RuntimeException('ClassName ' . $className . ' does not implement HealthcheckInterface', 1682947890221);
             }
-
-            /** @var HealthcheckInterface $className */
-            $healthcheck = $className::fromBootstrap($this->bootstrap);
+            if (in_array(CompiletimeHealthcheckInterface::class, $interfacesClassIsImplementing, true)) {
+                /** @var class-string<CompiletimeHealthcheckInterface>|CompiletimeHealthcheckInterface $className */
+                $healthcheck = $className::fromBootstrap($this->bootstrap);
+            } else {
+                /** @var class-string<HealthcheckInterface> $className */
+                $healthcheck = $this->bootstrap->getObjectManager()->get($className);
+            }
             $healt = $healthCollection->hasError()
                 ? new Health('', Status::NOT_RUN)
                 : $healthcheck->execute();

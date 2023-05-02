@@ -3,14 +3,18 @@ Neos:
     healthchecks:
       compiletime:
         basicRequirements:
-          postion: 'start 100'
+          position: 'start 200'
           className: Neos\Setup\Infrastructure\Healthcheck\BasicRequirementsHealthcheck
         database:
-          postion: 'start 200'
+          position: 'start 100'
           className: Neos\Setup\Infrastructure\Healthcheck\DatabaseHealthcheck
 
       runtime:
+        doctrine:
+          position: 'start 200'
+          className: Neos\Setup\Infrastructure\Healthcheck\DoctrineHealthcheck
         routing:
+          position: 'start 100'
           className: Neos\Setup\Infrastructure\Healthcheck\EndToEndHealthcheck
 
     #

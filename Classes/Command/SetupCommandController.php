@@ -138,14 +138,14 @@ class SetupCommandController extends CommandController
      * @param mixed $settings The actual settings to write
      * @return string The added yaml code
      */
-    protected function writeSettings(string $filename, string $path, $settings): string
+    private function writeSettings(string $filename, string $path, $settings): string
     {
         if (file_exists($filename)) {
-            $previousSettings = Yaml::parseFile($filename);
+            $previousSettings = Yaml::parseFile($filename) ?? [];
         } else {
             $previousSettings = [];
         }
-        $newSettings = Arrays::setValueByPath($previousSettings,$path, $settings);
+        $newSettings = Arrays::setValueByPath($previousSettings, $path, $settings);
         file_put_contents($filename, YAML::dump($newSettings, 10, 2));
         return YAML::dump(Arrays::setValueByPath([],$path, $settings), 10, 2);
     }

@@ -13,6 +13,14 @@ Neos:
         routing:
           className: Neos\Setup\Infrastructure\Healthcheck\EndToEndHealthcheck
 
+    #
+    # The database drivers that are supported by migrations
+    #
+    supportedDatabaseDrivers:
+      'pdo_mysql': 'MySQL/MariaDB via PDO'
+      'mysqli': 'MySQL/MariaDB via mysqli'
+      'pdo_pgsql': 'PostgreSQL via PDO'
+
   Flow:
     mvc:
       routes:

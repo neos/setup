@@ -31,8 +31,10 @@ class DatabaseHealthcheck implements HealthcheckInterface
 
     public function execute(): Health
     {
-        $settings = $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow');
-        $connectionSettings = $settings['persistence']['backendOptions'] ?? null;
+        $connectionSettings = $this->configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
+            'Neos.Flow.persistence.backendOptions'
+        );
 
         if (!$connectionSettings) {
             return new Health(

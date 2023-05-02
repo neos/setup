@@ -14,7 +14,7 @@ namespace Neos\Setup;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Package\Package as BasePackage;
-use Neos\Setup\Core\RequestHandler;
+use Neos\Setup\RequestHandler\RequestHandler;
 
 /**
  * Package base class of the Neos.Setup package.

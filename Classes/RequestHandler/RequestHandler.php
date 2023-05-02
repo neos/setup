@@ -1,5 +1,5 @@
 <?php
-namespace Neos\Setup\Core;
+namespace Neos\Setup\RequestHandler;
 
 /*
  * This file is part of the Neos.Setup package.

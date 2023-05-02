@@ -86,7 +86,7 @@ class WelcomeCommandController extends CommandController
                 $this->printHealthCollection($runtimeHealthCollection);
             } else {
                 $this->printHealthCollection(new HealthCollection(new Health(
-                    message: 'Flow didnt respond - kaputt',
+                    message: "Flow didn't respond as expected.",
                     status: Status::ERROR,
                     title: 'Flow Framework'
                 )));
@@ -97,7 +97,7 @@ class WelcomeCommandController extends CommandController
             $this->outputLine('<error>Neos setup not complete.</error>');
         }
 
-        $this->outputLine('You can rerun this command anytime via `./flow setup´');
+        $this->outputLine('You can rerun this command anytime via <code>./flow setup</code>');
     }
 
     public function healthcheckRuntimeCommand(): void
@@ -119,7 +119,7 @@ class WelcomeCommandController extends CommandController
     private function printHealthCollection(HealthCollection $healthCollection): void
     {
         foreach ($healthCollection as $health) {
-            $this->outputLine(match($health->status) {
+            $this->outputLine(match ($health->status) {
                 Status::OK => '<success>' . $health->title . '</success>',
                 Status::ERROR => '<error>' . $health->title . '</error>',
                 Status::WARNING => '<warning>' . $health->title . '</warning>',

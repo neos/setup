@@ -50,7 +50,7 @@ class RequestHandler implements RequestHandlerInterface
 
     public function __construct(Bootstrap $bootstrap)
     {
-        $this->bootstrap = $bootstrap;;
+        $this->bootstrap = $bootstrap;
     }
 
     public function canHandleRequest(): bool
@@ -88,7 +88,7 @@ class RequestHandler implements RequestHandlerInterface
         return $response;
     }
 
-    private function sendFile(string $file, string $contentType): Response
+    private function responseFromFile(string $file, string $contentType): Response
     {
         $resource = fopen($file, 'r');
 
@@ -109,9 +109,9 @@ class RequestHandler implements RequestHandlerInterface
 
         $response = match ($_SERVER['REQUEST_URI']) {
             self::COMPILETIME_ENDPOINT => $this->handleCompiletimeEndpoint(),
-            self::BASE_ENDPOINT => $this->sendFile(__DIR__ . '/../../Resources/Public/SetupDashboard/index.html', 'text/html; charset=utf-8'),
-            self::JS_ENDPOINT => $this->sendFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.js', 'application/js; charset=utf-8'),
-            self::CSS_ENDPOINT => $this->sendFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.css', 'text/css; charset=utf-8'),
+            self::BASE_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/index.html', 'text/html; charset=utf-8'),
+            self::JS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.js', 'application/js; charset=utf-8'),
+            self::CSS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.css', 'text/css; charset=utf-8'),
         };
 
         $this->sendResponse($response);

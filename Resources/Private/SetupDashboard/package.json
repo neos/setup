@@ -1,0 +1,16 @@
+{
+  "name": "setup-dashboard",
+  "scripts": {
+    "build-js": "esbuild src/main.js --outfile=../../Public/SetupDashboard/main.js --bundle --minify",
+    "build-css": "tailwind -i src/main.css -o ../../Public/SetupDashboard/main.css -m",
+    "copy-html": "cp src/index.html ../../Public/SetupDashboard/index.html",
+    "build": "pnpm run build-js && pnpm run build-css && pnpm run copy-html"
+  },
+  "devDependencies": {
+    "esbuild": "^0.17.18",
+    "tailwindcss": "^3.3.2"
+  },
+  "dependencies": {
+    "alpinejs": "^3.12.0"
+  }
+}

@@ -17,13 +17,13 @@
 		</svg>
 		Neos Setup
 	</h1>
-	<aside x-show="copiedCode" x-transition class="fixed top-4 right-4 bg-[#000c] px-4 py-2">
+	<aside x-show="copiedCode" x-transition :aria-hidden="!copiedCode" class="fixed top-4 right-4 bg-black bg-opacity-80 supports-[backdrop-filter]:bg-opacity-70 backdrop-blur z-50 px-4 py-2">
 		<pre><code x-text="copiedCode"></code></pre>
 		was copied to clipboard
 	</aside>
 	<ul class="flex flex-col gap-8 text-lg w-full max-w-xl">
 		<template x-for="check in checks">
-			<li class="block bg-opacity-50 relative" :class="cssClasses[check.status]">
+			<li class="block bg-opacity-50 relative shadow-lg" :class="cssClasses[check.status]">
 				<span class="flex items-center gap-4 px-4 py-2 [&>svg]:fill-current [&>svg]:h-5 [&>svg]:w-5"
 					:class="cssClasses[check.status]">
 					<svg x-show="check.status=='OK'" xmlns="http://www.w3.org/2000/svg"

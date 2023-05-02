@@ -17,7 +17,7 @@
 		</svg>
 		Neos Setup
 	</h1>
-	<aside x-show="copiedCode" x-transition class="fixed top-4 right-4 bg-[#000c] px-4 py-2">
+	<aside x-show="copiedCode" x-transition :aria-hidden="!copiedCode" class="fixed top-4 right-4 bg-black bg-opacity-80 supports-[backdrop-filter]:bg-opacity-70 backdrop-blur z-50 px-4 py-2">
 		<pre><code x-text="copiedCode"></code></pre>
 		was copied to clipboard
 	</aside>

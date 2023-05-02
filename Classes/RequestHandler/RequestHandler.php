@@ -112,7 +112,7 @@ class RequestHandler implements RequestHandlerInterface
         } else {
             render([...compiletimeHealthCollection, {
                 status: 'ERROR',
-                title: 'Flow end to end',
+                title: 'Flow Framework',
                 message: 'Flow didnt respond - kaputt'
             }])
         }

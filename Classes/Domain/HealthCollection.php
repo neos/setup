@@ -17,6 +17,24 @@ class HealthCollection implements \JsonSerializable, \IteratorAggregate
         $this->items = $items;
     }
 
+    public static function fromJsonString(string $json): self
+    {
+        return self::fromArray(json_decode($json, true,512, JSON_THROW_ON_ERROR));
+    }
+
+    public static function fromArray(array $array): self
+    {
+        $items = [];
+        foreach ($array as $value) {
+            $items[] = new Health(
+                message: $value['message'],
+                status: Status::from($value['status']),
+                title: $value['title']
+            );
+        }
+        return new self(...$items);
+    }
+
     public static function empty(): self
     {
         return new self();

@@ -2,13 +2,15 @@
 
 namespace Neos\Setup\Domain;
 
+use Neos\Flow\Annotations as Flow;
+
+/** @Flow\Proxy(false) */
 class Health
 {
-    public string $title = '';
-
     public function __construct(
         public readonly string $message,
-        public readonly Status $status
+        public readonly Status $status,
+        public string $title = '',
     ) {
     }
 }

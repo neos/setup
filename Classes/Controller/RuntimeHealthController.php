@@ -22,7 +22,7 @@ class RuntimeHealthController extends ActionController
     public function indexAction(): string
     {
         $healthCollection = (new HealthChecker($this->bootstrap, $this->healthchecksConfiguration))->run();
-        $this->response->setStatusCode($healthCollection->hasError() ? 500 : 200);
+        $this->response->setStatusCode($healthCollection->hasError() ? 503 : 200);
         return json_encode($healthCollection, JSON_THROW_ON_ERROR);
     }
 }

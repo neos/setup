@@ -68,7 +68,7 @@ class RequestHandler implements RequestHandlerInterface
 
         $healthCollection = (new HealthChecker($this->bootstrap, $healthchecksConfiguration))->run();
 
-        $response = (new Response($healthCollection->hasError() ? 500 : 200))
+        $response = (new Response($healthCollection->hasError() ? 503 : 200))
             ->withHeader('Content-Type', 'application/json')
             ->withBody(ContentStream::fromContents(
                 json_encode($healthCollection, JSON_THROW_ON_ERROR)
@@ -85,15 +85,42 @@ class RequestHandler implements RequestHandlerInterface
 <title>Setup</title>
 <script defer>
 
+(async function() {
 
+    function render(healthcollection) {
 
+        let html = '<h1>Neos Setup</h1>';
 
+        for (const health of healthcollection) {
 
+            html += `<h3>${health['status']}: ${health['title']}</h3>`;
+            html += `${health['message']}`;
+        }
+
+        document.body.innerHTML = html;
+    }
+
+    const compiletimeResponse = await fetch('/setup/compiletime.json');
+    const compiletimeHealthCollection = await compiletimeResponse.json();
+    render(compiletimeHealthCollection)
+    if (compiletimeResponse.ok) {
+        const runtimeResponse = await fetch('/setup/runtime.json');
+
+        if (runtimeResponse.ok || runtimeResponse.status === 503) {
+            const runtimeHealthCollection = await runtimeResponse.json();
+            render([...compiletimeHealthCollection, ...runtimeHealthCollection])
+        } else {
+            render([...compiletimeHealthCollection, {
+                status: 'ERROR',
+                title: 'Flow end to end',
+                message: 'Flow didnt respond - kaputt'
+            }])
+        }
+    }
+})()
 </script>
 </head>
 <body>
-   <h1>Yolo</h1>
-   <div id="app"></div>
 </body>
 HTML;
 

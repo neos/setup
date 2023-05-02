@@ -48,8 +48,6 @@ class RequestHandler implements RequestHandlerInterface
 
     private ConfigurationManager $configurationManager;
 
-    private string $requestUri;
-
     public function __construct(Bootstrap $bootstrap)
     {
         $this->bootstrap = $bootstrap;;

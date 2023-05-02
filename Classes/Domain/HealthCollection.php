@@ -40,9 +40,9 @@ class HealthCollection implements \JsonSerializable, \IteratorAggregate
         return new self();
     }
 
-    public function append(Health $health): self
+    public function withEntry(string $identifier, Health $health): self
     {
-        return new self(...$this->items, ...[$health]);
+        return new self(...$this->items, ...[$identifier => $health]);
     }
 
     public function hasError(): bool

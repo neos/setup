@@ -45,7 +45,8 @@ class HealthChecker
                 : $healthcheck->execute();
             $healt->title = $healthcheck->getTitle();
 
-            $healthCollection = $healthCollection->append(
+            $healthCollection = $healthCollection->withEntry(
+                $identifier,
                 $healt
             );
         }

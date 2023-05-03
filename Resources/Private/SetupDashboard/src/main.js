@@ -49,30 +49,30 @@ Alpine.data('health', () => ({
 			this.copiedCode = false;
 		}, 5000);
 	},
-	fetch(type) {
-		fetch(`/setup/${type}.json`).then(response => {
-			if (!response.ok && response.status !== 503) {
-				return {
-					errorResponse: {
-						status: 'ERROR',
-						title: 'Flow Framework',
-						message: "Flow didn't respond as expected."
-					}
+	async fetch(type) {
+		const response = await fetch(`/setup/${type}.json`);
+		const success = response.ok;
+		if (!success && response.status !== 503) {
+			return {
+				errorResponse: {
+					status: 'ERROR',
+					title: 'Flow Framework',
+					message: "Flow didn't respond as expected."
 				}
 			}
-			return response.json()
-		}).then(data => {
-			this.checks = { ...this.checks, ...data };
-		});
+		}
+		const data = await response.json();
+		this.checks = { ...this.checks, ...data };
+		return success;
 	},
-	init() {
-		this.fetch('compiletime');
-		this.fetch('runtime');
-
-		rafInterval(() => {
-			this.fetch('compiletime');
-			this.fetch('runtime');
-		}, 5000);
+	async runChecks() {
+		if (await this.fetch('compiletime')) {
+			await this.fetch('runtime');
+		}
+	},
+	async init() {
+		this.runChecks();
+		rafInterval(()=>{this.runChecks()}, 5000);
 	}
 }))
 

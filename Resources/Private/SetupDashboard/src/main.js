@@ -39,6 +39,8 @@ Alpine.data('health', () => ({
 	canCopy: window.navigator.clipboard !== undefined,
 	copiedCode: false,
 	copyTimeout: null,
+	errorHTML: false,
+	reloadTimeout: null,
 	copy() {
 		this.copiedCode = [...this.$el.querySelectorAll('code')].map(el => el.innerText).join("\n");
 		window.navigator.clipboard.writeText(this.copiedCode);
@@ -53,13 +55,11 @@ Alpine.data('health', () => ({
 		const response = await fetch(`/setup/${type}.json`);
 		const success = response.ok;
 		if (!success && response.status !== 503) {
-			return {
-				errorResponse: {
-					status: 'ERROR',
-					title: 'Flow Framework',
-					message: "Flow didn't respond as expected."
-				}
+			this.errorHTML = await response.text();
+			if (this.reloadTimeout) {
+				this.reloadTimeout.clear();
 			}
+			return false;
 		}
 		const data = await response.json();
 		this.checks = { ...this.checks, ...data };
@@ -72,7 +72,7 @@ Alpine.data('health', () => ({
 	},
 	async init() {
 		this.runChecks();
-		rafInterval(()=>{this.runChecks()}, 5000);
+		this.reloadTimeout = rafInterval(()=>{this.runChecks()}, 10000);
 	}
 }))
 

@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    code {
+        display: block;
+    }
+
+    svg {
+        fill: currentColor;
+        height: 1.1em;
+        width: 1.1em;
+    }
+}

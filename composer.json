@@ -10,7 +10,8 @@
         "neos/twitter-bootstrap": "~3.0 || dev-master"
     },
     "replace": {
-        "typo3/setup": "self.version"
+        "typo3/setup": "self.version",
+        "neos/cli-setup": "*"
     },
     "autoload": {
         "psr-4": {

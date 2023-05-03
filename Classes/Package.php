@@ -14,7 +14,8 @@ namespace Neos\Setup;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Package\Package as BasePackage;
-use Neos\Setup\RequestHandler\RequestHandler;
+use Neos\Setup\RequestHandler\SetupCliRequestHandler;
+use Neos\Setup\RequestHandler\SetupHttpRequestHandler;
 
 /**
  * Package base class of the Neos.Setup package.
@@ -31,7 +32,7 @@ class Package extends BasePackage
      */
     public function boot(Bootstrap $bootstrap)
     {
-        $bootstrap->registerCompiletimeCommand('neos.setup:welcome:index');
-        $bootstrap->registerRequestHandler(new RequestHandler($bootstrap));
+        $bootstrap->registerRequestHandler(new SetupHttpRequestHandler($bootstrap));
+        $bootstrap->registerRequestHandler(new SetupCliRequestHandler($bootstrap));
     }
 }

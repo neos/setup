@@ -28,7 +28,7 @@ use Psr\Http\Message\ResponseInterface;
  * @Flow\Scope("singleton")
  * @Flow\Proxy(false)
  */
-class RequestHandler implements RequestHandlerInterface
+class SetupHttpRequestHandler implements RequestHandlerInterface
 {
     private Bootstrap $bootstrap;
 

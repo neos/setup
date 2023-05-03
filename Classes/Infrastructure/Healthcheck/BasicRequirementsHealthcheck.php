@@ -4,14 +4,14 @@ namespace Neos\Setup\Infrastructure\Healthcheck;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Log\PsrLoggerFactoryInterface;
-use Neos\Setup\Domain\CompiletimeHealthcheckInterface;
+use Neos\Setup\Domain\EarlyBootTimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
 use Neos\Setup\Domain\Status;
 use Neos\Utility\Files;
 use Neos\Setup\Infrastructure\HealthcheckFailedError;
 use Psr\Log\LoggerInterface;
 
-class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
+class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
 {
     public function __construct(
         private readonly ConfigurationManager $configurationManager,

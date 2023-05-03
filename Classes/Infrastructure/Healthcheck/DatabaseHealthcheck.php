@@ -6,11 +6,11 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\DBAL\Exception as DBALException;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Bootstrap;
-use Neos\Setup\Domain\CompiletimeHealthcheckInterface;
+use Neos\Setup\Domain\EarlyBootTimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
 use Neos\Setup\Domain\Status;
 
-class DatabaseHealthcheck implements CompiletimeHealthcheckInterface
+class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
 {
     public function __construct(
         private readonly ConfigurationManager $configurationManager

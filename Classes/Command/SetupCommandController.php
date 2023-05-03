@@ -15,6 +15,10 @@ namespace Neos\Setup\Command;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
+use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Core\Bootstrap;
+use Neos\Setup\Infrastructure\HealthChecker;
+use Neos\Setup\RequestHandler\SetupCliRequestHandler;
 use Neos\Utility\Arrays;
 use Neos\Setup\Exception as SetupException;
 use Neos\Setup\Infrastructure\Database\DatabaseConnectionService;
@@ -22,7 +26,6 @@ use Symfony\Component\Yaml\Yaml;
 
 class SetupCommandController extends CommandController
 {
-
     /**
      * @var DatabaseConnectionService
      * @Flow\Inject
@@ -34,6 +37,18 @@ class SetupCommandController extends CommandController
      * @Flow\InjectConfiguration(package="Neos.Flow", path="persistence.backendOptions")
      */
     protected array $persistenceConfiguration;
+
+    /**
+     * Show information about the system health
+     */
+    public function indexCommand(): void
+    {
+        /**
+         * This code is never reached, as we have a custom request handler.
+         * We add this method for documentation and transparency.
+         * @see SetupCliRequestHandler
+         */
+    }
 
     /**
      * Configure the database connection for flow persistence
@@ -128,6 +143,22 @@ class SetupCommandController extends CommandController
         $this->output(sprintf('<info>%s</info>',$this->writeSettings($filename, 'Neos.Flow.persistence.backendOptions',$persistenceConfiguration)));
         $this->outputLine();
         $this->outputLine(sprintf('The new database settings were written to <info>%s</info>', $filename));
+    }
+
+    public function executeRuntimeHealthchecksCommand(): void
+    {
+        $this->objectManager->get(Bootstrap::class);
+        $bootstrap = $this->objectManager->get(Bootstrap::class);
+        $configurationManager = $this->objectManager->get(ConfigurationManager::class);
+
+        $healthchecksConfiguration = $configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
+            'Neos.Setup.healthchecks.runtime'
+        );
+
+        $healthCollection = (new HealthChecker($bootstrap, $healthchecksConfiguration))->run();
+
+        $this->output(json_encode($healthCollection, JSON_THROW_ON_ERROR));
     }
 
     /**

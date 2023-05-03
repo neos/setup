@@ -103,9 +103,9 @@ class RequestHandler implements RequestHandlerInterface
 
         $response = match ($this->endpoint) {
             Endpoint::COMPILE_TIME_ENDPOINT => $this->handleCompiletimeEndpoint(),
-            Endpoint::BASE_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/index.html', 'text/html; charset=utf-8'),
-            Endpoint::JS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.js', 'application/js; charset=utf-8'),
-            Endpoint::CSS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.css', 'text/css; charset=utf-8'),
+            Endpoint::BASE_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Private/SetupDashboard/build/index.html', 'text/html; charset=utf-8'),
+            Endpoint::JS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Private/SetupDashboard/build/main.js', 'application/js; charset=utf-8'),
+            Endpoint::CSS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Private/SetupDashboard/build/main.css', 'text/css; charset=utf-8'),
         };
 
         $this->sendResponse($response);

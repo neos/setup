@@ -1,10 +1,10 @@
 {
   "name": "setup-dashboard",
   "scripts": {
-    "build:js": "esbuild src/main.js --outfile=../../Public/SetupDashboard/main.js --bundle --minify",
-    "build:css": "tailwind -i src/main.css -o ../../Public/SetupDashboard/main.css -m",
-    "watch:js": "esbuild src/main.js --outfile=../../Public/SetupDashboard/main.js --bundle --minify --watch",
-    "watch:css": "tailwind -i src/main.css -o ../../Public/SetupDashboard/main.css -m --watch",
+    "build:js": "esbuild src/main.js --outfile=./build/main.js --bundle --minify",
+    "build:css": "tailwind -i src/main.css -o ./build/main.css -m",
+    "watch:js": "esbuild src/main.js --outfile=./build/main.js --bundle --minify --watch",
+    "watch:css": "tailwind -i src/main.css -o ./build/main.css -m --watch",
     "build": "concurrently -r pnpm:build:*",
     "watch": "concurrently -r pnpm:watch:*"
   },

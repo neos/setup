@@ -8,8 +8,8 @@
 	<script src="/setup/main.js" defer></script>
 </head>
 
-<body x-data="health" class="p-8 flex flex-col gap-16 items-center bg-[#222] text-white min-h-screen">
-	<h1 class="text-5xl font-bold flex gap-12 items-center text-[#00b5ff]">
+<body x-data="health" class="py-8 px-2 flex flex-col gap-16 items-center bg-[#222] text-white min-h-screen">
+	<h1 class="text-5xl text-center font-bold flex flex-col sm:flex-row gap-x-12 gap-y-4 items-center text-[#00b5ff]">
 		<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
 			<!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->
 			<path
@@ -54,9 +54,9 @@
 					<span x-text="check.title"></span>
 				</span>
 				<span x-show="check.message && !canCopy || !check.message.includes('<code>')"
-					class="block px-4 py-2 empty:hidden" x-html="check.message"></span>
+					class="message block px-4 py-2 empty:hidden" x-html="check.message"></span>
 				<button x-show="check.message && canCopy && check.message.includes('<code>')" @click="copy"
-					class="text-left block px-4 py-2 [&_code]:block empty:hidden peer" x-html="check.message"
+					class="message text-left block px-4 py-2 [&_code]:block empty:hidden peer" x-html="check.message"
 					title="Copy command"></button>
 				<span x-show="check.message && canCopy && check.message.includes('<code>')"
 					class="absolute top-0 py-3 right-2 opacity-0 transition-opacity peer-hover:opacity-100 peer-focus:opacity-100 flex gap-2 items-center">
@@ -82,9 +82,9 @@
 					</svg>
 					<span>Flow Framework</span>
 				</span>
-				<span class="block px-4 py-2">Flow didn't respond as expected. Please reload the page to run a new check</span>
+				<span class="message block px-4 py-2">Flow didn't respond as expected. Please reload the page to run a new check</span>
 			</div>
-			<iframe :srcdoc="errorHTML" frameborder="0" class="w-full h-[calc(100vh-11rem)]"></iframe>
+			<iframe :srcdoc="errorHTML" frameborder="0" class="w-full h-[calc(100vh-11rem)] bg-white"></iframe>
 		</div>
 	</template>
 </body>

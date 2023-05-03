@@ -7,6 +7,12 @@
         display: block;
     }
 
+    .message em {
+        font-family: theme(fontFamily.mono);
+        font-size: 1em;
+        font-style: normal
+    }
+
     svg {
         fill: currentColor;
         height: 1.1em;

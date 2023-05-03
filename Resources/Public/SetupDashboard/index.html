@@ -21,10 +21,10 @@
 		<pre><code x-text="copiedCode"></code></pre>
 		was copied to clipboard
 	</aside>
-	<ul class="flex flex-col gap-8 text-lg w-full max-w-xl">
+	<ul class="flex flex-col gap-8 w-full max-w-xl">
 		<template x-for="check in checks">
 			<li class="block bg-opacity-50 relative shadow-lg" :class="cssClasses[check.status]">
-				<span class="flex items-center gap-4 px-4 py-2 [&>svg]:fill-current [&>svg]:h-5 [&>svg]:w-5"
+				<span class="flex items-center gap-4 px-4 py-2 text-lg [&>svg]:fill-current [&>svg]:h-5 [&>svg]:w-5"
 					:class="cssClasses[check.status]">
 					<svg x-show="check.status=='OK'" xmlns="http://www.w3.org/2000/svg"
 						viewBox="0 0 512 512"><!--! Font Awesome Pro 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->

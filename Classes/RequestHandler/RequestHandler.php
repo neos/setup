@@ -16,6 +16,7 @@ use GuzzleHttp\Psr7\Response;
 use GuzzleHttp\Psr7\Stream;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Core\Booting\Scripts;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Core\RequestHandlerInterface;
 use Neos\Flow\Http\ContentStream;
@@ -96,10 +97,10 @@ class RequestHandler implements RequestHandlerInterface
 
     public function handleRequest()
     {
-        $sequence = $this->bootstrap->buildCompiletimeSequence();
-        $sequence->invoke($this->bootstrap);
+        Scripts::initializeConfiguration($this->bootstrap);
+        Scripts::initializeSystemLogger($this->bootstrap);
 
-        $this->configurationManager = $this->bootstrap->getObjectManager()->get(ConfigurationManager::class);
+        $this->configurationManager = $this->bootstrap->getEarlyInstance(ConfigurationManager::class);
 
         $response = match ($this->endpoint) {
             Endpoint::COMPILE_TIME_ENDPOINT => $this->handleCompiletimeEndpoint(),
@@ -109,10 +110,8 @@ class RequestHandler implements RequestHandlerInterface
         };
 
         $this->sendResponse($response);
-        $this->bootstrap->shutdown('Compiletime');
         die();
     }
-
 
     /**
      * Send the HttpResponse of the component context to the browser and flush all output buffers.

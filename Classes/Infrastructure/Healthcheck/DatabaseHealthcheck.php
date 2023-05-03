@@ -20,7 +20,7 @@ class DatabaseHealthcheck implements CompiletimeHealthcheckInterface
     public static function fromBootstrap(Bootstrap $bootstrap): self
     {
         return new self(
-            $bootstrap->getObjectManager()->get(ConfigurationManager::class)
+            $bootstrap->getEarlyInstance(ConfigurationManager::class)
         );
     }
 

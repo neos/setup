@@ -29,24 +29,11 @@ use Psr\Http\Message\ResponseInterface;
  */
 class RequestHandler implements RequestHandlerInterface
 {
-    private const COMPILETIME_ENDPOINT = '/setup/compiletime.json';
-
-    private const BASE_ENDPOINT = '/setup';
-
-    private const JS_ENDPOINT = '/setup/main.js';
-
-    private const CSS_ENDPOINT = '/setup/main.css';
-
-    private const ALL_ENDPOINTS = [
-        self::BASE_ENDPOINT,
-        self::COMPILETIME_ENDPOINT,
-        self::JS_ENDPOINT,
-        self::CSS_ENDPOINT
-    ];
-
     private Bootstrap $bootstrap;
 
     private ConfigurationManager $configurationManager;
+
+    private Endpoint $endpoint;
 
     public function __construct(Bootstrap $bootstrap)
     {
@@ -55,8 +42,15 @@ class RequestHandler implements RequestHandlerInterface
 
     public function canHandleRequest(): bool
     {
-        return (PHP_SAPI !== 'cli'
-            && (in_array($_SERVER['REQUEST_URI'], self::ALL_ENDPOINTS, true)));
+        if (PHP_SAPI === 'cli') {
+            return false;
+        }
+        $endpoint = Endpoint::tryFromEnvironment();
+        if ($endpoint === null) {
+            return false;
+        }
+        $this->endpoint = $endpoint;
+        return true;
     }
 
     /**
@@ -107,11 +101,11 @@ class RequestHandler implements RequestHandlerInterface
 
         $this->configurationManager = $this->bootstrap->getObjectManager()->get(ConfigurationManager::class);
 
-        $response = match ($_SERVER['REQUEST_URI']) {
-            self::COMPILETIME_ENDPOINT => $this->handleCompiletimeEndpoint(),
-            self::BASE_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/index.html', 'text/html; charset=utf-8'),
-            self::JS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.js', 'application/js; charset=utf-8'),
-            self::CSS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.css', 'text/css; charset=utf-8'),
+        $response = match ($this->endpoint) {
+            Endpoint::COMPILE_TIME_ENDPOINT => $this->handleCompiletimeEndpoint(),
+            Endpoint::BASE_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/index.html', 'text/html; charset=utf-8'),
+            Endpoint::JS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.js', 'application/js; charset=utf-8'),
+            Endpoint::CSS_ENDPOINT => $this->responseFromFile(__DIR__ . '/../../Resources/Public/SetupDashboard/main.css', 'text/css; charset=utf-8'),
         };
 
         $this->sendResponse($response);

@@ -96,7 +96,7 @@ class RequestHandler implements RequestHandlerInterface
 
     public function handleRequest()
     {
-        $sequence = $this->bootstrap->buildRuntimeSequence();
+        $sequence = $this->bootstrap->buildCompiletimeSequence();
         $sequence->invoke($this->bootstrap);
 
         $this->configurationManager = $this->bootstrap->getObjectManager()->get(ConfigurationManager::class);

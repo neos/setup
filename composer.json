@@ -4,10 +4,7 @@
     "license": "MIT",
     "description": "An extensible setup tool for Neos Flow based applications",
     "require": {
-        "neos/flow": ">=7.0 || dev-master",
-        "neos/error-messages": ">=8.3 || dev-master",
-        "neos/form": ">=5.0 || dev-master",
-        "neos/twitter-bootstrap": "~3.0 || dev-master"
+        "neos/flow": ">=7.0 || dev-master"
     },
     "replace": {
         "typo3/setup": "self.version",

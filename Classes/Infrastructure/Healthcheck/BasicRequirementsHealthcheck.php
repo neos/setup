@@ -4,6 +4,7 @@ namespace Neos\Setup\Infrastructure\Healthcheck;
 use Error;
 use Neos\Error\Messages\Message;
 use Neos\Error\Messages\Warning;
+use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Setup\Domain\CompiletimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
@@ -12,9 +13,16 @@ use Neos\Utility\Files;
 
 class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
 {
+    public function __construct(
+        private readonly ConfigurationManager $configurationManager
+    ) {
+    }
+
     public static function fromBootstrap(Bootstrap $bootstrap): self
     {
-        return new self();
+        return new self(
+            $bootstrap->getObjectManager()->get(ConfigurationManager::class)
+        );
     }
 
     public function getTitle(): string
@@ -54,7 +62,7 @@ class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
             if (!is_dir($folderPath) && !Files::is_link($folderPath)) {
                 try {
                     Files::createDirectoryRecursively($folderPath);
-                } catch (\Neos\Flow\Utility\Exception $_) {
+                } catch (\Neos\Flow\Utility\Exception) {
                     throw new Error('The folder "' . $folder . '" does not exist and could not be created but we need it.');
                 }
             }
@@ -89,10 +97,8 @@ class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
     }
 
     /**
-     * This doccomment is used to check if doc comments are available.
+     * This doc-comment is used to check if doc comments are available.
      * DO NOT REMOVE
-     *
-     * @return void
      */
     private function checkReflectionStatus(): void
     {
@@ -109,25 +115,32 @@ class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
      * running the current (web server) PHP process. If not or if there is no binary configured,
      * tries to find the correct one on the PATH.
      *
-     * Once found, the binary will be written to the configuration, if it is not the default one
-     * (PHP_BINARY or in PHP_BINDIR).
-     *
-     * @return void
      * @throw Error
      */
-    protected function checkPhpBinaryVersion(): void
+    private function checkPhpBinaryVersion(): void
     {
-        if (!isset($distributionSettings['Neos']['Flow']['core']['phpBinaryPathAndFilename'])) {
+        if (PHP_SAPI === 'cli') {
+            // this check can only be run via web request
+            return;
+        }
+
+        $phpBinaryPathAndFilename = $this->configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
+            'Neos.Flow.core.phpBinaryPathAndFilename'
+        );
+
+        $message = null;
+        if (!$phpBinaryPathAndFilename) {
             [$phpBinaryPathAndFilename, $message] = $this->detectPhpBinaryPathAndFilename();
         }
 
-        if (isset($message)) {
+        if ($message instanceof Message) {
             throw new Error($message->getMessage());
         }
 
         $message = $this->checkPhpBinary($phpBinaryPathAndFilename ?? PHP_BINARY);
 
-        if (isset($message)) {
+        if ($message instanceof Message) {
             throw new Error($message->getMessage());
         }
     }
@@ -135,10 +148,9 @@ class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
     /**
      * Checks if the given PHP binary is executable and of the same version as the currently running one.
      *
-     * @param string $phpBinaryPathAndFilename
      * @return Message An error or warning message or NULL if the PHP binary was detected successfully
      */
-    private function checkPhpBinary($phpBinaryPathAndFilename)
+    private function checkPhpBinary(string $phpBinaryPathAndFilename): ?Message
     {
         $phpVersion = null;
         if ($this->phpBinaryExistsAndIsExecutableFile($phpBinaryPathAndFilename)) {
@@ -191,7 +203,7 @@ class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
      *
      * @return array PHP binary path as string or NULL if not found and a possible Message
      */
-    private function detectPhpBinaryPathAndFilename()
+    private function detectPhpBinaryPathAndFilename(): array
     {
         if (defined('PHP_BINARY') && PHP_BINARY !== '' && dirname(PHP_BINARY) === PHP_BINDIR) {
             if ($this->checkPhpBinary(PHP_BINARY) === null) {
@@ -223,11 +235,8 @@ class BasicRequirementsHealthcheck implements CompiletimeHealthcheckInterface
      * If PHP binary is not within open_basedir path,
      * it is impossible to access this binary in any other way than exec() or system().
      * So we must check existence of this file with system tools.
-     *
-     * @param string $phpBinaryPathAndFilename
-     * @return boolean
      */
-    private function phpBinaryExistsAndIsExecutableFile($phpBinaryPathAndFilename)
+    private function phpBinaryExistsAndIsExecutableFile(string $phpBinaryPathAndFilename): bool
     {
         $phpBinaryPathAndFilename = escapeshellarg(Files::getUnixStylePath($phpBinaryPathAndFilename));
         if (DIRECTORY_SEPARATOR === '/') {

@@ -53,17 +53,19 @@ Alpine.data('health', () => ({
 	},
 	async fetch(type) {
 		const response = await fetch(`/setup/${type}.json`);
-		const success = response.ok;
-		if (!success && response.status !== 503) {
-			this.errorHTML = await response.text();
+		let data = await response.text();
+		try {
+			// Check if the response is valid JSON
+			data = JSON.parse(data);
+			this.checks = { ...this.checks, ...data };
+			return true;
+		} catch (error) {
+			this.errorHTML = data;
 			if (this.reloadTimeout) {
 				this.reloadTimeout.clear();
 			}
 			return false;
 		}
-		const data = await response.json();
-		this.checks = { ...this.checks, ...data };
-		return success;
 	},
 	async runChecks() {
 		if (await this.fetch('compiletime')) {

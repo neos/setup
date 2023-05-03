@@ -39,7 +39,7 @@ class DatabaseHealthcheck implements CompiletimeHealthcheckInterface
         if (!$connectionSettings) {
             return new Health(
                 <<<'MSG'
-                please configure your database in the settings or use the command <i>./flow setup:database</i>
+                Please configure your database in the settings or use the command <code>./flow setup:database</code>
                 MSG,
                 Status::ERROR
             );
@@ -51,7 +51,7 @@ class DatabaseHealthcheck implements CompiletimeHealthcheckInterface
         } catch (DBALException | \PDOException) {
             return new Health(
                 <<<'MSG'
-                please check your database settings. You can also rerun <i>./flow setup:database</i>
+                Please check your database settings. You can also rerun <code>./flow setup:database</code>
                 MSG,
                 Status::ERROR
             );

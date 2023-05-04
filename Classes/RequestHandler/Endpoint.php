@@ -25,8 +25,10 @@ enum Endpoint
             '/setup/',
             '/setup' => self::BASE_ENDPOINT,
             '/setup/compiletime.json' => self::COMPILE_TIME_ENDPOINT,
-            '/setup/main.js' => self::JS_ENDPOINT,
-            '/setup/main.css' => self::CSS_ENDPOINT,
+            // using the correct extensions like `.js` and `.css` might lead to problems,
+            // if the server is configured to read them directly from _Resources
+            '/setup/main_js' => self::JS_ENDPOINT,
+            '/setup/main_css' => self::CSS_ENDPOINT,
             default => null
         };
     }

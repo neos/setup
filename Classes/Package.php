@@ -32,6 +32,20 @@ class Package extends BasePackage
      */
     public function boot(Bootstrap $bootstrap)
     {
+        if (PHP_SAPI === 'cli') {
+            $commandIdentifier = $_SERVER['argv'][1] ?? null;
+            $redirectedAmbiguousOrLegacyCommandIdentifier = match($commandIdentifier) {
+                // legacy redirect from `Neos.CliSetup`
+                'welcome' => 'neos.setup:setup:index',
+                // ambiguous command identifiers, if `Neos.CliSetup` is also installed.
+                'setup:database' => 'neos.setup:setup:database',
+                'setup:imagehandler' => 'neos.setup:setup:imagehandler',
+                default => null,
+            };
+            if ($redirectedAmbiguousOrLegacyCommandIdentifier) {
+                $_SERVER['argv'][1] = $redirectedAmbiguousOrLegacyCommandIdentifier;
+            }
+        }
         $bootstrap->registerRequestHandler(new SetupHttpRequestHandler($bootstrap));
         $bootstrap->registerRequestHandler(new SetupCliRequestHandler($bootstrap));
     }

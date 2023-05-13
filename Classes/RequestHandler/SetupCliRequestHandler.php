@@ -46,9 +46,14 @@ class SetupCliRequestHandler implements RequestHandlerInterface
         if (PHP_SAPI !== 'cli') {
             return false;
         }
-        $arguments = array_slice($_SERVER['argv'] ?? [], 1);
-        return count($arguments) === 1
-            && $arguments[0] === 'setup';
+        $commandIdentifier = $_SERVER['argv'][1] ?? null;
+        return match($commandIdentifier) {
+            'neos.setup:setup:index',
+            'setup:setup:index',
+            'setup:index',
+            'setup' => true,
+            default => false,
+        };
     }
 
     /**

@@ -95,8 +95,9 @@ class SetupCliRequestHandler implements RequestHandlerInterface
         $formatter = $this->output->getOutput()->getFormatter();
         $formatter->setStyle('code', new OutputFormatterStyle('black', 'white'));
         $formatter->setStyle('warning', new OutputFormatterStyle('yellow'));
-        $formatter->setStyle('neos', new OutputFormatterStyle('cyan'));
 
+        // coloring the neos logo:
+        $formatter->setStyle('neos', new OutputFormatterStyle('cyan'));
         $colorizedNeos = preg_replace('/#+/', '<neos>$0</neos>', self::NEOS);
 
         $this->output->outputLine($colorizedNeos);
@@ -140,10 +141,16 @@ class SetupCliRequestHandler implements RequestHandlerInterface
                 Status::OK => '<success>' . $health->title . '</success>',
                 Status::ERROR => '<error>' . $health->title . '</error>',
                 Status::WARNING => '<warning>' . $health->title . '</warning>',
-                Status::NOT_RUN,
+                Status::NOT_RUN => '<b>' . $health->title . '</b> (not run)',
                 Status::UNKNOWN => '<b>' . $health->title . '</b>',
             });
-            $this->output->outputFormatted($health->message, [], 2);
+
+            if ($health->status === Status::NOT_RUN) {
+                $this->output->outputLine();
+                continue;
+            }
+
+            $this->output->outputLine($health->message);
             $this->output->outputLine();
         }
     }

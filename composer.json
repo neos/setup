@@ -4,6 +4,7 @@
     "license": "MIT",
     "description": "An extensible setup tool for Neos Flow based applications",
     "require": {
+        "php": ">=8.1",
         "neos/flow": ">=7.0 || dev-master"
     },
     "replace": {

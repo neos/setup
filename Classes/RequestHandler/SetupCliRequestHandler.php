@@ -50,8 +50,7 @@ class SetupCliRequestHandler implements RequestHandlerInterface
         return match($commandIdentifier) {
             'neos.setup:setup:index',
             'setup:setup:index',
-            'setup:index',
-            'setup' => true,
+            'setup:index' => true,
             default => false,
         };
     }

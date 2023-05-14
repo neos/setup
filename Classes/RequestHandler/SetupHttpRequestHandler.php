@@ -13,7 +13,9 @@ namespace Neos\Setup\RequestHandler;
  */
 
 use GuzzleHttp\Psr7\Response;
+use GuzzleHttp\Psr7\ServerRequest;
 use GuzzleHttp\Psr7\Stream;
+use GuzzleHttp\Psr7\Uri;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Booting\Scripts;
@@ -21,6 +23,8 @@ use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Core\RequestHandlerInterface;
 use Neos\Flow\Http\ContentStream;
 use Neos\Flow\Http\Helper\ResponseInformationHelper;
+use Neos\Setup\Domain\HealthcheckEnvironment;
+use Neos\Setup\Domain\WebEnvironment;
 use Neos\Setup\Infrastructure\HealthChecker;
 use Psr\Http\Message\ResponseInterface;
 
@@ -34,6 +38,8 @@ class SetupHttpRequestHandler implements RequestHandlerInterface
 
     private ConfigurationManager $configurationManager;
 
+    private Uri $requestUri;
+
     private Endpoint $endpoint;
 
     public function __construct(Bootstrap $bootstrap)
@@ -46,7 +52,8 @@ class SetupHttpRequestHandler implements RequestHandlerInterface
         if (PHP_SAPI === 'cli') {
             return false;
         }
-        $endpoint = Endpoint::tryFromEnvironment();
+        $this->requestUri = ServerRequest::getUriFromGlobals();
+        $endpoint = Endpoint::tryFromUri($this->requestUri);
         if ($endpoint === null) {
             return false;
         }
@@ -71,7 +78,14 @@ class SetupHttpRequestHandler implements RequestHandlerInterface
             'Neos.Setup.healthchecks.compiletime'
         );
 
-        $healthCollection = (new HealthChecker($this->bootstrap, $healthchecksConfiguration))->run();
+        $healthcheckEnvironment = new HealthcheckEnvironment(
+            applicationContext: $this->bootstrap->getContext(),
+            executionEnvironment: new WebEnvironment(
+                requestUri: $this->requestUri
+            )
+        );
+
+        $healthCollection = (new HealthChecker($this->bootstrap, $healthchecksConfiguration, $healthcheckEnvironment))->execute();
 
         $response = (new Response($healthCollection->hasError() ? 503 : 200))
             ->withHeader('Content-Type', 'application/json')

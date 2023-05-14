@@ -17,6 +17,8 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\CommandController;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Bootstrap;
+use Neos\Setup\Domain\CliEnvironment;
+use Neos\Setup\Domain\HealthcheckEnvironment;
 use Neos\Setup\Infrastructure\HealthChecker;
 use Neos\Setup\RequestHandler\SetupCliRequestHandler;
 use Neos\Utility\Arrays;
@@ -145,6 +147,9 @@ class SetupCommandController extends CommandController
         $this->outputLine(sprintf('The new database settings were written to <info>%s</info>', $filename));
     }
 
+    /**
+     * @internal
+     */
     public function executeRuntimeHealthchecksCommand(): void
     {
         $this->objectManager->get(Bootstrap::class);
@@ -155,8 +160,11 @@ class SetupCommandController extends CommandController
             ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
             'Neos.Setup.healthchecks.runtime'
         );
-
-        $healthCollection = (new HealthChecker($bootstrap, $healthchecksConfiguration))->run();
+        $healthcheckEnvironment = new HealthcheckEnvironment(
+            applicationContext: $bootstrap->getContext(),
+            executionEnvironment: new CliEnvironment()
+        );
+        $healthCollection = (new HealthChecker($bootstrap, $healthchecksConfiguration, $healthcheckEnvironment))->execute();
 
         $this->output(json_encode($healthCollection, JSON_THROW_ON_ERROR));
     }

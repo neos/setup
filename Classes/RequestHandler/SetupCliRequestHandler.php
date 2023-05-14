@@ -18,7 +18,9 @@ use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Booting\Scripts;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Core\RequestHandlerInterface;
+use Neos\Setup\Domain\CliEnvironment;
 use Neos\Setup\Domain\Health;
+use Neos\Setup\Domain\HealthcheckEnvironment;
 use Neos\Setup\Domain\HealthCollection;
 use Neos\Setup\Domain\Status;
 use Neos\Setup\Infrastructure\HealthChecker;
@@ -90,7 +92,11 @@ class SetupCliRequestHandler implements RequestHandlerInterface
             ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
             'Neos.Setup.healthchecks.compiletime'
         );
-        $compiletimeHealthCollection = (new HealthChecker($this->bootstrap, $healthchecksConfiguration))->run();
+        $healthcheckEnvironment = new HealthcheckEnvironment(
+            applicationContext: $this->bootstrap->getContext(),
+            executionEnvironment: new CliEnvironment()
+        );
+        $compiletimeHealthCollection = (new HealthChecker($this->bootstrap, $healthchecksConfiguration, $healthcheckEnvironment))->execute();
 
         $formatter = $this->output->getOutput()->getFormatter();
         $formatter->setStyle('code', new OutputFormatterStyle('black', 'white'));

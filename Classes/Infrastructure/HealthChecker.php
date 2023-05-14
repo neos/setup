@@ -2,50 +2,30 @@
 
 namespace Neos\Setup\Infrastructure;
 
-use GuzzleHttp\Psr7\ServerRequest;
 use Neos\Flow\Core\Bootstrap;
-use Neos\Flow\Http\HttpRequestHandlerInterface;
-use Neos\Setup\Domain\CliEnvironment;
 use Neos\Setup\Domain\EarlyBootTimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
 use Neos\Setup\Domain\HealthcheckEnvironment;
 use Neos\Setup\Domain\HealthcheckInterface;
 use Neos\Setup\Domain\HealthCollection;
 use Neos\Setup\Domain\Status;
-use Neos\Setup\Domain\WebEnvironment;
 use Neos\Utility\PositionalArraySorter;
 
 class HealthChecker
 {
-    private readonly HealthcheckEnvironment $healthcheckEnvironment;
-
     public function __construct(
         private readonly Bootstrap $bootstrap,
-        private readonly array $healthchecksConfiguration
+        private readonly array $configuredHealthchecks,
+        private readonly HealthcheckEnvironment $healthcheckEnvironment
     ) {
-        if (PHP_SAPI === 'cli') {
-            $executionEnvironment = new CliEnvironment();
-        } else {
-            $activeRequestHandler = $this->bootstrap->getActiveRequestHandler();
-            $requestUri = $activeRequestHandler instanceof HttpRequestHandlerInterface
-                ? $activeRequestHandler->getHttpRequest()->getUri()
-                : ServerRequest::getUriFromGlobals();
-            $executionEnvironment = new WebEnvironment(
-                requestUri: $requestUri
-            );
-        }
-        $this->healthcheckEnvironment = new HealthcheckEnvironment(
-            applicationContext: $this->bootstrap->getContext(),
-            executionEnvironment: $executionEnvironment
-        );
     }
 
-    public function run(): HealthCollection
+    public function execute(): HealthCollection
     {
-        $sortedHealthchecksConfiguration = (new PositionalArraySorter($this->healthchecksConfiguration, 'position'))->toArray();
+        $sortedConfiguredHealthchecks = (new PositionalArraySorter($this->configuredHealthchecks, 'position'))->toArray();
 
         $healthCollection = HealthCollection::empty();
-        foreach ($sortedHealthchecksConfiguration as $identifier => $configuration) {
+        foreach ($sortedConfiguredHealthchecks as $identifier => $configuration) {
             $className = $configuration['className'] ?? null;
             if (!$className) {
                 continue;

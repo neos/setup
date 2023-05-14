@@ -2,7 +2,7 @@
 
 namespace Neos\Setup\RequestHandler;
 
-use GuzzleHttp\Psr7\Uri;
+use Psr\Http\Message\UriInterface;
 
 enum Endpoint
 {
@@ -14,12 +14,11 @@ enum Endpoint
 
     case COMPILE_TIME_ENDPOINT;
 
-    public static function tryFromEnvironment(): ?self
+    public static function tryFromUri(UriInterface $uri): ?self
     {
-        $requestUriString = $_SERVER['REQUEST_URI'];
-        $requestUriPath = (new Uri($requestUriString))->getPath();
+        $path = $uri->getPath();
 
-        return match($requestUriPath) {
+        return match($path) {
             '/setup/index.html',
             '/setup/index',
             '/setup/',

@@ -4,8 +4,10 @@ namespace Neos\Setup\Infrastructure\Healthcheck;
 use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Log\PsrLoggerFactoryInterface;
+use Neos\Setup\Domain\CliEnvironment;
 use Neos\Setup\Domain\EarlyBootTimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
+use Neos\Setup\Domain\HealthcheckEnvironment;
 use Neos\Setup\Domain\Status;
 use Neos\Utility\Files;
 use Neos\Setup\Infrastructure\HealthcheckFailedError;
@@ -13,6 +15,8 @@ use Psr\Log\LoggerInterface;
 
 class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
 {
+    private HealthcheckEnvironment $environment;
+
     public function __construct(
         private readonly ConfigurationManager $configurationManager,
         private readonly LoggerInterface $logger
@@ -32,8 +36,9 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
         return 'Basic system requirements';
     }
 
-    public function execute(): Health
+    public function execute(HealthcheckEnvironment $environment): Health
     {
+        $this->environment = $environment;
         try {
             $this->checkDirectorySeparator();
             $this->checkPhpBinaryVersion();
@@ -121,7 +126,7 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
      */
     private function checkPhpBinaryVersion(): void
     {
-        if (PHP_SAPI === 'cli') {
+        if ($this->environment->executionEnvironment instanceof CliEnvironment) {
             // this check can only be run via web request
             return;
         }
@@ -170,8 +175,13 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
             }
         }
         if ($phpVersion === null) {
-            $this->logger->error('The specified path to your PHP binary (see Configuration/Settings.yaml) is incorrect: not found at "%s"', [$phpBinaryPathAndFilename]);
-            throw new HealthcheckFailedError('The specified path to your PHP binary (see Configuration/Settings.yaml) is incorrect: was not found. Please check your log for more details.');
+            $this->logger->error(
+                $sensitiveMessage = sprintf('The specified path to your PHP binary (see Configuration/Settings.yaml) is incorrect: not found at "%s"', $phpBinaryPathAndFilename)
+            );
+            throw new HealthcheckFailedError($this->environment->isSafeToLeakTechnicalDetails()
+                ? $sensitiveMessage
+                : 'The specified path to your PHP binary (see Configuration/Settings.yaml) is incorrect: was not found. Please check your log for more details.'
+            );
         }
 
         $phpMinorVersionMatch = array_slice(explode('.', $phpVersion), 0, 2) === array_slice(explode('.', PHP_VERSION), 0, 2);
@@ -184,11 +194,18 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
             return;
         }
 
-        $this->logger->error('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not compatible to the version that is currently running ("%s").', [
-            $phpVersion,
-            PHP_VERSION
-        ]);
-        throw new HealthcheckFailedError('The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with an incompatible version. Please check your log for more details.');
+        $this->logger->error(
+            $sensitiveMessage = sprintf(
+                'The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with the version "%s". This is not compatible to the version that is currently running ("%s").',
+                $phpVersion,
+                PHP_VERSION
+            )
+        );
+        throw new HealthcheckFailedError(
+            $this->environment->isSafeToLeakTechnicalDetails()
+                ? $sensitiveMessage
+                : 'The specified path to your PHP binary (see Configuration/Settings.yaml) points to a PHP binary with an incompatible version. Please check your log for more details.'
+        );
     }
 
     /**
@@ -206,8 +223,14 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
         if (defined('PHP_BINARY') && PHP_BINARY !== '' && dirname(PHP_BINARY) === PHP_BINDIR) {
             try {
                 $this->checkPhpBinary(PHP_BINARY);
-                $this->logger->info('Please set the correct path to your PHP binary (detected is "%s") in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename.', [PHP_BINARY]);
-                throw new HealthcheckFailedError('Please set the correct path to your PHP binary in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename. See your logs for details.');
+                $this->logger->info(
+                    $sensitiveMessage = sprintf('Please set the correct path to your PHP binary (detected is "%s") in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename.', PHP_BINARY)
+                );
+                throw new HealthcheckFailedError(
+                    $this->environment->isSafeToLeakTechnicalDetails()
+                        ? $sensitiveMessage
+                        : 'Please set the correct path to your PHP binary in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename. See your logs for details.'
+                );
             } catch (HealthcheckFailedError) {
                 // we ignore this result as that only means PHP_BINARY is not the correct binary and we want to check alternatives below.
             }
@@ -228,8 +251,14 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
                 continue;
             }
 
-            $this->logger->info('Please set the correct path to your PHP binary (detected is "%s") in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename.', [$phpBinaryPathAndFilename]);
-            throw new HealthcheckFailedError('Please set the correct path to your PHP binary in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename. See your logs for details.');
+            $this->logger->info(
+                $sensitiveMessage = sprintf('Please set the correct path to your PHP binary (detected is "%s") in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename.', $phpBinaryPathAndFilename)
+            );
+            throw new HealthcheckFailedError(
+                $this->environment->isSafeToLeakTechnicalDetails()
+                    ? $sensitiveMessage
+                    : 'Please set the correct path to your PHP binary in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename. See your logs for details.'
+            );
         }
 
         throw new HealthcheckFailedError('We could not find any valid PHP binary in your PATH or configuration, please ensure you set the correct path to your PHP CLI binary in the configuration setting Neos.Flow.core.phpBinaryPathAndFilename.');

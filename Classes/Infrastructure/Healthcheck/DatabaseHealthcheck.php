@@ -8,6 +8,7 @@ use Neos\Flow\Configuration\ConfigurationManager;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Setup\Domain\EarlyBootTimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
+use Neos\Setup\Domain\HealthcheckEnvironment;
 use Neos\Setup\Domain\Status;
 
 class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
@@ -29,7 +30,7 @@ class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
         return 'Database';
     }
 
-    public function execute(): Health
+    public function execute(HealthcheckEnvironment $environment): Health
     {
         $connectionSettings = $this->configurationManager->getConfiguration(
             ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
@@ -48,12 +49,15 @@ class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
         try {
             $connection = DriverManager::getConnection($connectionSettings);
             $connection->connect();
-        } catch (DBALException | \PDOException) {
+        } catch (DBALException | \PDOException $exception) {
+            $additionalInfoInSafeContext = $environment->isSafeToLeakTechnicalDetails()
+                ? ' Exception: ' . $exception->getMessage()
+                : '';
             return new Health(
                 <<<'MSG'
                 Please check your database connection settings <code>./flow configuration:show --path Neos.Flow.persistence.backendOptions</code>
                 You can also rerun <code>./flow setup:database</code>
-                MSG,
+                MSG . $additionalInfoInSafeContext,
                 Status::ERROR
             );
         }

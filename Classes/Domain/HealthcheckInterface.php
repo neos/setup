@@ -9,5 +9,5 @@ interface HealthcheckInterface
 {
     public function getTitle(): string;
 
-    public function execute(): Health;
+    public function execute(HealthcheckEnvironment $environment): Health;
 }

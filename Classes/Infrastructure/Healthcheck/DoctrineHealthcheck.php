@@ -2,10 +2,10 @@
 
 namespace Neos\Setup\Infrastructure\Healthcheck;
 
-use Doctrine\DBAL\ConnectionException;
 use Doctrine\DBAL\Exception as DBALException;
 use Neos\Flow\Persistence\Doctrine\Service as DoctrineService;
 use Neos\Setup\Domain\Health;
+use Neos\Setup\Domain\HealthcheckEnvironment;
 use Neos\Setup\Domain\HealthcheckInterface;
 use Neos\Setup\Domain\Status;
 
@@ -21,7 +21,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
         return 'Doctrine';
     }
 
-    public function execute(): Health
+    public function execute(HealthcheckEnvironment $environment): Health
     {
         try {
             [
@@ -29,15 +29,9 @@ class DoctrineHealthcheck implements HealthcheckInterface
                 'executed' => $executedMigrationCount,
                 'available' => $availableMigrationCount
             ] = $this->doctrineService->getMigrationStatus();
-        } catch (ConnectionException | DBALException $e) {
-            return new Health(
-                <<<'MSG'
-                No doctrine migrations have been executed. Please run <code>./flow doctrine:migrate</code>
-                MSG,
-                Status::ERROR
-            );
+        } catch (DBALException | \PDOException) {
+            throw new \RuntimeException('The DoctrineHealthcheck must be only executed, if the Database connection is know to work.', 1684075689386);
         }
-
 
         if ($executedMigrationCount === 0 && $availableMigrationCount > 0) {
             return new Health(

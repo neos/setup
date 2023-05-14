@@ -36,7 +36,7 @@ class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
             'Neos.Flow.persistence.backendOptions'
         );
 
-        if (!$connectionSettings) {
+        if (!$connectionSettings || !isset($connectionSettings['dbname'])) {
             return new Health(
                 <<<'MSG'
                 Please configure your database in the settings or use the command <code>./flow setup:database</code>
@@ -51,7 +51,8 @@ class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
         } catch (DBALException | \PDOException) {
             return new Health(
                 <<<'MSG'
-                Please check your database settings. You can also rerun <code>./flow setup:database</code>
+                Please check your database connection settings <code>./flow configuration:show --path Neos.Flow.persistence.backendOptions</code>
+                You can also rerun <code>./flow setup:database</code>
                 MSG,
                 Status::ERROR
             );

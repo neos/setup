@@ -29,7 +29,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
                 'executed' => $executedMigrationCount,
                 'available' => $availableMigrationCount
             ] = $this->doctrineService->getMigrationStatus();
-        } catch (ConnectionException |DBALException $e) {
+        } catch (ConnectionException | DBALException $e) {
             return new Health(
                 <<<'MSG'
                 No doctrine migrations have been executed. Please run <code>./flow doctrine:migrate</code>

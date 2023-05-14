@@ -28,4 +28,5 @@ Neos:
   Flow:
     mvc:
       routes:
-        'Neos.Setup': true
+        'Neos.Setup':
+          position: start 9000

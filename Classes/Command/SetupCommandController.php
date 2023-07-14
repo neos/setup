@@ -28,17 +28,14 @@ use Symfony\Component\Yaml\Yaml;
 
 class SetupCommandController extends CommandController
 {
-    /**
-     * @var DatabaseConnectionService
-     * @Flow\Inject
-     */
+    #[Flow\Inject]
     protected DatabaseConnectionService $databaseConnectionService;
 
-    /**
-     * @var array
-     * @Flow\InjectConfiguration(package="Neos.Flow", path="persistence.backendOptions")
-     */
+    #[Flow\InjectConfiguration(path: "persistence.backendOptions", package: "Neos.Flow")]
     protected array $persistenceConfiguration;
+
+    #[Flow\Inject]
+    protected Bootstrap $bootstrap;
 
     /**
      * Show information about the system health
@@ -139,7 +136,7 @@ class SetupCommandController extends CommandController
             }
         }
 
-        $filename = 'Configuration/Settings.Database.yaml';
+        $filename = sprintf('Configuration/%s/Settings.Database.yaml', $this->bootstrap->getContext()->__toString());
 
         $this->outputLine();
         $this->output(sprintf('<info>%s</info>',$this->writeSettings($filename, 'Neos.Flow.persistence.backendOptions',$persistenceConfiguration)));

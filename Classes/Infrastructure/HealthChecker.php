@@ -3,6 +3,7 @@
 namespace Neos\Setup\Infrastructure;
 
 use Neos\Flow\Core\Bootstrap;
+use Neos\Flow\Log\ThrowableStorageInterface;
 use Neos\Setup\Domain\EarlyBootTimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
 use Neos\Setup\Domain\HealthcheckEnvironment;
@@ -55,7 +56,21 @@ class HealthChecker
                 continue;
             }
 
-            $health = $healthcheck->execute($this->healthcheckEnvironment);
+            try {
+                $health = $healthcheck->execute($this->healthcheckEnvironment);
+            } catch (\Throwable $throwable) {
+                $message = $this->bootstrap->getEarlyInstance(ThrowableStorageInterface::class)->logThrowable($throwable);
+
+                $healthCollection = $healthCollection->withEntry(
+                    $identifier,
+                    new Health(
+                        message: nl2br($message),
+                        status: Status::ERROR,
+                        title: $healthcheck->getTitle()
+                    )
+                );
+                continue;
+            }
 
             $healthCollection = $healthCollection->withEntry(
                 $identifier,

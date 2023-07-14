@@ -7,4 +7,8 @@ use Neos\Flow\Annotations as Flow;
 /** @Flow\Proxy(false) */
 class CliEnvironment
 {
+    public function __construct(
+        public readonly bool $isWindows
+    ) {
+    }
 }

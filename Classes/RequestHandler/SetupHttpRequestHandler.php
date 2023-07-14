@@ -81,7 +81,8 @@ class SetupHttpRequestHandler implements RequestHandlerInterface
         $healthcheckEnvironment = new HealthcheckEnvironment(
             applicationContext: $this->bootstrap->getContext(),
             executionEnvironment: new WebEnvironment(
-                requestUri: $this->requestUri
+                requestUri: $this->requestUri,
+                isWindows: PHP_OS_FAMILY === 'Windows'
             )
         );
 

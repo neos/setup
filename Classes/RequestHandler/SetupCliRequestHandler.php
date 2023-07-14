@@ -94,7 +94,9 @@ class SetupCliRequestHandler implements RequestHandlerInterface
         );
         $healthcheckEnvironment = new HealthcheckEnvironment(
             applicationContext: $this->bootstrap->getContext(),
-            executionEnvironment: new CliEnvironment()
+            executionEnvironment: new CliEnvironment(
+                PHP_OS_FAMILY === 'Windows'
+            )
         );
         $compiletimeHealthCollection = (new HealthChecker($this->bootstrap, $healthchecksConfiguration, $healthcheckEnvironment))->execute();
 

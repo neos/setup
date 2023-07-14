@@ -162,7 +162,9 @@ class SetupCommandController extends CommandController
         );
         $healthcheckEnvironment = new HealthcheckEnvironment(
             applicationContext: $bootstrap->getContext(),
-            executionEnvironment: new CliEnvironment()
+            executionEnvironment: new CliEnvironment(
+                PHP_OS_FAMILY === 'Windows'
+            )
         );
         $healthCollection = (new HealthChecker($bootstrap, $healthchecksConfiguration, $healthcheckEnvironment))->execute();
 

@@ -26,7 +26,8 @@ class RuntimeHealthController extends ActionController
         $healthcheckEnvironment = new HealthcheckEnvironment(
             applicationContext: $this->bootstrap->getContext(),
             executionEnvironment: new WebEnvironment(
-                requestUri: $this->request->getHttpRequest()->getUri()
+                requestUri: $this->request->getHttpRequest()->getUri(),
+                isWindows: PHP_OS_FAMILY === 'Windows'
             )
         );
         $healthCollection = (new HealthChecker($this->bootstrap, $this->healthchecksConfiguration, $healthcheckEnvironment))->execute();

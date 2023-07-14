@@ -10,7 +10,7 @@ class Health
     public function __construct(
         public readonly string $message,
         public readonly Status $status,
-        public string $title = '',
+        public readonly string $title = '',
     ) {
     }
 }

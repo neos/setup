@@ -42,14 +42,32 @@ class HealthChecker
                 /** @var class-string<HealthcheckInterface> $className */
                 $healthcheck = $this->bootstrap->getObjectManager()->get($className);
             }
-            $health = $healthCollection->hasError()
-                ? new Health('', Status::NOT_RUN)
-                : $healthcheck->execute($this->healthcheckEnvironment);
-            $health->title = $healthcheck->getTitle();
+
+            if ($healthCollection->hasError()) {
+                $healthCollection = $healthCollection->withEntry(
+                    $identifier,
+                    new Health(
+                        message: '',
+                        status: Status::NOT_RUN,
+                        title: $healthcheck->getTitle()
+                    )
+                );
+                continue;
+            }
+
+            $health = $healthcheck->execute($this->healthcheckEnvironment);
 
             $healthCollection = $healthCollection->withEntry(
                 $identifier,
-                $health
+                new Health(
+                    message: str_replace(
+                        '{{flowCommand}}',
+                        $this->healthcheckEnvironment->executionEnvironment->isWindows ? 'flow.bat' : './flow',
+                        $health->message
+                    ),
+                    status: $health->status,
+                    title: $healthcheck->getTitle()
+                )
             );
         }
 

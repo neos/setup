@@ -38,7 +38,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
         if ($executedMigrationCount === 0 && $availableMigrationCount > 0) {
             return new Health(
                 <<<'MSG'
-                No doctrine migrations have been executed. Please run <code>./flow doctrine:migrate</code>
+                No doctrine migrations have been executed. Please run <code>{{flowCommand}} doctrine:migrate</code>
                 MSG,
                 Status::ERROR
             );
@@ -47,7 +47,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
         if ($newMigrationCount > self::ACCEPTABLE_NEW_MIGRATION_COUNT) {
             return new Health(
                 <<<'MSG'
-                Many doctrine migrations have yet to be executed. Please run <code>./flow doctrine:migrate</code>
+                Many doctrine migrations have yet to be executed. Please run <code>{{flowCommand}} doctrine:migrate</code>
                 MSG,
                 Status::ERROR
             );
@@ -56,7 +56,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
         if ($newMigrationCount > 0 && $newMigrationCount <= self::ACCEPTABLE_NEW_MIGRATION_COUNT) {
             return new Health(
                 <<<'MSG'
-                Few doctrine migrations have yet to be executed. Please run <code>./flow doctrine:migrate</code>
+                Few doctrine migrations have yet to be executed. Please run <code>{{flowCommand}} doctrine:migrate</code>
                 MSG,
                 Status::WARNING
             );

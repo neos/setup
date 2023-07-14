@@ -163,7 +163,7 @@ class SetupCliRequestHandler implements RequestHandlerInterface
 
     public function handleRequest()
     {
-        Scripts::initializeConfiguration($this->bootstrap);
+        Scripts::initializeConfiguration($this->bootstrap, false);
         Scripts::initializeSystemLogger($this->bootstrap);
 
         $this->configurationManager = $this->bootstrap->getEarlyInstance(ConfigurationManager::class);

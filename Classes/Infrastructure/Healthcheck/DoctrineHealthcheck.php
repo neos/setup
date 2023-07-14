@@ -11,6 +11,8 @@ use Neos\Setup\Domain\Status;
 
 class DoctrineHealthcheck implements HealthcheckInterface
 {
+    private const ACCEPTABLE_NEW_MIGRATION_COUNT = 10;
+
     public function __construct(
         private readonly DoctrineService $doctrineService
     ) {
@@ -42,10 +44,19 @@ class DoctrineHealthcheck implements HealthcheckInterface
             );
         }
 
-        if ($newMigrationCount > 0) {
+        if ($newMigrationCount > self::ACCEPTABLE_NEW_MIGRATION_COUNT) {
             return new Health(
                 <<<'MSG'
-                Some doctrine migrations have yet to be executed. Please run <code>./flow doctrine:migrate</code>
+                Many doctrine migrations have yet to be executed. Please run <code>./flow doctrine:migrate</code>
+                MSG,
+                Status::ERROR
+            );
+        }
+
+        if ($newMigrationCount > 0 && $newMigrationCount <= self::ACCEPTABLE_NEW_MIGRATION_COUNT) {
+            return new Health(
+                <<<'MSG'
+                Few doctrine migrations have yet to be executed. Please run <code>./flow doctrine:migrate</code>
                 MSG,
                 Status::WARNING
             );

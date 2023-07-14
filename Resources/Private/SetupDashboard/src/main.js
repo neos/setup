@@ -57,8 +57,16 @@ Alpine.data('health', () => ({
 		try {
 			// Check if the response is valid JSON
 			data = JSON.parse(data);
+			if (response.status === 503) {
+				if (type === 'compiletime') {
+					this.checks = { ...data };
+				} else {
+					this.checks = { ...this.checks, ...data };
+				}
+				return false;
+			}
 			this.checks = { ...this.checks, ...data };
-			return response.status !== 503;
+			return true;
 		} catch (error) {
 			this.errorHTML = data;
 			if (this.reloadTimeout) {

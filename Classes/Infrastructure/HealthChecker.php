@@ -75,11 +75,8 @@ class HealthChecker
             $healthCollection = $healthCollection->withEntry(
                 $identifier,
                 new Health(
-                    message: str_replace(
-                        '{{flowCommand}}',
-                        $this->healthcheckEnvironment->executionEnvironment->isWindows ? 'flow.bat' : './flow',
-                        $health->message
-                    ),
+                    message: FlowInvocationCommand::forEnvironment(isWindows: $this->healthcheckEnvironment->executionEnvironment->isWindows)
+                        ->replaceCommandPlaceHolders($health->message),
                     status: $health->status,
                     title: $healthcheck->getTitle()
                 )

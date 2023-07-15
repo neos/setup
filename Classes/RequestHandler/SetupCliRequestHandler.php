@@ -23,6 +23,7 @@ use Neos\Setup\Domain\Health;
 use Neos\Setup\Domain\HealthcheckEnvironment;
 use Neos\Setup\Domain\HealthCollection;
 use Neos\Setup\Domain\Status;
+use Neos\Setup\Infrastructure\FlowInvocationCommand;
 use Neos\Setup\Infrastructure\HealthChecker;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
@@ -138,7 +139,10 @@ class SetupCliRequestHandler implements RequestHandlerInterface
             $this->output->outputLine('<error>Neos setup not complete.</error>');
         }
 
-        $this->output->outputLine('You can rerun this command anytime via <code>./flow setup</code>');
+        $this->output->outputLine(
+            FlowInvocationCommand::forEnvironment(isWindows: PHP_OS_FAMILY === 'Windows')
+                ->replaceCommandPlaceHolders('You can rerun this command anytime via <code>{{flowCommand}} setup</code>')
+        );
     }
 
 

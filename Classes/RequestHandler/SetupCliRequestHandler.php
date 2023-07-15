@@ -51,6 +51,8 @@ class SetupCliRequestHandler implements RequestHandlerInterface
         }
         $commandIdentifier = $_SERVER['argv'][1] ?? null;
         return match($commandIdentifier) {
+            'neos.setup:setup:subprocess_test',
+
             'neos.setup:setup:index',
             'setup:setup:index',
             'setup:index' => true,
@@ -169,6 +171,11 @@ class SetupCliRequestHandler implements RequestHandlerInterface
 
     public function handleRequest()
     {
+        $commandIdentifier = $_SERVER['argv'][1] ?? null;
+        if ($commandIdentifier === 'neos.setup:setup:subprocess_test') {
+            exit(0);
+        }
+
         Scripts::initializeConfiguration($this->bootstrap, false);
         Scripts::initializeSystemLogger($this->bootstrap);
 

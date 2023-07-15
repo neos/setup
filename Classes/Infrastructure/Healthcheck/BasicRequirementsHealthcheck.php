@@ -2,9 +2,10 @@
 namespace Neos\Setup\Infrastructure\Healthcheck;
 
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Core\Booting\Exception\SubProcessException;
+use Neos\Flow\Core\Booting\Scripts;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Log\PsrLoggerFactoryInterface;
-use Neos\Setup\Domain\CliEnvironment;
 use Neos\Setup\Domain\EarlyBootTimeHealthcheckInterface;
 use Neos\Setup\Domain\Health;
 use Neos\Setup\Domain\HealthcheckEnvironment;
@@ -126,10 +127,32 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
      */
     private function checkPhpBinaryVersion(): void
     {
-        if ($this->environment->executionEnvironment instanceof CliEnvironment) {
-            // this check can only be run via web request
-            return;
+       // if ($this->environment->executionEnvironment instanceof CliEnvironment) {
+       //     // this check can only be run via web request
+       //     return;
+       // }
+
+
+        $flowSettings = $this->configurationManager->getConfiguration(
+            ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,
+            'Neos.Flow'
+        );
+
+        $phpBinaryPathAndFilename = $flowSettings['core']['phpBinaryPathAndFilename'] ?? '';
+
+        try {
+            Scripts::executeCommand('neos.setup:setup:subprocess_test', $flowSettings);
+        } catch (SubProcessException $subProcessException) {
+            throw new HealthcheckFailedError($this->environment->isSafeToLeakTechnicalDetails()
+                ? sprintf('Could not open a flow subprocess. Maybe your PHP binary "%s" (see Configuration/Settings.yaml) is incorrect. %s - Open %s for more details.', $phpBinaryPathAndFilename, $subProcessException->getMessage(), $subProcessException->getReferenceCode())
+                : 'Could not open a flow subprocess. Maybe your PHP binary (see Configuration/Settings.yaml) is incorrect. Please check your log for more details.'
+            );
         }
+
+        return;
+
+
+
 
         $phpBinaryPathAndFilename = $this->configurationManager->getConfiguration(
             ConfigurationManager::CONFIGURATION_TYPE_SETTINGS,

@@ -10,12 +10,12 @@ Neos:
           className: Neos\Setup\Infrastructure\Healthcheck\DatabaseHealthcheck
 
       runtime:
-        doctrine:
-          position: 'start 200'
-          className: Neos\Setup\Infrastructure\Healthcheck\DoctrineHealthcheck
         routing:
-          position: 'start 100'
+          position: 'start 200'
           className: Neos\Setup\Infrastructure\Healthcheck\EndToEndHealthcheck
+        doctrine:
+          position: 'start 100'
+          className: Neos\Setup\Infrastructure\Healthcheck\DoctrineHealthcheck
 
     #
     # The database drivers that are supported by migrations

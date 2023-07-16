@@ -145,6 +145,7 @@ class SetupCommandController extends CommandController
     }
 
     /**
+     * @Flow\Internal
      * @internal
      */
     public function executeRuntimeHealthchecksCommand(): void

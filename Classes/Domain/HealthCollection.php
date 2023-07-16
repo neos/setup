@@ -22,7 +22,7 @@ class HealthCollection implements \JsonSerializable, \IteratorAggregate
 
     public static function fromJsonString(string $json): self
     {
-        return self::fromArray(json_decode($json, true,512, JSON_THROW_ON_ERROR));
+        return self::fromArray(json_decode($json, true, 512, JSON_THROW_ON_ERROR));
     }
 
     public static function fromArray(array $array): self

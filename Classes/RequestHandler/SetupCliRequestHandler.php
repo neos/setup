@@ -15,6 +15,7 @@ namespace Neos\Setup\RequestHandler;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Cli\ConsoleOutput;
 use Neos\Flow\Configuration\ConfigurationManager;
+use Neos\Flow\Core\Booting\Exception\SubProcessException;
 use Neos\Flow\Core\Booting\Scripts;
 use Neos\Flow\Core\Bootstrap;
 use Neos\Flow\Core\RequestHandlerInterface;
@@ -118,22 +119,35 @@ class SetupCliRequestHandler implements RequestHandlerInterface
 
         if (!$hasError) {
             ob_start();
-            $success = Scripts::executeCommand(
-                'neos.setup:setup:executeruntimehealthchecks',
-                $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow')
-            );
-            $json = ob_get_clean();
 
-            if ($success) {
-                $runtimeHealthCollection = HealthCollection::fromJsonString($json);
-                $hasError = $runtimeHealthCollection->hasError();
-                $this->printHealthCollection($runtimeHealthCollection);
-            } else {
+            try {
+                Scripts::executeCommand(
+                    'neos.setup:setup:executeruntimehealthchecks',
+                    $this->configurationManager->getConfiguration(ConfigurationManager::CONFIGURATION_TYPE_SETTINGS, 'Neos.Flow')
+                );
+            } catch (SubProcessException $subProcessException) {
                 $this->printHealthCollection(new HealthCollection(new Health(
-                    message: "Flow didn't respond as expected.",
+                    message: sprintf('Flow didn\'t respond as expected. "%s". Open <b>Data/Logs/Exceptions/%s.txt</b> for a full stack trace.', $subProcessException->getMessage(), $subProcessException->getReferenceCode()),
                     status: Status::ERROR,
                     title: 'Flow Framework'
                 )));
+                exit(1);
+            }
+
+            // hack see: https://github.com/neos/flow-development-collection/issues/3112
+            $json = ob_get_clean();
+
+            try {
+                $runtimeHealthCollection = HealthCollection::fromJsonString($json);
+                $hasError = $runtimeHealthCollection->hasError();
+                $this->printHealthCollection($runtimeHealthCollection);
+            } catch (\JsonException $jsonException) {
+                $this->printHealthCollection(new HealthCollection(new Health(
+                    message: sprintf('Flow didn\'t respond as expected. Expected subprocess to return valid json. %s. Got: `%s`.', $jsonException->getMessage(), $json),
+                    status: Status::ERROR,
+                    title: 'Flow Framework'
+                )));
+                exit(1);
             }
         }
 

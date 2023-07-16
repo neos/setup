@@ -49,7 +49,27 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
             return new Health($error->getMessage(), Status::ERROR);
         }
 
+        if ($environment->executionEnvironment->isWindows && !$this->canCreateSymlinks()) {
+            return new Health(
+                'Unable to create symlinks. The current user might not be allowed to create symlinks, please ensure that the privilege "SeCreateSymbolicLinkPrivilege" is set. Alternatively you need to publish the resources via an admin shell: <code>{{flowCommand}} resource:publish</code>.',
+                Status::WARNING
+            );
+        }
+
         return new Health('All basic requirements are fullfilled.', Status::OK);
+    }
+
+    private function canCreateSymlinks(): bool
+    {
+        $testFile = FLOW_PATH_TEMPORARY . '/neos-setup-test-file';
+        $testLink = FLOW_PATH_TEMPORARY . '/neos-setup-test-link';
+        touch($testFile);
+        $success = symlink($testFile, $testLink);
+        if ($success) {
+            unlink($testLink);
+        }
+        unlink($testFile);
+        return $success;
     }
 
     private function checkFilePermissions(): void

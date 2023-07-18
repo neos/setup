@@ -42,7 +42,7 @@ class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
                 <<<'MSG'
                 Please configure your database in the settings or use the command <code>{{flowCommand}} setup:database</code>
                 MSG,
-                Status::ERROR
+                Status::ERROR()
             );
         }
 
@@ -58,9 +58,9 @@ class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
                 Not connected. Please check your database connection settings <code>{{flowCommand}} configuration:show --path Neos.Flow.persistence.backendOptions</code>.
                 You can also rerun <code>{{flowCommand}} setup:database</code>.
                 MSG . $additionalInfoInSafeContext,
-                Status::ERROR
+                Status::ERROR()
             );
         }
-        return new Health('Connection up', Status::OK);
+        return new Health('Connection up', Status::OK());
     }
 }

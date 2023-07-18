@@ -40,7 +40,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
                 <<<'MSG'
                 No doctrine migrations have been executed. Please run <code>{{flowCommand}} doctrine:migrate</code>
                 MSG,
-                Status::ERROR
+                Status::ERROR()
             );
         }
 
@@ -49,7 +49,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
                 <<<'MSG'
                 Many doctrine migrations have yet to be executed. Please run <code>{{flowCommand}} doctrine:migrate</code>
                 MSG,
-                Status::ERROR
+                Status::ERROR()
             );
         }
 
@@ -58,7 +58,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
                 <<<'MSG'
                 Few doctrine migrations have yet to be executed. Please run <code>{{flowCommand}} doctrine:migrate</code>
                 MSG,
-                Status::WARNING
+                Status::WARNING()
             );
         }
 
@@ -66,7 +66,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
             <<<'MSG'
             All doctrine migrations have been executed.
             MSG,
-            Status::OK
+            Status::OK()
         );
     }
 }

@@ -46,17 +46,17 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
             $this->checkFilePermissions();
             $this->checkSessionAutostart();
         } catch (HealthcheckFailedError $error) {
-            return new Health($error->getMessage(), Status::ERROR);
+            return new Health($error->getMessage(), Status::ERROR());
         }
 
         if ($environment->executionEnvironment->isWindows && !$this->canCreateSymlinks()) {
             return new Health(
                 'Unable to create symlinks. The current user might not be allowed to create symlinks, please ensure that the privilege "SeCreateSymbolicLinkPrivilege" is set. Alternatively you need to publish the resources via an admin shell: <code>{{flowCommand}} resource:publish</code>.',
-                Status::WARNING
+                Status::WARNING()
             );
         }
 
-        return new Health('All basic requirements are fullfilled.', Status::OK);
+        return new Health('All basic requirements are fullfilled.', Status::OK());
     }
 
     private function canCreateSymlinks(): bool

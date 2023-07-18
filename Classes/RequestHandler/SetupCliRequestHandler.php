@@ -126,7 +126,7 @@ class SetupCliRequestHandler implements RequestHandlerInterface
             } catch (SubProcessException $subProcessException) {
                 $this->printHealthCollection(new HealthCollection(new Health(
                     message: sprintf('Flow didn\'t respond as expected. "%s". Open <b>Data/Logs/Exceptions/%s.txt</b> for a full stack trace.', $subProcessException->getMessage(), $subProcessException->getReferenceCode()),
-                    status: Status::ERROR,
+                    status: Status::ERROR(),
                     title: 'Flow Framework'
                 )));
                 exit(1);
@@ -142,7 +142,7 @@ class SetupCliRequestHandler implements RequestHandlerInterface
             } catch (\JsonException $jsonException) {
                 $this->printHealthCollection(new HealthCollection(new Health(
                     message: sprintf('Flow didn\'t respond as expected. Expected subprocess to return valid json. %s. Got: `%s`.', $jsonException->getMessage(), $json),
-                    status: Status::ERROR,
+                    status: Status::ERROR(),
                     title: 'Flow Framework'
                 )));
                 exit(1);
@@ -164,14 +164,14 @@ class SetupCliRequestHandler implements RequestHandlerInterface
     {
         foreach ($healthCollection as $health) {
             $this->output->outputLine(match ($health->status) {
-                Status::OK => '<success>' . $health->title . '</success>',
-                Status::ERROR => '<error>' . $health->title . '</error>',
-                Status::WARNING => '<warning>' . $health->title . '</warning>',
-                Status::NOT_RUN => '<b>' . $health->title . '</b> (not run)',
-                Status::UNKNOWN => '<b>' . $health->title . '</b>',
+                Status::OK() => '<success>' . $health->title . '</success>',
+                Status::ERROR() => '<error>' . $health->title . '</error>',
+                Status::WARNING() => '<warning>' . $health->title . '</warning>',
+                Status::NOT_RUN() => '<b>' . $health->title . '</b> (not run)',
+                Status::UNKNOWN() => '<b>' . $health->title . '</b>',
             });
 
-            if ($health->status === Status::NOT_RUN) {
+            if ($health->status === Status::NOT_RUN()) {
                 $this->output->outputLine();
                 continue;
             }

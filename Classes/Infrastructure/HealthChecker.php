@@ -49,7 +49,7 @@ class HealthChecker
                     $identifier,
                     new Health(
                         message: '',
-                        status: Status::NOT_RUN,
+                        status: Status::NOT_RUN(),
                         title: $healthcheck->getTitle()
                     )
                 );
@@ -65,7 +65,7 @@ class HealthChecker
                     $identifier,
                     new Health(
                         message: nl2br($message),
-                        status: Status::ERROR,
+                        status: Status::ERROR(),
                         title: $healthcheck->getTitle()
                     )
                 );

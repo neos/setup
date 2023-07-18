@@ -16,6 +16,6 @@ class EndToEndHealthcheck implements HealthcheckInterface
 
     public function execute(HealthcheckEnvironment $environment): Health
     {
-        return new Health('Flow is up and running', Status::OK);
+        return new Health('Flow is up and running', Status::OK());
     }
 }

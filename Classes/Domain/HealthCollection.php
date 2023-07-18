@@ -51,7 +51,7 @@ class HealthCollection implements \JsonSerializable, \IteratorAggregate
     public function hasError(): bool
     {
         foreach ($this->items as $item) {
-            if ($item->status === Status::ERROR) {
+            if ($item->status === Status::ERROR()) {
                 return true;
             }
         }

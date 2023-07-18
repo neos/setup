@@ -51,12 +51,12 @@ class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
             $connection->connect();
         } catch (DBALException | \PDOException $exception) {
             $additionalInfoInSafeContext = $environment->isSafeToLeakTechnicalDetails()
-                ? ' Exception: ' . $exception->getMessage()
+                ? ' Exception: "' . $exception->getMessage() . '"'
                 : '';
             return new Health(
                 <<<'MSG'
-                Please check your database connection settings <code>{{flowCommand}} configuration:show --path Neos.Flow.persistence.backendOptions</code>
-                You can also rerun <code>{{flowCommand}} setup:database</code>
+                Not connected. Please check your database connection settings <code>{{flowCommand}} configuration:show --path Neos.Flow.persistence.backendOptions</code>.
+                You can also rerun <code>{{flowCommand}} setup:database</code>.
                 MSG . $additionalInfoInSafeContext,
                 Status::ERROR
             );

@@ -138,7 +138,13 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
                 $possiblePhpBinary = sprintf(' You might want to configure it to: "%s".', PHP_BINARY);
             }
             throw new HealthcheckFailedError($this->environment->isSafeToLeakTechnicalDetails()
-                ? sprintf('Could not start a flow subprocess. Maybe your PHP binary "%s" (see Configuration/Settings.yaml) is incorrect: "%s".%s Open <b>Data/Logs/Exceptions/%s.txt</b> for a full stack trace.', $phpBinaryPathAndFilename, $subProcessException->getMessage(), $subProcessException->getReferenceCode(), $possiblePhpBinary)
+                ? sprintf(
+                    'Could not start a flow subprocess. Maybe your PHP binary "%s" (see Configuration/Settings.yaml) is incorrect: "%s".%s Open <b>Data/Logs/Exceptions/%s.txt</b> for a full stack trace.',
+                    $phpBinaryPathAndFilename,
+                    $subProcessException->getMessage(),
+                    $possiblePhpBinary,
+                    $subProcessException->getReferenceCode(),
+                )
                 : 'Could not start a flow subprocess. Maybe your PHP binary (see Configuration/Settings.yaml) is incorrect. Please check your log for more details.'
             );
         }

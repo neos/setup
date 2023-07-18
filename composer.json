@@ -4,12 +4,15 @@
     "license": "MIT",
     "description": "An extensible setup tool for Neos Flow based applications",
     "require": {
-        "php": "^8.1",
+        "php": "^8.0",
         "neos/flow": "^8.0"
     },
     "replace": {
         "typo3/setup": "self.version",
         "neos/cli-setup": "*"
+    },
+    "branch-alias": {
+        "dev-master": "6.0.x-dev"
     },
     "autoload": {
         "psr-4": {

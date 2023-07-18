@@ -23,7 +23,20 @@ class FlowInvocationCommand
 
     public function toCommandString(): string
     {
-        return $this->isWindows ? '.\flow.bat' : './flow';
+        if ($this->isWindows) {
+            return  '.\flow.bat';
+        }
+
+        if ($home = getenv('HOME')) {
+            $flowOhMyZshPluginExists = @file_exists($home . '/.oh-my-zsh/custom/plugins/flow');
+            if ($flowOhMyZshPluginExists) {
+                // support for https://github.com/sandstorm/oh-my-zsh-flow-plugin
+                // we assume anyone who installed this plugin, is also brave enough to have it enabled ;)
+                return 'flow';
+            }
+        }
+
+        return './flow';
     }
 
     public function replaceCommandPlaceHolders(string $string): string

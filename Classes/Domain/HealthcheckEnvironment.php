@@ -10,8 +10,8 @@ use Neos\Flow\Core\ApplicationContext;
 class HealthcheckEnvironment
 {
     public function __construct(
-        private readonly ApplicationContext $applicationContext,
-        public readonly CliEnvironment | WebEnvironment $executionEnvironment
+        private ApplicationContext $applicationContext,
+        /** @psalm-readonly */ public CliEnvironment | WebEnvironment $executionEnvironment
     ) {
     }
 

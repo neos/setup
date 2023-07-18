@@ -15,9 +15,9 @@ use Neos\Utility\PositionalArraySorter;
 class HealthChecker
 {
     public function __construct(
-        private readonly Bootstrap $bootstrap,
-        private readonly array $configuredHealthchecks,
-        private readonly HealthcheckEnvironment $healthcheckEnvironment
+        private Bootstrap $bootstrap,
+        private array $configuredHealthchecks,
+        private HealthcheckEnvironment $healthcheckEnvironment
     ) {
     }
 

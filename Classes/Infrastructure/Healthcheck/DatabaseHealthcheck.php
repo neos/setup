@@ -14,7 +14,7 @@ use Neos\Setup\Domain\Status;
 class DatabaseHealthcheck implements EarlyBootTimeHealthcheckInterface
 {
     public function __construct(
-        private readonly ConfigurationManager $configurationManager
+        private ConfigurationManager $configurationManager
     ) {
     }
 

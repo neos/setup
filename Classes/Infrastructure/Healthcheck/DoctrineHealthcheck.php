@@ -14,7 +14,7 @@ class DoctrineHealthcheck implements HealthcheckInterface
     private const ACCEPTABLE_NEW_MIGRATION_COUNT = 10;
 
     public function __construct(
-        private readonly DoctrineService $doctrineService
+        private DoctrineService $doctrineService
     ) {
     }
 

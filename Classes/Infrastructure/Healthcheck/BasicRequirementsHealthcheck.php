@@ -18,7 +18,7 @@ class BasicRequirementsHealthcheck implements EarlyBootTimeHealthcheckInterface
     private HealthcheckEnvironment $environment;
 
     public function __construct(
-        private readonly ConfigurationManager $configurationManager
+        private ConfigurationManager $configurationManager
     ) {
     }
 

@@ -12,7 +12,7 @@ use Traversable;
 class HealthCollection implements \JsonSerializable, \IteratorAggregate
 {
     /** @var array<string|int, Health> */
-    private readonly array $items;
+    private array $items;
 
     public function __construct(
         Health ...$items

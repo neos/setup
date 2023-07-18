@@ -8,7 +8,7 @@ use Neos\Flow\Annotations as Flow;
 class CliEnvironment
 {
     public function __construct(
-        public readonly bool $isWindows
+        /** @psalm-readonly */ public bool $isWindows
     ) {
     }
 }

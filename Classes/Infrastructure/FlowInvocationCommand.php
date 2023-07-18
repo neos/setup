@@ -12,7 +12,7 @@ use Neos\Flow\Annotations as Flow;
 class FlowInvocationCommand
 {
     public function __construct(
-        private readonly bool $isWindows
+        private bool $isWindows
     ) {
     }
 

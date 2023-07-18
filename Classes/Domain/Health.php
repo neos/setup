@@ -8,9 +8,9 @@ use Neos\Flow\Annotations as Flow;
 class Health
 {
     public function __construct(
-        public readonly string $message,
-        public readonly Status $status,
-        public readonly string $title = '',
+        /** @psalm-readonly */ public string $message,
+        /** @psalm-readonly */ public Status $status,
+        /** @psalm-readonly */ public string $title = '',
     ) {
     }
 }

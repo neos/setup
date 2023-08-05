@@ -18,4 +18,8 @@
         height: 1.1em;
         width: 1.1em;
     }
+
+    [x-cloak] {
+      display: none!important;
+    }
 }

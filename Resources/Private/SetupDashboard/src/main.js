@@ -5,8 +5,11 @@ const raf = window.requestAnimationFrame;
 const rafInterval = (callback, delay) => {
 	let start = dateNow();
 	let stop = false;
-	const intervalFunc = () => {
-		dateNow() - start < delay || ((start += delay), callback());
+	const intervalFunc = async () => {
+		if (dateNow() - start >= delay) {
+			start += delay;
+			await callback();
+		}
 		stop || raf(intervalFunc);
 	};
 	raf(intervalFunc);
@@ -81,8 +84,8 @@ Alpine.data('health', () => ({
 		}
 	},
 	async init() {
-		this.runChecks();
-		this.reloadTimeout = rafInterval(()=>{this.runChecks()}, 10000);
+		await this.runChecks();
+		this.reloadTimeout = rafInterval(()=> this.runChecks(), 10000);
 	}
 }))
 

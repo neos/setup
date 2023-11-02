@@ -26,10 +26,7 @@ class Package extends BasePackage
         // short alias instead of `setup:index`
         'setup' => 'neos.setup:setup:index',
         // legacy redirect from `Neos.CliSetup`
-        'welcome' => 'neos.setup:setup:index',
-        // ambiguous command identifiers, if `Neos.CliSetup` is also installed, we prefer the new commands.
-        'setup:database' => 'neos.setup:setup:database',
-        'setup:imagehandler' => 'neos.setup:setup:imagehandler'
+        'welcome' => 'neos.setup:setup:index'
     ];
 
     public function boot(Bootstrap $bootstrap): void

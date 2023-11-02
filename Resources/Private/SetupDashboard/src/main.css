@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    code {
+        display: block;
+    }
+
+    .message em {
+        font-family: theme(fontFamily.mono);
+        font-size: 1em;
+        font-style: normal
+    }
+
+    svg {
+        fill: currentColor;
+        height: 1.1em;
+        width: 1.1em;
+    }
+
+    [x-cloak] {
+      display: none!important;
+    }
+}

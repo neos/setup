@@ -1,0 +1,19 @@
+{
+  "name": "setup-dashboard",
+  "scripts": {
+    "build:js": "esbuild src/main.js --outfile=./build/main.js --bundle --minify",
+    "build:css": "tailwind -i src/main.css -o ./build/main.css -m",
+    "watch:js": "esbuild src/main.js --outfile=./build/main.js --bundle --minify --watch",
+    "watch:css": "tailwind -i src/main.css -o ./build/main.css -m --watch",
+    "build": "concurrently -r pnpm:build:*",
+    "watch": "concurrently -r pnpm:watch:*"
+  },
+  "devDependencies": {
+    "concurrently": "^8.0.1",
+    "esbuild": "^0.17.18",
+    "tailwindcss": "^3.3.2"
+  },
+  "dependencies": {
+    "alpinejs": "^3.12.0"
+  }
+}

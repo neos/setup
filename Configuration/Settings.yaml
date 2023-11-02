@@ -1,100 +1,32 @@
-#                                                                        #
-# Settings                                                               #
-#                                                                        #
-# This file contains settings for various parts of the application.      #
-# Just add your own modifications as necessary.                          #
-#                                                                        #
-# Please refer to the default settings file(s) or the manuals for        #
-# possible configuration options.                                        #
-#                                                                        #
-
 Neos:
   Setup:
-    initialPasswordFile: '%FLOW_PATH_DATA%SetupPassword.txt'
-    stepOrder:
-      - database
-      - final
-    steps:
-      database:
-        className: Neos\Setup\Step\DatabaseStep
-        requiredConditions:
-          -
-            className: Neos\Setup\Condition\PdoDriverCondition
-      final:
-        className: Neos\Setup\Step\FinalStep
-    view:
-      title: Setup
-    http:
-      middlewares:
-        configureRouting:
-          position: before routing
-          middleware: Neos\Setup\Core\ConfigureRoutingMiddleware
+    healthchecks:
+      compiletime:
+        basicRequirements:
+          position: 'start 200'
+          className: Neos\Setup\Infrastructure\Healthcheck\BasicRequirementsHealthcheck
+        database:
+          position: 'start 100'
+          className: Neos\Setup\Infrastructure\Healthcheck\DatabaseHealthcheck
+
+      runtime:
+        routing:
+          position: 'start 200'
+          className: Neos\Setup\Infrastructure\Healthcheck\EndToEndHealthcheck
+        doctrine:
+          position: 'start 100'
+          className: Neos\Setup\Infrastructure\Healthcheck\DoctrineHealthcheck
+
+    #
+    # The database drivers that are supported by migrations
+    #
+    supportedDatabaseDrivers:
+      'pdo_mysql': 'MySQL/MariaDB via PDO'
+      'mysqli': 'MySQL/MariaDB via mysqli'
+      'pdo_pgsql': 'PostgreSQL via PDO'
+
   Flow:
-    security:
-      authentication:
-        providers:
-          'Neos.Setup:Login':
-            provider: FileBasedSimpleKeyProvider
-            providerOptions:
-              keyName: SetupKey
-              authenticateRoles:
-                - 'Neos.Setup:SetupUser'
-            requestPatterns:
-              'Neos.Setup:controllerObjectName':
-                pattern: ControllerObjectName
-                patternOptions:
-                  controllerObjectNamePattern: 'Neos\Setup\Controller\.*|Neos\Setup\ViewHelpers\Widget\Controller\.*'
-            entryPoint: WebRedirect
-            entryPointOptions:
-              uri: setup/login
-  Form:
-    presets:
-      neos.setup:
-        title: 'Setup Elements'
-        parentPreset: default
-        formElementTypes:
-          'Neos.Form:Base':
-            renderingOptions:
-              layoutPathPattern: 'resource://Neos.Setup/Private/Form/Layouts/{@type}.html'
-              validationErrorTranslationPackage: Neos.Flow
-          'Neos.Form:Form':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
-          'Neos.Setup:LinkElement':
-            superTypes:
-              - 'Neos.Form:ReadOnlyFormElement'
-            properties:
-              text: ''
-              class: btn
-              href: ''
-          'Neos.Setup:DatabaseSelector':
-            superTypes:
-              - 'Neos.Form:FormElement'
-            properties:
-              elementClassAttribute: form-control
-          'Neos.Form:SingleLineText':
-            properties:
-              elementClassAttribute: form-control
-          'Neos.Form:Password':
-            properties:
-              elementClassAttribute: form-control
-          'Neos.Form:PasswordWithConfirmation':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
-            properties:
-              elementClassAttribute: form-control
-              confirmationClassAttribute: form-control
-          'Neos.Form:Checkbox':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
-            properties:
-              elementClassAttribute: checkbox
-          'Neos.Form:MultipleSelectDropdown':
-            properties:
-              elementClassAttribute: form-control
-          'Neos.Form:SingleSelectDropdown':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
-          'Neos.Form:StaticText':
-            renderingOptions:
-              templatePathPattern: 'resource://Neos.Setup/Private/Form/{@type}.html'
+    mvc:
+      routes:
+        'Neos.Setup':
+          position: start 9000

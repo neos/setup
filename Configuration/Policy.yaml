@@ -1,33 +1,11 @@
-#                                                                        #
-# Security policy for the Neos.Setup package                             #
-#                                                                        #
-
 privilegeTargets:
-
-  'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
-
-    'Neos.Setup:LoginController':
-      matcher: 'method(Neos\Setup\Controller\LoginController->(login|authenticate|generateNewPassword)Action())'
-
-    'Neos.Setup:SetupController':
-      matcher: 'method(Neos\Setup\Controller\SetupController->indexAction()) || method(Neos\Setup\Controller\LoginController->logoutAction())'
-
-    'Neos.Setup:WidgetControllers':
-      matcher: 'method(public Neos\Setup\ViewHelpers\Widget\Controller\.+Controller->.+Action())'
+  Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege:
+    Neos.Setup:RuntimeHealth:
+      matcher: 'method(Neos\Setup\Controller\RuntimeHealthController->indexAction())'
 
 roles:
-
-  'Neos.Flow:Everybody':
+  Neos.Flow:Everybody:
     privileges:
       -
-        privilegeTarget: 'Neos.Setup:LoginController'
-        permission: GRANT
-
-  'Neos.Setup:SetupUser':
-    privileges:
-      -
-        privilegeTarget: 'Neos.Setup:SetupController'
-        permission: GRANT
-      -
-        privilegeTarget: 'Neos.Setup:WidgetControllers'
+        privilegeTarget: Neos.Setup:RuntimeHealth
         permission: GRANT

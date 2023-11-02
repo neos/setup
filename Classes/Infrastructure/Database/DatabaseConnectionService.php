@@ -22,7 +22,6 @@ use Doctrine\DBAL\Exception as DBALException;
 
 class DatabaseConnectionService
 {
-
     /**
      * @Flow\InjectConfiguration(path="supportedDatabaseDrivers")
      * @var array<string, string>

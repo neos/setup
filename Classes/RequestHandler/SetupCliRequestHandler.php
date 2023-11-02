@@ -51,7 +51,7 @@ class SetupCliRequestHandler implements RequestHandlerInterface
             return false;
         }
         $commandIdentifier = $_SERVER['argv'][1] ?? null;
-        return match($commandIdentifier) {
+        return match ($commandIdentifier) {
             'neos.setup:setup:index',
             'setup:setup:index',
             'setup:index' => true,

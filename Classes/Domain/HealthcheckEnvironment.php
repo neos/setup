@@ -11,7 +11,8 @@ class HealthcheckEnvironment
 {
     public function __construct(
         private ApplicationContext $applicationContext,
-        /** @psalm-readonly */ public CliEnvironment | WebEnvironment $executionEnvironment
+        /** @psalm-readonly */ 
+        public CliEnvironment | WebEnvironment $executionEnvironment
     ) {
     }
 

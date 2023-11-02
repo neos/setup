@@ -139,7 +139,7 @@ class SetupCommandController extends CommandController
         $filename = sprintf('%s%s/Settings.Database.yaml', FLOW_PATH_CONFIGURATION, $this->bootstrap->getContext()->__toString());
 
         $this->outputLine();
-        $this->output(sprintf('<info>%s</info>',$this->writeSettings($filename, 'Neos.Flow.persistence.backendOptions',$persistenceConfiguration)));
+        $this->output(sprintf('<info>%s</info>', $this->writeSettings($filename, 'Neos.Flow.persistence.backendOptions', $persistenceConfiguration)));
         $this->outputLine();
         $this->outputLine(sprintf('The new database settings were written to <info>%s</info>', $filename));
     }
@@ -186,6 +186,6 @@ class SetupCommandController extends CommandController
         }
         $newSettings = Arrays::setValueByPath($previousSettings, $path, $settings);
         file_put_contents($filename, YAML::dump($newSettings, 10, 2));
-        return YAML::dump(Arrays::setValueByPath([],$path, $settings), 10, 2);
+        return YAML::dump(Arrays::setValueByPath([], $path, $settings), 10, 2);
     }
 }

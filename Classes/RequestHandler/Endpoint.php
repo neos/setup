@@ -33,7 +33,7 @@ class Endpoint
     {
         $path = $uri->getPath();
 
-        return match($path) {
+        return match ($path) {
             '/setup/index.html',
             '/setup/index',
             '/setup/',

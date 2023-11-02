@@ -136,7 +136,7 @@ class SetupCommandController extends CommandController
             }
         }
 
-        $filename = sprintf('Configuration/%s/Settings.Database.yaml', $this->bootstrap->getContext()->__toString());
+        $filename = sprintf('%s%s/Settings.Database.yaml', FLOW_PATH_CONFIGURATION, $this->bootstrap->getContext()->__toString());
 
         $this->outputLine();
         $this->output(sprintf('<info>%s</info>',$this->writeSettings($filename, 'Neos.Flow.persistence.backendOptions',$persistenceConfiguration)));

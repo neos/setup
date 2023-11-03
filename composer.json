@@ -12,7 +12,7 @@
         "neos/cli-setup": "*"
     },
     "branch-alias": {
-        "dev-master": "6.0.x-dev"
+        "dev-main": "6.0.x-dev"
     },
     "autoload": {
         "psr-4": {

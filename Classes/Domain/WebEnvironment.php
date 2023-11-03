@@ -9,9 +9,9 @@ use Neos\Flow\Annotations as Flow;
 class WebEnvironment
 {
     public function __construct(
-        /** @psalm-readonly */ 
+        /** @psalm-readonly */
         public Uri $requestUri,
-        /** @psalm-readonly */ 
+        /** @psalm-readonly */
         public bool $isWindows
     ) {
     }

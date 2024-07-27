@@ -20,11 +20,11 @@ use Neos\Flow\Core\Bootstrap;
 use Neos\Setup\Domain\CliEnvironment;
 use Neos\Setup\Domain\HealthcheckEnvironment;
 use Neos\Setup\Infrastructure\HealthChecker;
-use Neos\Setup\RequestHandler\SetupCliRequestHandler;
 use Neos\Utility\Arrays;
 use Neos\Setup\Exception as SetupException;
 use Neos\Setup\Infrastructure\Database\DatabaseConnectionService;
 use Symfony\Component\Yaml\Yaml;
+use Neos\Utility\Files;
 
 class SetupCommandController extends CommandController
 {
@@ -185,6 +185,7 @@ class SetupCommandController extends CommandController
             $previousSettings = [];
         }
         $newSettings = Arrays::setValueByPath($previousSettings, $path, $settings);
+        Files::createDirectoryRecursively(dirname($filename));
         file_put_contents($filename, YAML::dump($newSettings, 10, 2));
         return YAML::dump(Arrays::setValueByPath([], $path, $settings), 10, 2);
     }

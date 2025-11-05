@@ -16,6 +16,9 @@ Neos:
         doctrine:
           position: 'start 100'
           className: Neos\Setup\Infrastructure\Healthcheck\DoctrineHealthcheck
+        trustedProxies:
+          position: 'start 50'
+          className: Neos\Setup\Infrastructure\Healthcheck\TrustedProxiesHealthcheck
 
     #
     # The database drivers that are supported by migrations

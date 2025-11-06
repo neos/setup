@@ -93,7 +93,7 @@ class TrustedProxiesHealthcheck implements HealthcheckInterface
                     if (!$isProxyConfigured) {
                         $message .= "<b>Trusted proxies are not configured.</b> ";
                     } else {
-                        $message .= "The current REMOTE_ADDR {$remoteAddr} does not match any configured trusted proxies {${implode(',', $configuredProxies)}}. ";
+                        $message .= "The current REMOTE_ADDR {$remoteAddr} does not match any configured trusted proxies "  . implode(',', $configuredProxies) . ". ";
                     }
 
                     $message .= "You need to configure trusted proxies to ensure URLs can be properly built.<br /><br />";
@@ -121,7 +121,7 @@ class TrustedProxiesHealthcheck implements HealthcheckInterface
                     $message .= "    </pre>\n";
 
 
-                    $message .= "<br /><br />Or use the FLOW_HTTP_TRUSTED_PROXIES environment variable.<br />";
+                    $message .= "Alternatively, set the FLOW_HTTP_TRUSTED_PROXIES={$remoteAddr} environment variable.<br />";
                     $message .= 'See <a href="https://flowframework.readthedocs.io/en/stable/TheDefinitiveGuide/PartIII/Http.html#trusted-proxies">Documentation on trusted proxies</a> for further details.';
 
                     return new Health($message, Status::WARNING());
@@ -139,13 +139,13 @@ class TrustedProxiesHealthcheck implements HealthcheckInterface
                 if (!empty($configuredProxies)) {
                     return new Health(
                         "No reverse proxy headers detected in the request, but trusted proxies are configured.<br /><br />" .
-                        "If you are not running behind a reverse proxy, you should remove the trusted proxies configuration.<br />" .
+                        "If you are not running behind a reverse proxy, you should remove the trusted proxies configuration in Settings.yaml, path Neos.Flow.http.trustedProxies.proxies; and remove the environment variable FLOW_HTTP_TRUSTED_PROXIES.<br />" .
                         "Otherwise, ensure your reverse proxy is properly configured to send the expected headers.",
                         Status::WARNING()
                     );
                 } else {
                     return new Health(
-                        "No reverse proxy headers detected. Running in direct connection mode (no reverse proxy).<br />" .
+                        "No reverse proxy headers detected. Running in direct connection mode.<br />" .
                         "Trusted proxies configuration is not set, which is correct for this setup.",
                         Status::OK()
                     );

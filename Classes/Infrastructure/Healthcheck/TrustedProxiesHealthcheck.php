@@ -25,18 +25,35 @@ class TrustedProxiesHealthcheck implements HealthcheckInterface
         'X-Forwarded-Proto' => 'proto',
         'X-Real-IP' => 'clientIp',
         'Forwarded' => null, // RFC 7239 - detection only
+
         // Additional clientIp headers (priority order)
         'True-Client-IP' => 'clientIp',
         'X-Client-IP' => 'clientIp',
         'Client-IP' => 'clientIp',
-        // Cloud provider-specific headers (detection only)
+
+        // Cloudflare
+        'CF-Connecting-IP' => 'clientIp',
+        'CF-Visitor' => null,
         'CF-RAY' => null,
         'CF-IPCountry' => null,
+
+        // AWS
         'X-Amzn-Trace-Id' => null,
-        'X-Original-URL' => null,
-        'X-ARR-ClientCert' => null,
+        'X-Amz-Cf-Id' => null,
+        'CloudFront-Viewer-Address' => 'clientIp',
+
+        // Google Cloud
         'X-Cloud-Trace-Context' => null,
-        'X-Forwarded-Client-Cert' => null,
+
+        // Azure
+        'X-Azure-ClientIP' => 'clientIp',
+        'X-ARR-ClientIP' => 'clientIp',
+
+        // Fastly / Other CDNs
+        'Fastly-Client-IP' => 'clientIp',
+        'X-Forwarded-Ssl' => null,
+        'X-Original-Forwarded-For' => 'clientIp',
+        'X-Original-Host' => 'host',
     ];
 
     public function __construct(
